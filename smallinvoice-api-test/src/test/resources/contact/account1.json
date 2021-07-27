@@ -1,0 +1,7 @@
+{
+  "default": true,
+  "type": "IBAN",
+  "number": "CH0489144731284862829",
+  "bic": "GEBABEBB",
+  "description": "Super Bank Account"
+}

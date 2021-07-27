@@ -1,0 +1,60 @@
+{
+  "id": 525765968,
+  "number": "1002",
+  "relation": [
+    "CL",
+    "CR"
+  ],
+  "type": "C",
+  "gender": null,
+  "gender_salutation_active": false,
+  "name": "Autogarage Frei",
+  "name_addition": "Zusatz Information",
+  "salutation": "Sehr geehrte Frau Frei",
+  "phone": "079 123 45 567",
+  "fax": null,
+  "email": "test@autogarage-frei.com",
+  "website": null,
+  "notes": "Das ist eine Notiz",
+  "communication_language": "de",
+  "communication_channel": "E",
+  "communication_newsletter": "M",
+  "currency": null,
+  "ebill_account_id": null,
+  "vat_identification": null,
+  "vat_rate": null,
+  "discount_rate": 5.0,
+  "discount_type": "P",
+  "payment_grace": 30,
+  "hourly_rate": 100.0,
+  "created": "2021-07-26 15:33:04",
+  "custom_fields": [],
+  "main_address_id": 889044143,
+  "main_address": {
+    "default": true,
+    "id": 889044143,
+    "country": "CH",
+    "street": "Baumgartenstrasse",
+    "street_no": "123E",
+    "street2": "",
+    "postcode": "5000",
+    "city": "Aarau",
+    "hide_on_documents": false,
+    "default_prepage": true,
+    "permissions": null
+  },
+  "groups": [
+    {
+      "id": 554634515,
+      "name": "A-Kunde"
+    },
+    {
+      "id": 690591172,
+      "name": "B-Grupper"
+    }
+  ],
+  "permissions": [
+    "view",
+    "edit"
+  ]
+}

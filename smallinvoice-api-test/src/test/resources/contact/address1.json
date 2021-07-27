@@ -1,0 +1,11 @@
+{
+  "default": false,
+  "country": "CH",
+  "street": "Bahnhofstrasse",
+  "street_no": "1",
+  "street2": "hinten",
+  "postcode": "5000",
+  "city": "Aarau",
+  "hide_on_documents": false,
+  "default_prepage": false
+}

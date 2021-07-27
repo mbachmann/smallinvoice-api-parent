@@ -1,0 +1,14 @@
+{
+  "default": false,
+  "name": "Max",
+  "surname": "Mustermann",
+  "gender": "M",
+  "email": "max.mustermann@example.com",
+  "phone": "+41 79 123 45 67",
+  "department": "Sales",
+  "salutation": "Sehr geehrter Herr Mustermann",
+  "show_title": true,
+  "show_department": true,
+  "wants_newsletter": true,
+  "custom_fields": []
+}

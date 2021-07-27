@@ -1,0 +1,8 @@
+# OpenAPI Generator Ignore
+# Lines beginning with a # are comments
+
+src/**/ClientConfiguration.java
+pom.xml
+**/*.properties
+README.md
+src/**/swagger.json

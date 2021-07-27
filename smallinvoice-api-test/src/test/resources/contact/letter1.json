@@ -1,0 +1,20 @@
+{
+  "contact_id": 0,
+  "contact_address_id": 0,
+  "contact_person_id": 0,
+  "date": "2021-07-31",
+  "title": "This is a letter to a customer",
+  "content": "The letter content",
+  "language": "de",
+  "notes": "This ist a note",
+  "custom_fields": [],
+  "free_texts": [
+    {
+      "text": "this is a free text",
+      "font_size": 9,
+      "position_x": 100,
+      "position_y": 100,
+      "page": 1
+    }
+  ]
+}
