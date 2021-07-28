@@ -23,7 +23,7 @@ import org.hibernate.validator.constraints.*;
 /**
  * ContactGET
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-07-27T20:43:02.724916+02:00[Europe/Zurich]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-07-28T19:49:25.792053+02:00[Europe/Zurich]")
 public class ContactGET  implements Serializable {
   private static final long serialVersionUID = 1L;
 
@@ -174,6 +174,9 @@ public class ContactGET  implements Serializable {
 
   @JsonProperty("notes")
   private String notes;
+
+  @JsonProperty("communication_language")
+  private String communicationLanguage;
 
   /**
    * possible values: U - No preference, E - Documents by e-mail, P - Documents by post 
@@ -670,6 +673,27 @@ public class ContactGET  implements Serializable {
     this.notes = notes;
   }
 
+  public ContactGET communicationLanguage(String communicationLanguage) {
+    this.communicationLanguage = communicationLanguage;
+    return this;
+  }
+
+  /**
+   * main communication language - default value: 'default documents language'
+   * @return communicationLanguage
+  */
+  @ApiModelProperty(required = true, value = "main communication language - default value: 'default documents language'")
+  @NotNull
+
+
+  public String getCommunicationLanguage() {
+    return communicationLanguage;
+  }
+
+  public void setCommunicationLanguage(String communicationLanguage) {
+    this.communicationLanguage = communicationLanguage;
+  }
+
   public ContactGET communicationChannel(CommunicationChannelEnum communicationChannel) {
     this.communicationChannel = communicationChannel;
     return this;
@@ -1054,6 +1078,7 @@ public class ContactGET  implements Serializable {
         Objects.equals(this.email, contactGET.email) &&
         Objects.equals(this.website, contactGET.website) &&
         Objects.equals(this.notes, contactGET.notes) &&
+        Objects.equals(this.communicationLanguage, contactGET.communicationLanguage) &&
         Objects.equals(this.communicationChannel, contactGET.communicationChannel) &&
         Objects.equals(this.communicationNewsletter, contactGET.communicationNewsletter) &&
         Objects.equals(this.currency, contactGET.currency) &&
@@ -1074,7 +1099,7 @@ public class ContactGET  implements Serializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, number, relation, type, gender, genderSalutationActive, name, nameAddition, salutation, phone, fax, email, website, notes, communicationChannel, communicationNewsletter, currency, ebillAccountId, vatIdentification, vatRate, discountRate, discountType, paymentGrace, hourlyRate, created, customFields, mainAddressId, mainAddress, groups, permissions);
+    return Objects.hash(id, number, relation, type, gender, genderSalutationActive, name, nameAddition, salutation, phone, fax, email, website, notes, communicationLanguage, communicationChannel, communicationNewsletter, currency, ebillAccountId, vatIdentification, vatRate, discountRate, discountType, paymentGrace, hourlyRate, created, customFields, mainAddressId, mainAddress, groups, permissions);
   }
 
   @Override
@@ -1096,6 +1121,7 @@ public class ContactGET  implements Serializable {
     sb.append("    email: ").append(toIndentedString(email)).append("\n");
     sb.append("    website: ").append(toIndentedString(website)).append("\n");
     sb.append("    notes: ").append(toIndentedString(notes)).append("\n");
+    sb.append("    communicationLanguage: ").append(toIndentedString(communicationLanguage)).append("\n");
     sb.append("    communicationChannel: ").append(toIndentedString(communicationChannel)).append("\n");
     sb.append("    communicationNewsletter: ").append(toIndentedString(communicationNewsletter)).append("\n");
     sb.append("    currency: ").append(toIndentedString(currency)).append("\n");

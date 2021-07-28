@@ -28,7 +28,7 @@ import org.hibernate.validator.constraints.*;
 /**
  * DocumentOfferGET
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-07-27T20:43:02.724916+02:00[Europe/Zurich]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-07-28T19:49:25.792053+02:00[Europe/Zurich]")
 public class DocumentOfferGET  implements Serializable {
   private static final long serialVersionUID = 1L;
 
@@ -132,8 +132,45 @@ public class DocumentOfferGET  implements Serializable {
   @JsonProperty("accept_online_url")
   private String acceptOnlineUrl;
 
+  /**
+   * status of offer's acceptance; possible values: A - accepted, D - declined, U - unknown
+   */
+  public enum AcceptOnlineStatusEnum {
+    A("A"),
+    
+    D("D"),
+    
+    U("U");
+
+    private String value;
+
+    AcceptOnlineStatusEnum(String value) {
+      this.value = value;
+    }
+
+    @JsonValue
+    public String getValue() {
+      return value;
+    }
+
+    @Override
+    public String toString() {
+      return String.valueOf(value);
+    }
+
+    @JsonCreator
+    public static AcceptOnlineStatusEnum fromValue(String value) {
+      for (AcceptOnlineStatusEnum b : AcceptOnlineStatusEnum.values()) {
+        if (b.value.equals(value)) {
+          return b;
+        }
+      }
+      throw new IllegalArgumentException("Unexpected value '" + value + "'");
+    }
+  }
+
   @JsonProperty("accept_online_status")
-  private String acceptOnlineStatus;
+  private AcceptOnlineStatusEnum acceptOnlineStatus;
 
   /**
    * language; possible values: de, en, es, fr, it 
@@ -740,7 +777,7 @@ public class DocumentOfferGET  implements Serializable {
     this.acceptOnlineUrl = acceptOnlineUrl;
   }
 
-  public DocumentOfferGET acceptOnlineStatus(String acceptOnlineStatus) {
+  public DocumentOfferGET acceptOnlineStatus(AcceptOnlineStatusEnum acceptOnlineStatus) {
     this.acceptOnlineStatus = acceptOnlineStatus;
     return this;
   }
@@ -753,11 +790,11 @@ public class DocumentOfferGET  implements Serializable {
   @NotNull
 
 
-  public String getAcceptOnlineStatus() {
+  public AcceptOnlineStatusEnum getAcceptOnlineStatus() {
     return acceptOnlineStatus;
   }
 
-  public void setAcceptOnlineStatus(String acceptOnlineStatus) {
+  public void setAcceptOnlineStatus(AcceptOnlineStatusEnum acceptOnlineStatus) {
     this.acceptOnlineStatus = acceptOnlineStatus;
   }
 

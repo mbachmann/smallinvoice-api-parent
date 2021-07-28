@@ -1,0 +1,14 @@
+{
+  "number": "123",
+  "name": "Consulting & Engineering",
+  "description": "",
+  "including_vat": false,
+  "vat": 7.7,
+  "unit_id": 1,
+  "price": 120.0,
+  "default_amount": 1,
+  "permissions": [
+    "view",
+    "edit"
+  ]
+}

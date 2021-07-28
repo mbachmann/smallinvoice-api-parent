@@ -1,0 +1,16 @@
+{
+  "number": "113",
+  "name": "Kabel USB C",
+  "description": "",
+  "including_vat": false,
+  "vat": 7.7,
+  "unit_id": 16,
+  "price": 10.0,
+  "inventory_available": 0.0,
+  "inventory_reserved": 0.0,
+  "default_amount": 1,
+  "permissions": [
+    "view",
+    "edit"
+  ]
+}

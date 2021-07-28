@@ -1,0 +1,11 @@
+{
+  "default": false,
+  "country": "CH",
+  "street": "Bahnhofstrasse",
+  "street_no": "1",
+  "street2": "t",
+  "postcode": "8000",
+  "city": "Zürich",
+  "hide_on_documents": false,
+  "default_prepage": false
+}

@@ -18,7 +18,7 @@ import org.hibernate.validator.constraints.*;
 /**
  * ContactAccountGET
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-07-27T20:43:02.724916+02:00[Europe/Zurich]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-07-28T19:49:25.792053+02:00[Europe/Zurich]")
 public class ContactAccountGET  implements Serializable {
   private static final long serialVersionUID = 1L;
 
@@ -28,8 +28,47 @@ public class ContactAccountGET  implements Serializable {
   @JsonProperty("default")
   private Boolean _default;
 
+  /**
+   * type (possible values: IBAN, ISR, QR, QRREF)
+   */
+  public enum TypeEnum {
+    IBAN("IBAN"),
+    
+    ISR("ISR"),
+    
+    QR("QR"),
+    
+    QRREF("QRREF");
+
+    private String value;
+
+    TypeEnum(String value) {
+      this.value = value;
+    }
+
+    @JsonValue
+    public String getValue() {
+      return value;
+    }
+
+    @Override
+    public String toString() {
+      return String.valueOf(value);
+    }
+
+    @JsonCreator
+    public static TypeEnum fromValue(String value) {
+      for (TypeEnum b : TypeEnum.values()) {
+        if (b.value.equals(value)) {
+          return b;
+        }
+      }
+      throw new IllegalArgumentException("Unexpected value '" + value + "'");
+    }
+  }
+
   @JsonProperty("type")
-  private String type;
+  private TypeEnum type;
 
   @JsonProperty("number")
   private String number;
@@ -121,24 +160,24 @@ public class ContactAccountGET  implements Serializable {
     this._default = _default;
   }
 
-  public ContactAccountGET type(String type) {
+  public ContactAccountGET type(TypeEnum type) {
     this.type = type;
     return this;
   }
 
   /**
-   * type (possible values: IBAN, ISR)
+   * type (possible values: IBAN, ISR, QR, QRREF)
    * @return type
   */
-  @ApiModelProperty(required = true, value = "type (possible values: IBAN, ISR)")
+  @ApiModelProperty(required = true, value = "type (possible values: IBAN, ISR, QR, QRREF)")
   @NotNull
 
 
-  public String getType() {
+  public TypeEnum getType() {
     return type;
   }
 
-  public void setType(String type) {
+  public void setType(TypeEnum type) {
     this.type = type;
   }
 
@@ -148,10 +187,10 @@ public class ContactAccountGET  implements Serializable {
   }
 
   /**
-   * IBAN or ISR number (depends on the type)
+   * IBAN or ISR or QR IBAN (3xxxxx) number (depends on the type)
    * @return number
   */
-  @ApiModelProperty(required = true, value = "IBAN or ISR number (depends on the type)")
+  @ApiModelProperty(required = true, value = "IBAN or ISR or QR IBAN (3xxxxx) number (depends on the type)")
   @NotNull
 
 

@@ -10,7 +10,7 @@
   "custom_fields": [],
   "free_texts": [
     {
-      "text": "this is a free text",
+      "text": "this is a free <b>text</b>. <br>Hallo Velo. ",
       "font_size": 9,
       "position_x": 100,
       "position_y": 100,

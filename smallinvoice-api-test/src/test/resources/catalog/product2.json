@@ -1,0 +1,16 @@
+{
+  "number": "105",
+  "name": "Kabel HDMI",
+  "description": "",
+  "including_vat": false,
+  "vat": 7.7,
+  "unit_id": 16,
+  "price": 6.5,
+  "inventory_available": 0.0,
+  "inventory_reserved": 0.0,
+  "default_amount": 1,
+  "permissions": [
+    "view",
+    "edit"
+  ]
+}

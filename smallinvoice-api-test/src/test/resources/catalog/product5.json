@@ -1,0 +1,16 @@
+{
+  "number": "115",
+  "name": "Schrauben 10x40mm",
+  "description": "Standardschrauben",
+  "including_vat": false,
+  "vat": 7.7,
+  "unit_id": 7,
+  "price": 0.18,
+  "inventory_available": -4.0,
+  "inventory_reserved": 1.0,
+  "default_amount": 1,
+  "permissions": [
+    "view",
+    "edit"
+  ]
+}

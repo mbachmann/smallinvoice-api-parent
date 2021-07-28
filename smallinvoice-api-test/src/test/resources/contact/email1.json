@@ -1,0 +1,11 @@
+{
+  "subject": "Test Mail from Smallinvoice Spring Feign",
+  "body": "The Test Mail has been produced by a unit test",
+  "recipients": [
+    {
+      "email": "test@gmail.com",
+      "name": "test"
+    }
+  ],
+  "from": "U"
+}

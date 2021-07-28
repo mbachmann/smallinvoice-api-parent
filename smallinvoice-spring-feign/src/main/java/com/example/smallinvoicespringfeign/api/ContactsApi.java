@@ -57,7 +57,7 @@ import javax.validation.constraints.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-07-27T20:43:02.724916+02:00[Europe/Zurich]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-07-28T19:49:25.792053+02:00[Europe/Zurich]")
 @Validated
 @Api(value = "Contacts", description = "the Contacts API")
 public interface ContactsApi {
@@ -96,7 +96,7 @@ public interface ContactsApi {
         value = "/contacts/{contactId}/assign-groups/{groupsIds}",
         produces = "application/json"
     )
-    ResponseEntity<ItemContactGET> assignContactGroups(@ApiParam(value = "contact ID",required=true) @PathVariable("contactId") Integer contactId,@ApiParam(value = "groups IDs (comma separated)",required=true) @PathVariable("groupsIds") String groupsIds);
+    ResponseEntity<ItemContactGET> assignContactGroups(@ApiParam(value = "contact ID",required=true) @PathVariable("contactId") Integer contactId,@ApiParam(value = "groups IDs (comma separated)",required=true) @PathVariable("groupsIds") String... groupsIds);
 
 
     /**
@@ -427,7 +427,7 @@ public interface ContactsApi {
         value = "/contacts/{contactId}/accounts/{accountsIds}",
         produces = "application/json"
     )
-    ResponseEntity<Void> deleteContactAccount(@ApiParam(value = "contact ID",required=true) @PathVariable("contactId") Integer contactId,@ApiParam(value = "accounts IDs (comma separated)",required=true) @PathVariable("accountsIds") Integer accountsIds);
+    ResponseEntity<Void> deleteContactAccount(@ApiParam(value = "contact ID",required=true) @PathVariable("contactId") Integer contactId,@ApiParam(value = "accounts IDs (comma separated)",required=true) @PathVariable("accountsIds") Integer... accountsIds);
 
 
     /**
@@ -464,7 +464,7 @@ public interface ContactsApi {
         value = "/contacts/{contactId}/addresses/{addressesIds}",
         produces = "application/json"
     )
-    ResponseEntity<Void> deleteContactAddresses(@ApiParam(value = "contact ID",required=true) @PathVariable("contactId") Integer contactId,@ApiParam(value = "addresses IDs (comma separated)",required=true) @PathVariable("addressesIds") Integer addressesIds);
+    ResponseEntity<Void> deleteContactAddresses(@ApiParam(value = "contact ID",required=true) @PathVariable("contactId") Integer contactId,@ApiParam(value = "addresses IDs (comma separated)",required=true) @PathVariable("addressesIds") Integer... addressesIds);
 
 
     /**
@@ -481,7 +481,7 @@ public interface ContactsApi {
      *         or Too many requests (status code 429)
      *         or Server error (status code 500)
      */
-    @ApiOperation(value = "Deletes specified groups", nickname = "deleteContactGroup", notes = "Deletes specified groups", authorizations = {
+    @ApiOperation(value = "Deletes specified groups", nickname = "deleteContactGroups", notes = "Deletes specified groups", authorizations = {
         
         @Authorization(value = "bearerAuth"),
         @Authorization(value = "oauth", scopes = {
@@ -500,7 +500,7 @@ public interface ContactsApi {
         value = "/contacts/configuration/groups/{groupsIds}",
         produces = "application/json"
     )
-    ResponseEntity<Void> deleteContactGroup(@ApiParam(value = "groups IDs (comma separated)",required=true) @PathVariable("groupsIds") Integer groupsIds);
+    ResponseEntity<Void> deleteContactGroups(@ApiParam(value = "groups IDs (comma separated)",required=true) @PathVariable("groupsIds") Integer... groupsIds);
 
 
     /**
@@ -537,7 +537,7 @@ public interface ContactsApi {
         value = "/contacts/{contactId}/people/{peopleIds}",
         produces = "application/json"
     )
-    ResponseEntity<Void> deleteContactPeople(@ApiParam(value = "contact ID",required=true) @PathVariable("contactId") Integer contactId,@ApiParam(value = "people IDs (comma separated)",required=true) @PathVariable("peopleIds") String peopleIds);
+    ResponseEntity<Void> deleteContactPeople(@ApiParam(value = "contact ID",required=true) @PathVariable("contactId") Integer contactId,@ApiParam(value = "people IDs (comma separated)",required=true) @PathVariable("peopleIds") String... peopleIds);
 
 
     /**
@@ -571,7 +571,7 @@ public interface ContactsApi {
         value = "/contacts/{contactIds}",
         produces = "application/json"
     )
-    ResponseEntity<Void> deleteContacts(@ApiParam(value = "comma separated contact IDs",required=true) @PathVariable("contactIds") Integer contactIds);
+    ResponseEntity<Void> deleteContacts(@ApiParam(value = "comma separated contact IDs",required=true) @PathVariable("contactIds") Integer... contactIds);
 
 
     /**
@@ -607,7 +607,7 @@ public interface ContactsApi {
         value = "/contacts/letters/{letterIds}",
         produces = "application/json"
     )
-    ResponseEntity<Void> deleteLetters(@ApiParam(value = "comma separated letter IDs",required=true) @PathVariable("letterIds") Integer letterIds);
+    ResponseEntity<Void> deleteLetters(@ApiParam(value = "comma separated letter IDs",required=true) @PathVariable("letterIds") Integer... letterIds);
 
 
     /**
@@ -643,7 +643,7 @@ public interface ContactsApi {
         value = "/contacts/reminders/{reminderIds}",
         produces = "application/json"
     )
-    ResponseEntity<Void> deleteReminders(@ApiParam(value = "reminders IDs (comma separated)",required=true) @PathVariable("reminderIds") String reminderIds);
+    ResponseEntity<Void> deleteReminders(@ApiParam(value = "reminders IDs (comma separated)",required=true) @PathVariable("reminderIds") String... reminderIds);
 
 
     /**
@@ -1288,7 +1288,7 @@ public interface ContactsApi {
         value = "/contacts/{contactId}/remove-groups/{groupsIds}",
         produces = "application/json"
     )
-    ResponseEntity<ItemContactGET> removeContactGroups(@ApiParam(value = "contact ID",required=true) @PathVariable("contactId") Integer contactId,@ApiParam(value = "groups IDs (comma separated)",required=true) @PathVariable("groupsIds") String groupsIds);
+    ResponseEntity<ItemContactGET> removeContactGroups(@ApiParam(value = "contact ID",required=true) @PathVariable("contactId") Integer contactId,@ApiParam(value = "groups IDs (comma separated)",required=true) @PathVariable("groupsIds") String... groupsIds);
 
 
     /**

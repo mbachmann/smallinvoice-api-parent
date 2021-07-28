@@ -26,7 +26,7 @@ import org.hibernate.validator.constraints.*;
 /**
  * DocumentLetterGET
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-07-27T20:43:02.724916+02:00[Europe/Zurich]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-07-28T19:49:25.792053+02:00[Europe/Zurich]")
 public class DocumentLetterGET  implements Serializable {
   private static final long serialVersionUID = 1L;
 
@@ -126,8 +126,45 @@ public class DocumentLetterGET  implements Serializable {
   @JsonProperty("notes")
   private String notes;
 
+  /**
+   * status of letter, possible values: DR - draft, S - sent, D - deleted (but still visible)
+   */
+  public enum StatusEnum {
+    DR("DR"),
+    
+    S("S"),
+    
+    D("D");
+
+    private String value;
+
+    StatusEnum(String value) {
+      this.value = value;
+    }
+
+    @JsonValue
+    public String getValue() {
+      return value;
+    }
+
+    @Override
+    public String toString() {
+      return String.valueOf(value);
+    }
+
+    @JsonCreator
+    public static StatusEnum fromValue(String value) {
+      for (StatusEnum b : StatusEnum.values()) {
+        if (b.value.equals(value)) {
+          return b;
+        }
+      }
+      throw new IllegalArgumentException("Unexpected value '" + value + "'");
+    }
+  }
+
   @JsonProperty("status")
-  private String status;
+  private StatusEnum status;
 
   @JsonProperty("created")
   @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
@@ -560,7 +597,7 @@ public class DocumentLetterGET  implements Serializable {
     this.notes = notes;
   }
 
-  public DocumentLetterGET status(String status) {
+  public DocumentLetterGET status(StatusEnum status) {
     this.status = status;
     return this;
   }
@@ -573,11 +610,11 @@ public class DocumentLetterGET  implements Serializable {
   @NotNull
 
 
-  public String getStatus() {
+  public StatusEnum getStatus() {
     return status;
   }
 
-  public void setStatus(String status) {
+  public void setStatus(StatusEnum status) {
     this.status = status;
   }
 

@@ -33,7 +33,7 @@ import javax.validation.constraints.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-07-27T20:43:02.724916+02:00[Europe/Zurich]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-07-28T19:49:25.792053+02:00[Europe/Zurich]")
 @Validated
 @Api(value = "Configuration", description = "the Configuration API")
 public interface ConfigurationApi {
@@ -139,7 +139,7 @@ public interface ConfigurationApi {
         value = "/configuration/bank-accounts/{accountsIds}",
         produces = "application/json"
     )
-    ResponseEntity<Void> deleteBankAccount(@ApiParam(value = "comma separated IDs of accounts to be deleted",required=true) @PathVariable("accountsIds") Integer accountsIds);
+    ResponseEntity<Void> deleteBankAccount(@ApiParam(value = "comma separated IDs of accounts to be deleted",required=true) @PathVariable("accountsIds") Integer... accountsIds);
 
 
     /**

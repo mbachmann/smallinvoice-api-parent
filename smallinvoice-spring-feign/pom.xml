@@ -104,10 +104,10 @@
       <scope>compile</scope>
     </dependency>
     <dependency>
-      <groupId>com.fasterxml.jackson.datatype</groupId>
-      <artifactId>jackson-datatype-jsr310</artifactId>
-      <version>2.12.4</version>
-      <scope>compile</scope>
+      <!-- Required to use PATCH -->
+      <groupId>io.github.openfeign</groupId>
+      <artifactId>feign-httpclient</artifactId>
+      <version>11.4</version>
     </dependency>
   </dependencies>
   <distributionManagement>
@@ -205,6 +205,7 @@
             <phase>generate-sources</phase>
             <configuration>
               <tasks>
+                <!-- date corrections because of special date format yyyy-MM-dd HH:mm:ss -->
                 <replace token="@org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE_TIME)"
                          value='@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")'
                          dir="${project.basedir}/src/main/java/com/example/smallinvoicespringfeign/model">
@@ -215,6 +216,70 @@
                          dir="${project.basedir}/src/main/java/com/example/smallinvoicespringfeign/model">
                   <include name="**/*.java"/>
                 </replace>
+                <!-- corrections in catalog api-->
+                <replace token="Integer categoryIds"
+                         value="Integer... categoryIds"
+                         dir="${project.basedir}/src/main/java/com/example/smallinvoicespringfeign/api">
+                  <include name="**/*.java"/>
+                </replace>
+                <replace token="Integer productIds"
+                         value="Integer... productIds"
+                         dir="${project.basedir}/src/main/java/com/example/smallinvoicespringfeign/api">
+                  <include name="**/*.java"/>
+                </replace>
+                <replace token="Integer serviceIds"
+                         value="Integer... serviceIds"
+                         dir="${project.basedir}/src/main/java/com/example/smallinvoicespringfeign/api">
+                  <include name="**/*.java"/>
+                </replace>
+                <!-- corrections in contact api-->
+                <replace token="String groupsIds"
+                         value="String... groupsIds"
+                         dir="${project.basedir}/src/main/java/com/example/smallinvoicespringfeign/api">
+                  <include name="**/*.java"/>
+                </replace>
+                <replace token="Integer groupsIds"
+                         value="Integer... groupsIds"
+                         dir="${project.basedir}/src/main/java/com/example/smallinvoicespringfeign/api">
+                  <include name="**/*.java"/>
+                </replace>
+
+                <replace token="String peopleIds"
+                         value="String... peopleIds"
+                         dir="${project.basedir}/src/main/java/com/example/smallinvoicespringfeign/api">
+                  <include name="**/*.java"/>
+                </replace>
+                <replace token="Integer contactIds"
+                         value="Integer... contactIds"
+                         dir="${project.basedir}/src/main/java/com/example/smallinvoicespringfeign/api">
+                  <include name="**/*.java"/>
+                </replace>
+                <replace token="Integer letterIds"
+                         value="Integer... letterIds"
+                         dir="${project.basedir}/src/main/java/com/example/smallinvoicespringfeign/api">
+                  <include name="**/*.java"/>
+                </replace>
+                <replace token="String reminderIds"
+                         value="String... reminderIds"
+                         dir="${project.basedir}/src/main/java/com/example/smallinvoicespringfeign/api">
+                  <include name="**/*.java"/>
+                </replace>
+                <replace token="Integer accountsIds"
+                         value="Integer... accountsIds"
+                         dir="${project.basedir}/src/main/java/com/example/smallinvoicespringfeign/api">
+                  <include name="**/*.java"/>
+                </replace>
+                <replace token="Integer addressesIds"
+                         value="Integer... addressesIds"
+                         dir="${project.basedir}/src/main/java/com/example/smallinvoicespringfeign/api">
+                  <include name="**/*.java"/>
+                </replace>
+                <!-- corrections in configuration api-->
+
+                <!-- corrections in receivables api-->
+
+                <!-- corrections in reporting api-->
+
               </tasks>
             </configuration>
             <goals>

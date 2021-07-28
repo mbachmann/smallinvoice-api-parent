@@ -10,5 +10,5 @@
   "show_title": true,
   "show_department": true,
   "wants_newsletter": true,
-  "custom_fields": []
+  "custom_fields": null
 }

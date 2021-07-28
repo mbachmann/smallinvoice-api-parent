@@ -2,6 +2,6 @@
   "default": false,
   "type": "ISR",
   "number": "01-23456-7",
-  "bic": "GEBABEBB",
+  "bic": null,
   "description": "Super ESR Account"
 }

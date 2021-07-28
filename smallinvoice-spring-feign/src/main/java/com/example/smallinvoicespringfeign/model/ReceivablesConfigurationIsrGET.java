@@ -20,7 +20,7 @@ import org.hibernate.validator.constraints.*;
 /**
  * ReceivablesConfigurationIsrGET
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-07-27T20:43:02.724916+02:00[Europe/Zurich]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-07-28T19:49:25.792053+02:00[Europe/Zurich]")
 public class ReceivablesConfigurationIsrGET  implements Serializable {
   private static final long serialVersionUID = 1L;
 
@@ -31,7 +31,7 @@ public class ReceivablesConfigurationIsrGET  implements Serializable {
   private Boolean _default;
 
   /**
-   * ISR type; possible values: ISR - orange inpayment slip, ISR+ - orange inpayment slip plus, RIS - red inpayment slip 
+   * possible values: ISR - orange inpayment slip, ISR+ - orange inpayment slip plus, RIS - red inpayment slip 
    */
   public enum TypeEnum {
     ISR("ISR"),
@@ -71,11 +71,9 @@ public class ReceivablesConfigurationIsrGET  implements Serializable {
   private TypeEnum type;
 
   /**
-   * ISR position; possible values: A - additional page, F - first page, L - last page 
+   * possible values: A - additional page, F - first page, L - last page 
    */
   public enum PositionEnum {
-    ISR("ISR"),
-    
     A("A"),
     
     F("F"),
@@ -233,10 +231,10 @@ public class ReceivablesConfigurationIsrGET  implements Serializable {
   }
 
   /**
-   * ISR type; possible values: ISR - orange inpayment slip, ISR+ - orange inpayment slip plus, RIS - red inpayment slip 
+   * possible values: ISR - orange inpayment slip, ISR+ - orange inpayment slip plus, RIS - red inpayment slip 
    * @return type
   */
-  @ApiModelProperty(required = true, value = "ISR type; possible values: ISR - orange inpayment slip, ISR+ - orange inpayment slip plus, RIS - red inpayment slip ")
+  @ApiModelProperty(required = true, value = "possible values: ISR - orange inpayment slip, ISR+ - orange inpayment slip plus, RIS - red inpayment slip ")
   @NotNull
 
 
@@ -254,10 +252,10 @@ public class ReceivablesConfigurationIsrGET  implements Serializable {
   }
 
   /**
-   * ISR position; possible values: A - additional page, F - first page, L - last page 
+   * possible values: A - additional page, F - first page, L - last page 
    * @return position
   */
-  @ApiModelProperty(required = true, value = "ISR position; possible values: A - additional page, F - first page, L - last page ")
+  @ApiModelProperty(required = true, value = "possible values: A - additional page, F - first page, L - last page ")
   @NotNull
 
 

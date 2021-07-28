@@ -20,7 +20,7 @@ import org.hibernate.validator.constraints.*;
 /**
  * ContactReminderGET
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-07-27T20:43:02.724916+02:00[Europe/Zurich]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-07-28T19:49:25.792053+02:00[Europe/Zurich]")
 public class ContactReminderGET  implements Serializable {
   private static final long serialVersionUID = 1L;
 
@@ -46,8 +46,45 @@ public class ContactReminderGET  implements Serializable {
   @JsonProperty("interval_value")
   private Integer intervalValue;
 
+  /**
+   * one of: ['hour','day','month']
+   */
+  public enum IntervalTypeEnum {
+    HOUR("hour"),
+    
+    DAY("day"),
+    
+    MONTH("month");
+
+    private String value;
+
+    IntervalTypeEnum(String value) {
+      this.value = value;
+    }
+
+    @JsonValue
+    public String getValue() {
+      return value;
+    }
+
+    @Override
+    public String toString() {
+      return String.valueOf(value);
+    }
+
+    @JsonCreator
+    public static IntervalTypeEnum fromValue(String value) {
+      for (IntervalTypeEnum b : IntervalTypeEnum.values()) {
+        if (b.value.equals(value)) {
+          return b;
+        }
+      }
+      throw new IllegalArgumentException("Unexpected value '" + value + "'");
+    }
+  }
+
   @JsonProperty("interval_type")
-  private String intervalType;
+  private IntervalTypeEnum intervalType;
 
   /**
    * Gets or Sets permissions
@@ -235,7 +272,7 @@ public class ContactReminderGET  implements Serializable {
     this.intervalValue = intervalValue;
   }
 
-  public ContactReminderGET intervalType(String intervalType) {
+  public ContactReminderGET intervalType(IntervalTypeEnum intervalType) {
     this.intervalType = intervalType;
     return this;
   }
@@ -248,11 +285,11 @@ public class ContactReminderGET  implements Serializable {
   @NotNull
 
 
-  public String getIntervalType() {
+  public IntervalTypeEnum getIntervalType() {
     return intervalType;
   }
 
-  public void setIntervalType(String intervalType) {
+  public void setIntervalType(IntervalTypeEnum intervalType) {
     this.intervalType = intervalType;
   }
 

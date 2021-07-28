@@ -8,7 +8,7 @@
   "gender": null,
   "gender_salutation_active": false,
   "name": "Kino Baden",
-  "name_addition": "Zusatz Information",
+  "name_addition": null,
   "salutation": "Sehr geehrte Frau Meier",
   "phone": "079 123 45 567",
   "fax": null,
@@ -39,16 +39,7 @@
     "default_prepage": true,
     "permissions": null
   },
-  "groups": [
-    {
-      "id": 554634515,
-      "name": "A-Kunde"
-    },
-    {
-      "id": 690591172,
-      "name": "B-Grupper"
-    }
-  ],
+  "groups": [],
   "permissions": [
     "view",
     "edit"

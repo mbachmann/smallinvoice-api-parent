@@ -31,7 +31,7 @@ import org.hibernate.validator.constraints.*;
 /**
  * DocumentInvoiceStandardGET
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-07-27T20:43:02.724916+02:00[Europe/Zurich]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-07-28T19:49:25.792053+02:00[Europe/Zurich]")
 public class DocumentInvoiceStandardGET  implements Serializable {
   private static final long serialVersionUID = 1L;
 
@@ -286,8 +286,59 @@ public class DocumentInvoiceStandardGET  implements Serializable {
   @JsonProperty("notes")
   private String notes;
 
+  /**
+   * status of invoice, possible values: DR - draft, S - sent, P - paid, PP - partially paid, R1 - 1st reminder, R2 - 2nd reminder, R3 - 3rd reminder, R - reminder, DC - debt collection, C - cancelled, D - deleted (but still visible)
+   */
+  public enum StatusEnum {
+    DR("DR"),
+    
+    S("S"),
+    
+    P("P"),
+    
+    R1("R1"),
+    
+    R2("R2"),
+    
+    R3("R3"),
+    
+    R("R"),
+    
+    DC("DC"),
+    
+    C("C"),
+    
+    D("D");
+
+    private String value;
+
+    StatusEnum(String value) {
+      this.value = value;
+    }
+
+    @JsonValue
+    public String getValue() {
+      return value;
+    }
+
+    @Override
+    public String toString() {
+      return String.valueOf(value);
+    }
+
+    @JsonCreator
+    public static StatusEnum fromValue(String value) {
+      for (StatusEnum b : StatusEnum.values()) {
+        if (b.value.equals(value)) {
+          return b;
+        }
+      }
+      throw new IllegalArgumentException("Unexpected value '" + value + "'");
+    }
+  }
+
   @JsonProperty("status")
-  private String status;
+  private StatusEnum status = StatusEnum.DR;
 
   @JsonProperty("created")
   @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
@@ -1283,7 +1334,7 @@ public class DocumentInvoiceStandardGET  implements Serializable {
     this.notes = notes;
   }
 
-  public DocumentInvoiceStandardGET status(String status) {
+  public DocumentInvoiceStandardGET status(StatusEnum status) {
     this.status = status;
     return this;
   }
@@ -1296,11 +1347,11 @@ public class DocumentInvoiceStandardGET  implements Serializable {
   @NotNull
 
 
-  public String getStatus() {
+  public StatusEnum getStatus() {
     return status;
   }
 
-  public void setStatus(String status) {
+  public void setStatus(StatusEnum status) {
     this.status = status;
   }
 

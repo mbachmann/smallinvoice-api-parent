@@ -1,0 +1,14 @@
+{
+  "number": "125",
+  "name": "Software Wartung",
+  "description": "",
+  "including_vat": false,
+  "vat": 7.7,
+  "unit_id": 1,
+  "price": 80.0,
+  "default_amount": 1,
+  "permissions": [
+    "view",
+    "edit"
+  ]
+}

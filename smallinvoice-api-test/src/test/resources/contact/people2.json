@@ -1,0 +1,14 @@
+{
+  "default": false,
+  "name": "John",
+  "surname": "Doe",
+  "gender": "M",
+  "email": "john.doe@example.com",
+  "phone": "+41 79 123 45 67",
+  "department": "Sales",
+  "salutation": "Sehr geehrter Herr Doe",
+  "show_title": true,
+  "show_department": true,
+  "wants_newsletter": true,
+  "custom_fields": null
+}

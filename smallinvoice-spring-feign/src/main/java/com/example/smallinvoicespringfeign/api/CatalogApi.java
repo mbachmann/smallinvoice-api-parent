@@ -40,7 +40,7 @@ import javax.validation.constraints.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-07-27T20:43:02.724916+02:00[Europe/Zurich]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-07-28T19:49:25.792053+02:00[Europe/Zurich]")
 @Validated
 @Api(value = "Catalog", description = "the Catalog API")
 public interface CatalogApi {
@@ -220,7 +220,7 @@ public interface CatalogApi {
         value = "/catalog/products/categories/{categoryIds}",
         produces = "application/json"
     )
-    ResponseEntity<Void> deleteCatalogProductCategories(@ApiParam(value = "comma separated category IDs",required=true) @PathVariable("categoryIds") Integer categoryIds);
+    ResponseEntity<Void> deleteCatalogProductCategories(@ApiParam(value = "comma separated category IDs",required=true) @PathVariable("categoryIds") Integer... categoryIds);
 
 
     /**
@@ -254,7 +254,7 @@ public interface CatalogApi {
         value = "/catalog/products/{productIds}",
         produces = "application/json"
     )
-    ResponseEntity<Void> deleteCatalogProducts(@ApiParam(value = "comma separated product IDs",required=true) @PathVariable("productIds") Integer productIds);
+    ResponseEntity<Void> deleteCatalogProducts(@ApiParam(value = "comma separated product IDs",required=true) @PathVariable("productIds") Integer... productIds);
 
 
     /**
@@ -288,7 +288,7 @@ public interface CatalogApi {
         value = "/catalog/services/categories/{categoryIds}",
         produces = "application/json"
     )
-    ResponseEntity<Void> deleteCatalogServiceCategories(@ApiParam(value = "comma separated category IDs",required=true) @PathVariable("categoryIds") Integer categoryIds);
+    ResponseEntity<Void> deleteCatalogServiceCategories(@ApiParam(value = "comma separated category IDs",required=true) @PathVariable("categoryIds") Integer... categoryIds);
 
 
     /**
@@ -322,7 +322,7 @@ public interface CatalogApi {
         value = "/catalog/services/{serviceIds}",
         produces = "application/json"
     )
-    ResponseEntity<Void> deleteCatalogServices(@ApiParam(value = "comma separated service IDs",required=true) @PathVariable("serviceIds") Integer serviceIds);
+    ResponseEntity<Void> deleteCatalogServices(@ApiParam(value = "comma separated service IDs",required=true) @PathVariable("serviceIds") Integer... serviceIds);
 
 
     /**

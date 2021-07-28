@@ -9,21 +9,27 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.io.Resource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.io.IOException;
+import java.io.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 @SpringBootTest
 @AutoConfigureMockMvc
-public abstract class AbstractTest {
+public abstract class AbstractTest implements HasLogger {
     protected MockMvc mvc;
     @Autowired
     WebApplicationContext webApplicationContext;
@@ -71,6 +77,34 @@ public abstract class AbstractTest {
         }
         return null;
     }
+
+    public String readResource(Resource resource) {
+        try (Reader reader = new InputStreamReader(resource.getInputStream(), UTF_8)) {
+            return FileCopyUtils.copyToString(reader);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    public void writeResourceToFile (Resource resource, String fileName) {
+        if (resource != null) {
+            try {
+                long length = resource.contentLength();
+                assertTrue(length > 0);
+                byte[] bytes = resource.getInputStream().readAllBytes();
+                File targetFile = new File(fileName);
+                File targetFolder = new File(targetFile.getParent());
+                if (targetFolder.canWrite()) {
+                    OutputStream outStream = new FileOutputStream(targetFile);
+                    outStream.write(bytes);
+                    IOUtils.closeQuietly(outStream);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 
 
 }

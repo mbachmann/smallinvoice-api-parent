@@ -4,6 +4,7 @@ import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.time.OffsetDateTime;
@@ -17,18 +18,55 @@ import org.hibernate.validator.constraints.*;
 /**
  * DocumentLetterChangeStatusPATCH
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-07-27T20:43:02.724916+02:00[Europe/Zurich]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-07-28T19:49:25.792053+02:00[Europe/Zurich]")
 public class DocumentLetterChangeStatusPATCH  implements Serializable {
   private static final long serialVersionUID = 1L;
 
+  /**
+   * status of letter, possible values: DR - draft, S - sent, D - deleted (but still visible)
+   */
+  public enum StatusEnum {
+    DR("DR"),
+    
+    S("S"),
+    
+    D("D");
+
+    private String value;
+
+    StatusEnum(String value) {
+      this.value = value;
+    }
+
+    @JsonValue
+    public String getValue() {
+      return value;
+    }
+
+    @Override
+    public String toString() {
+      return String.valueOf(value);
+    }
+
+    @JsonCreator
+    public static StatusEnum fromValue(String value) {
+      for (StatusEnum b : StatusEnum.values()) {
+        if (b.value.equals(value)) {
+          return b;
+        }
+      }
+      throw new IllegalArgumentException("Unexpected value '" + value + "'");
+    }
+  }
+
   @JsonProperty("status")
-  private String status;
+  private StatusEnum status;
 
   @JsonProperty("date_time")
   @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
   private LocalDateTime dateTime;
 
-  public DocumentLetterChangeStatusPATCH status(String status) {
+  public DocumentLetterChangeStatusPATCH status(StatusEnum status) {
     this.status = status;
     return this;
   }
@@ -41,11 +79,11 @@ public class DocumentLetterChangeStatusPATCH  implements Serializable {
   @NotNull
 
 
-  public String getStatus() {
+  public StatusEnum getStatus() {
     return status;
   }
 
-  public void setStatus(String status) {
+  public void setStatus(StatusEnum status) {
     this.status = status;
   }
 

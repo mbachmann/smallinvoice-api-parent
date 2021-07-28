@@ -1,0 +1,14 @@
+{
+  "number": "124",
+  "name": "Logistics Services",
+  "description": "",
+  "including_vat": false,
+  "vat": 7.7,
+  "unit_id": 13,
+  "price": 200.0,
+  "default_amount": 1,
+  "permissions": [
+    "view",
+    "edit"
+  ]
+}

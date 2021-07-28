@@ -3510,7 +3510,7 @@ paths:
         - Contacts
       summary: Deletes specified groups
       description: Deletes specified groups
-      operationId: deleteContactGroup
+      operationId: deleteContactGroups
       parameters:
         - name: groupsIds
           in: path
@@ -13280,6 +13280,9 @@ components:
         notes:
           type: string
           description: additional notes
+        communication_language:
+          type: string
+          description: 'main communication language - default value: ''default documents language'''
         communication_channel:
           type: string
           enum:
@@ -13629,10 +13632,15 @@ components:
           description: whether it is a default contact's account
         type:
           type: string
-          description: 'type (possible values: IBAN, ISR)'
+          enum:
+            - IBAN
+            - ISR
+            - QR
+            - QRREF
+          description: 'type (possible values: IBAN, ISR, QR, QRREF)'
         number:
           type: string
-          description: IBAN or ISR number (depends on the type)
+          description: IBAN or ISR or QR IBAN (3xxxxx) number (depends on the type)
         bic:
           type: string
           description: BIC number
@@ -13666,10 +13674,15 @@ components:
             false'
         type:
           type: string
-          description: 'type (possible values: IBAN, ISR)'
+          enum:
+            - IBAN
+            - ISR
+            - QR
+            - QRREF
+          description: 'type (possible values: IBAN, ISR, QR, QRREF)'
         number:
           type: string
-          description: IBAN or ISR number (depends on the type)
+          description: IBAN or ISR or QR IBAN (3xxxxx) number (depends on the type)
         bic:
           type: string
           description: BIC number
@@ -13686,10 +13699,15 @@ components:
           description: whether it is a default contact's account
         type:
           type: string
-          description: 'type (possible values: IBAN, ISR)'
+          enum:
+            - IBAN
+            - ISR
+            - QR
+            - QRREF
+          description: 'type (possible values: IBAN, ISR, QR, QRREF)'
         number:
           type: string
-          description: IBAN or ISR number (depends on the type)
+          description: IBAN or ISR or QR IBAN (3xxxxx) number (depends on the type)
         bic:
           type: string
           description: BIC number
@@ -13920,7 +13938,11 @@ components:
           description: surname
         gender:
           type: string
-          description: 'gender (possible values: M, F)'
+          enum:
+            - M
+            - F
+          description: 'gender of contact (required for P type); possible values:
+            M - Male, F - Female'
         email:
           type: string
           description: email
@@ -13981,7 +14003,11 @@ components:
           description: surname
         gender:
           type: string
-          description: 'gender (possible values: M, F)'
+          enum:
+            - M
+            - F
+          description: 'gender of contact (required for P type); possible values:
+            M - Male, F - Female'
         email:
           type: string
           description: email
@@ -14025,7 +14051,11 @@ components:
           description: surname
         gender:
           type: string
-          description: 'gender (possible values: M, F)'
+          enum:
+            - M
+            - F
+          description: 'gender of contact (required for P type); possible values:
+            M - Male, F - Female'
         email:
           type: string
           description: email
@@ -14094,6 +14124,10 @@ components:
           description: value of interval in which reminder will be activated
         interval_type:
           type: string
+          enum:
+            - hour
+            - day
+            - month
           description: 'one of: [''hour'',''day'',''month'']'
         permissions:
           type: array
@@ -14138,6 +14172,10 @@ components:
           description: value of interval in which reminder will be activated
         interval_type:
           type: string
+          enum:
+            - hour
+            - day
+            - month
           description: 'one of: [''hour'',''day'',''month'']'
       xml:
         name: ContactReminderPOST
@@ -14163,6 +14201,10 @@ components:
           description: value of interval in which reminder will be activated
         interval_type:
           type: string
+          enum:
+            - hour
+            - day
+            - month
           description: 'one of: [''hour'',''day'',''month'']'
       xml:
         name: ContactReminderPUT
@@ -16533,6 +16575,18 @@ components:
           description: optional notes
         status:
           type: string
+          enum:
+            - DR
+            - S
+            - P
+            - R1
+            - R2
+            - R3
+            - R
+            - DC
+            - C
+            - D
+          default: DR
           description: 'status of invoice, possible values: DR - draft, S - sent,
             P - paid, PP - partially paid, R1 - 1st reminder, R2 - 2nd reminder, R3
             - 3rd reminder, R - reminder, DC - debt collection, C - cancelled, D -
@@ -16879,6 +16933,18 @@ components:
       type: object
       properties:
         status:
+          enum:
+            - DR
+            - S
+            - P
+            - R1
+            - R2
+            - R3
+            - R
+            - DC
+            - C
+            - D
+          default: DR
           type: string
           description: 'status of invoice, possible values: DR - draft, S - sent,
             P - paid, PP - partially paid, R1 - 1st reminder, R2 - 2nd reminder, R3
@@ -16912,6 +16978,15 @@ components:
       type: object
       properties:
         status:
+          enum:
+            - D
+            - R
+            - R1
+            - R2
+            - R3
+            - DC
+            - RE
+          default: D
           type: string
           description: 'status of a document that the texts are for; possible values:
             D - default, R - payment reminder, R1 - 1st reminder, R2 - 2nd reminder,
@@ -16937,6 +17012,15 @@ components:
       type: object
       properties:
         status:
+          enum:
+            - D
+            - R
+            - R1
+            - R2
+            - R3
+            - DC
+            - RE
+          default: D
           type: string
           description: 'status of a document that the texts are for; possible values:
             D - default, R - payment reminder, R1 - 1st reminder, R2 - 2nd reminder,
@@ -16959,6 +17043,15 @@ components:
       properties:
         status:
           type: string
+          enum:
+            - D
+            - R
+            - R1
+            - R2
+            - R3
+            - DC
+            - RE
+          default: D
           description: 'status of a document that the texts are for; possible values:
             D - default, R - payment reminder, R1 - 1st reminder, R2 - 2nd reminder,
             R3 - 3rd reminder, DC - debt collection, RE - receipt'
@@ -16992,6 +17085,11 @@ components:
           description: whether workflow is active
         status:
           type: string
+          enum:
+            - R
+            - R1
+            - R2
+            - R3
           description: 'status of a document that the workflow is for; possible values:
             R - payment reminder, R1 - 1st reminder, R2 - 2nd reminder, R3 - 3rd reminder'
         overdue_days:
@@ -17038,6 +17136,11 @@ components:
           description: 'whether workflow is active - default value: false'
         status:
           type: string
+          enum:
+            - R
+            - R1
+            - R2
+            - R3
           description: 'status of a document that the workflow is for; possible values:
             R - payment reminder, R1 - 1st reminder, R2 - 2nd reminder, R3 - 3rd reminder'
         overdue_days:
@@ -17080,6 +17183,11 @@ components:
           description: whether workflow is active
         status:
           type: string
+          enum:
+            - R
+            - R1
+            - R2
+            - R3
           description: 'status of a document that the workflow is for; possible values:
             R - payment reminder, R1 - 1st reminder, R2 - 2nd reminder, R3 - 3rd reminder'
         overdue_days:
@@ -17193,6 +17301,10 @@ components:
           description: optional notes
         status:
           type: string
+          enum:
+            - DR
+            - S
+            - D
           description: 'status of letter, possible values: DR - draft, S - sent, D
             - deleted (but still visible)'
         created:
@@ -17357,6 +17469,10 @@ components:
       properties:
         status:
           type: string
+          enum:
+            - DR
+            - S
+            - D
           description: 'status of letter, possible values: DR - draft, S - sent, D
             - deleted (but still visible)'
         date_time:
@@ -17570,6 +17686,10 @@ components:
           description: generated URL for accepting the offer online
         accept_online_status:
           type: string
+          enum:
+            - A
+            - D
+            - U
           description: 'status of offer''s acceptance; possible values: A - accepted,
             D - declined, U - unknown'
         language:
@@ -20249,19 +20369,18 @@ components:
             - ISR+
             - RIS
           description: |
-            ISR type; possible values:
+            possible values:
             ISR - orange inpayment slip,
             ISR+ - orange inpayment slip plus,
             RIS - red inpayment slip
         position:
           type: string
           enum:
-            - ISR
             - A
             - F
             - L
           description: |
-            ISR position; possible values:
+            possible values:
             A - additional page, F - first page, L - last page
         name:
           type: string

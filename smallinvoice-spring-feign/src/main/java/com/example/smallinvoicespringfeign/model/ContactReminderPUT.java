@@ -4,6 +4,7 @@ import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.time.OffsetDateTime;
@@ -17,7 +18,7 @@ import org.hibernate.validator.constraints.*;
 /**
  * ContactReminderPUT
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-07-27T20:43:02.724916+02:00[Europe/Zurich]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-07-28T19:49:25.792053+02:00[Europe/Zurich]")
 public class ContactReminderPUT  implements Serializable {
   private static final long serialVersionUID = 1L;
 
@@ -37,8 +38,45 @@ public class ContactReminderPUT  implements Serializable {
   @JsonProperty("interval_value")
   private Integer intervalValue;
 
+  /**
+   * one of: ['hour','day','month']
+   */
+  public enum IntervalTypeEnum {
+    HOUR("hour"),
+    
+    DAY("day"),
+    
+    MONTH("month");
+
+    private String value;
+
+    IntervalTypeEnum(String value) {
+      this.value = value;
+    }
+
+    @JsonValue
+    public String getValue() {
+      return value;
+    }
+
+    @Override
+    public String toString() {
+      return String.valueOf(value);
+    }
+
+    @JsonCreator
+    public static IntervalTypeEnum fromValue(String value) {
+      for (IntervalTypeEnum b : IntervalTypeEnum.values()) {
+        if (b.value.equals(value)) {
+          return b;
+        }
+      }
+      throw new IllegalArgumentException("Unexpected value '" + value + "'");
+    }
+  }
+
   @JsonProperty("interval_type")
-  private String intervalType;
+  private IntervalTypeEnum intervalType;
 
   public ContactReminderPUT contactId(Integer contactId) {
     this.contactId = contactId;
@@ -141,7 +179,7 @@ public class ContactReminderPUT  implements Serializable {
     this.intervalValue = intervalValue;
   }
 
-  public ContactReminderPUT intervalType(String intervalType) {
+  public ContactReminderPUT intervalType(IntervalTypeEnum intervalType) {
     this.intervalType = intervalType;
     return this;
   }
@@ -153,11 +191,11 @@ public class ContactReminderPUT  implements Serializable {
   @ApiModelProperty(value = "one of: ['hour','day','month']")
 
 
-  public String getIntervalType() {
+  public IntervalTypeEnum getIntervalType() {
     return intervalType;
   }
 
-  public void setIntervalType(String intervalType) {
+  public void setIntervalType(IntervalTypeEnum intervalType) {
     this.intervalType = intervalType;
   }
 

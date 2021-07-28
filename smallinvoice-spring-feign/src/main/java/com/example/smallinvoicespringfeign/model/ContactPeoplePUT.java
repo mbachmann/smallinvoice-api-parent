@@ -5,6 +5,7 @@ import com.example.smallinvoicespringfeign.model.DescriptiveCustomFieldPUT;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ import org.hibernate.validator.constraints.*;
 /**
  * ContactPeoplePUT
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-07-27T20:43:02.724916+02:00[Europe/Zurich]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-07-28T19:49:25.792053+02:00[Europe/Zurich]")
 public class ContactPeoplePUT  implements Serializable {
   private static final long serialVersionUID = 1L;
 
@@ -31,8 +32,43 @@ public class ContactPeoplePUT  implements Serializable {
   @JsonProperty("surname")
   private String surname;
 
+  /**
+   * gender of contact (required for P type); possible values: M - Male, F - Female
+   */
+  public enum GenderEnum {
+    M("M"),
+    
+    F("F");
+
+    private String value;
+
+    GenderEnum(String value) {
+      this.value = value;
+    }
+
+    @JsonValue
+    public String getValue() {
+      return value;
+    }
+
+    @Override
+    public String toString() {
+      return String.valueOf(value);
+    }
+
+    @JsonCreator
+    public static GenderEnum fromValue(String value) {
+      for (GenderEnum b : GenderEnum.values()) {
+        if (b.value.equals(value)) {
+          return b;
+        }
+      }
+      throw new IllegalArgumentException("Unexpected value '" + value + "'");
+    }
+  }
+
   @JsonProperty("gender")
-  private String gender;
+  private GenderEnum gender;
 
   @JsonProperty("email")
   private String email;
@@ -119,23 +155,23 @@ public class ContactPeoplePUT  implements Serializable {
     this.surname = surname;
   }
 
-  public ContactPeoplePUT gender(String gender) {
+  public ContactPeoplePUT gender(GenderEnum gender) {
     this.gender = gender;
     return this;
   }
 
   /**
-   * gender (possible values: M, F)
+   * gender of contact (required for P type); possible values: M - Male, F - Female
    * @return gender
   */
-  @ApiModelProperty(value = "gender (possible values: M, F)")
+  @ApiModelProperty(value = "gender of contact (required for P type); possible values: M - Male, F - Female")
 
 
-  public String getGender() {
+  public GenderEnum getGender() {
     return gender;
   }
 
-  public void setGender(String gender) {
+  public void setGender(GenderEnum gender) {
     this.gender = gender;
   }
 

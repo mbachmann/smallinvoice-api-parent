@@ -1,0 +1,16 @@
+{
+  "number": "111",
+  "name": "Power Supply 100 W",
+  "description": "",
+  "including_vat": false,
+  "vat": 7.7,
+  "unit_id": 7,
+  "price": 260.0,
+  "inventory_available": 0.0,
+  "inventory_reserved": 0.0,
+  "default_amount": 1,
+  "permissions": [
+    "view",
+    "edit"
+  ]
+}
