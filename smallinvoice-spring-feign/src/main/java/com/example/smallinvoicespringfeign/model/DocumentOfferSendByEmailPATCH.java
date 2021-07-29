@@ -19,7 +19,7 @@ import org.hibernate.validator.constraints.*;
 /**
  * DocumentOfferSendByEmailPATCH
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-07-28T19:49:25.792053+02:00[Europe/Zurich]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-07-29T11:25:10.409375+02:00[Europe/Zurich]")
 public class DocumentOfferSendByEmailPATCH  implements Serializable {
   private static final long serialVersionUID = 1L;
 

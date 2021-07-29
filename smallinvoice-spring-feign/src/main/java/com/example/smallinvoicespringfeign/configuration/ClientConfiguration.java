@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import feign.Retryer;
 import feign.auth.BasicAuthRequestInterceptor;
 import feign.codec.Decoder;
 import feign.codec.Encoder;
@@ -70,14 +71,14 @@ public class ClientConfiguration {
 
   @Bean
   public Decoder feignDecoder() {
-    HttpMessageConverter jacksonConverter = new MappingJackson2HttpMessageConverter(customObjectMapper());
+    HttpMessageConverter<Object> jacksonConverter = new MappingJackson2HttpMessageConverter(customObjectMapper());
     ObjectFactory<HttpMessageConverters> objectFactory = () -> new HttpMessageConverters(jacksonConverter);
     return new ResponseEntityDecoder(new SpringDecoder(objectFactory));
   }
 
   @Bean
   public Encoder feignEncode() {
-    HttpMessageConverter jacksonConverter = new MappingJackson2HttpMessageConverter(customObjectMapper());
+    HttpMessageConverter<Object> jacksonConverter = new MappingJackson2HttpMessageConverter(customObjectMapper());
     ObjectFactory<HttpMessageConverters> objectFactory = () -> new HttpMessageConverters(jacksonConverter);
     return new SpringEncoder(objectFactory);
   }
@@ -88,8 +89,17 @@ public class ClientConfiguration {
     objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-    //Customize as much as you want
     return objectMapper;
+  }
+
+  @Bean
+  public Retryer feignRetryer(){
+    return new Retryer.Default(100, 1000, 4);
+  }
+
+  @Bean
+  public FeignErrorDecoder feignErrorDecoder() {
+    return new FeignErrorDecoder();
   }
 
 }

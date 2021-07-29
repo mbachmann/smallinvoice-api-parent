@@ -275,7 +275,11 @@
                   <include name="**/*.java"/>
                 </replace>
                 <!-- corrections in configuration api-->
-
+                <replace token="Integer exchangeIds"
+                         value="Integer... exchangeIds"
+                         dir="${project.basedir}/src/main/java/com/example/smallinvoicespringfeign/api">
+                  <include name="**/*.java"/>
+                </replace>
                 <!-- corrections in receivables api-->
 
                 <!-- corrections in reporting api-->

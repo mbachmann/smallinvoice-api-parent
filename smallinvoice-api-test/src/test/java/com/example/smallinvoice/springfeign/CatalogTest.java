@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.concurrent.TimeUnit;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CatalogTest extends AbstractTest {
@@ -26,14 +25,18 @@ public class CatalogTest extends AbstractTest {
     }
 
     @Test
-    public void getCatalogList() throws Exception {
+    public void getCatalogList() {
         ResponseEntity<ListProducts> listProductResponse = catalogApiClient.getCatalogProducts("permissions", null, null, 100, 0, null);
-        listProductResponse.getBody().getItems().forEach(item -> getLogger().debug(item.toString()));
-        assertEquals(listProductResponse.getBody().getItems().size(),listProductResponse.getBody().getPagination().getTotal());
+        if (listProductResponse.getBody() != null) {
+            listProductResponse.getBody().getItems().forEach(item -> getLogger().debug(item.toString()));
+            assertEquals(listProductResponse.getBody().getItems().size(),listProductResponse.getBody().getPagination().getTotal());
+        }
 
         ResponseEntity<ListServices> listServiceResponse = catalogApiClient.getCatalogServices("permissions", null, null, 100, 0, null);
-        listServiceResponse.getBody().getItems().forEach(item -> getLogger().debug(item.toString()));
-        assertEquals(listServiceResponse.getBody().getItems().size(),listServiceResponse.getBody().getPagination().getTotal());
+        if (listServiceResponse.getBody() != null) {
+            listServiceResponse.getBody().getItems().forEach(item -> getLogger().debug(item.toString()));
+            assertEquals(listServiceResponse.getBody().getItems().size(),listServiceResponse.getBody().getPagination().getTotal());
+        }
     }
 
     @Test
@@ -54,8 +57,10 @@ public class CatalogTest extends AbstractTest {
         newProduct.setNotes("Some additional Notes");
         newProduct.setCategoryId(productCategoryId);
         ResponseEntity<ItemCatalogProductGET> productResponseChange =  catalogApiClient.updateCatalogProduct(productId,newProduct);
-        assertEquals(newProduct, mapFromJson(mapToJson(productResponseChange.getBody().getItem()), CatalogProductPUT.class));
-        TimeUnit.SECONDS.sleep(1);
+        if (productResponseChange.getBody() != null) {
+            assertEquals(newProduct, mapFromJson(mapToJson(productResponseChange.getBody().getItem()), CatalogProductPUT.class));
+        }
+        TimeUnit.MILLISECONDS.sleep(500);
    }
 
     @Test
@@ -76,20 +81,32 @@ public class CatalogTest extends AbstractTest {
         newService.setNotes("Some additional Notes");
         newService.setCategoryId(serviceCategoryId);
         ResponseEntity<ItemCatalogServiceGET> serviceResponseChange =  catalogApiClient.updateCatalogService(serviceId, newService);
-        assertEquals(newService, mapFromJson(mapToJson(serviceResponseChange.getBody().getItem()), CatalogServicePUT.class));
-        TimeUnit.SECONDS.sleep(1);
+        if (serviceResponseChange.getBody() != null) {
+            assertEquals(newService, mapFromJson(mapToJson(serviceResponseChange.getBody().getItem()), CatalogServicePUT.class));
+        }
+        TimeUnit.MILLISECONDS.sleep(500);
+    }
+
+    @Test
+    public void getUnits() throws Exception {
+        ResponseEntity<ListCatalogConfigurationUnits> response = catalogApiClient.getUnits("permissions", null, null, 100, 0, null);
+        if (response.getBody() != null) {
+            response.getBody().getItems().forEach(unit -> getLogger().debug(unit.toString()));
+            ResponseEntity<ItemCatalogConfigurationUnitGET> responseUnit = catalogApiClient.getUnit(response.getBody().getItems().get(0).getId(), "permissions");
+            assertEquals (mapToJson(response.getBody().getItems().get(0)), mapToJson(responseUnit.getBody().getItem()));
+        }
     }
 
     public void deleteProductIfExists(String productName) {
         ResponseEntity<ListProducts> response = catalogApiClient.getCatalogProducts(null, null, "{\"name\":\"" + productName + "\"}", 100, 0, null);
-        if (response.getBody().getPagination().getTotal() > 0) {
+        if (response.getBody() != null && response.getBody().getPagination().getTotal() > 0) {
             ResponseEntity<Void> responseDelete = catalogApiClient.deleteCatalogProducts(response.getBody().getItems().get(0).getId());
         }
     }
 
     public void deleteServiceIfExists(String serviceName) {
         ResponseEntity<ListServices> response = catalogApiClient.getCatalogServices(null, null, "{\"name\":\"" + serviceName + "\"}", 100, 0, null);
-        if (response.getBody().getPagination().getTotal() > 0) {
+        if (response.getBody() != null && response.getBody().getPagination().getTotal() > 0) {
             ResponseEntity<Void> responseDelete = catalogApiClient.deleteCatalogServices(response.getBody().getItems().get(0).getId());
         }
     }
@@ -97,7 +114,7 @@ public class CatalogTest extends AbstractTest {
     public int createProductCategoryIfNotExists (String categoryName) {
         ResponseEntity<ListProductsCategories> response = catalogApiClient.getCatalogProductCategories(null, null, "{\"name\":\"" + categoryName + "\"}", 100, 0, null);
         int categoryId = 0;
-        if (response.getBody().getPagination().getTotal() == 0) {
+        if (response.getBody() != null && response.getBody().getPagination().getTotal() == 0) {
             CatalogCategoryPOST category = new CatalogCategoryPOST();
             category.setName(categoryName);
             ResponseEntity<ItemCatalogCategoryGET> responseCategory = catalogApiClient.createCatalogProductCategory(category);
@@ -111,7 +128,7 @@ public class CatalogTest extends AbstractTest {
     public int createServiceCategoryIfNotExists (String categoryName) {
         ResponseEntity<ListServicesCategories> response = catalogApiClient.getCatalogServiceCategories(null, null, "{\"name\":\"" + categoryName + "\"}", 100, 0, null);
         int categoryId = 0;
-        if (response.getBody().getPagination().getTotal() == 0) {
+        if (response.getBody() != null && response.getBody().getPagination().getTotal() == 0) {
             CatalogCategoryPOST category = new CatalogCategoryPOST();
             category.setName(categoryName);
             ResponseEntity<ItemCatalogCategoryGET> responseCategory = catalogApiClient.createCatalogServiceCategory(category);

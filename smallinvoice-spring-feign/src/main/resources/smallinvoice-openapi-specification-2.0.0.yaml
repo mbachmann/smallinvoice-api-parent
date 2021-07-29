@@ -2026,7 +2026,7 @@ paths:
         - Configuration
       summary: Deletes specified bank accounts
       description: Deletes specified bank accounts
-      operationId: deleteBankAccount
+      operationId: deleteBankAccounts
       parameters:
         - name: accountsIds
           in: path

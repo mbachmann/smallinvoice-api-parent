@@ -1,0 +1,9 @@
+{
+  "default": false,
+  "description": "Test Account 1",
+  "bank_name": "UBS AG",
+  "number": "284862829",
+  "iban": "CH0489144731284862829",
+  "bic": "GEBABEBB",
+  "post_account": "01-23456-7"
+}

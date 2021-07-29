@@ -33,7 +33,7 @@ import javax.validation.constraints.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-07-28T19:49:25.792053+02:00[Europe/Zurich]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-07-29T11:25:10.409375+02:00[Europe/Zurich]")
 @Validated
 @Api(value = "Configuration", description = "the Configuration API")
 public interface ConfigurationApi {
@@ -120,7 +120,7 @@ public interface ConfigurationApi {
      *         or Too many requests (status code 429)
      *         or Server error (status code 500)
      */
-    @ApiOperation(value = "Deletes specified bank accounts", nickname = "deleteBankAccount", notes = "Deletes specified bank accounts", authorizations = {
+    @ApiOperation(value = "Deletes specified bank accounts", nickname = "deleteBankAccounts", notes = "Deletes specified bank accounts", authorizations = {
         
         @Authorization(value = "bearerAuth"),
         @Authorization(value = "oauth", scopes = {
@@ -139,7 +139,7 @@ public interface ConfigurationApi {
         value = "/configuration/bank-accounts/{accountsIds}",
         produces = "application/json"
     )
-    ResponseEntity<Void> deleteBankAccount(@ApiParam(value = "comma separated IDs of accounts to be deleted",required=true) @PathVariable("accountsIds") Integer... accountsIds);
+    ResponseEntity<Void> deleteBankAccounts(@ApiParam(value = "comma separated IDs of accounts to be deleted",required=true) @PathVariable("accountsIds") Integer... accountsIds);
 
 
     /**
@@ -175,7 +175,7 @@ public interface ConfigurationApi {
         value = "/configuration/exchange-rates/{exchangeIds}",
         produces = "application/json"
     )
-    ResponseEntity<Void> deleteCurrencyExchangeRates(@ApiParam(value = "comma separated IDs of currency exchange rates to be deleted",required=true) @PathVariable("exchangeIds") Integer exchangeIds);
+    ResponseEntity<Void> deleteCurrencyExchangeRates(@ApiParam(value = "comma separated IDs of currency exchange rates to be deleted",required=true) @PathVariable("exchangeIds") Integer... exchangeIds);
 
 
     /**

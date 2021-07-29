@@ -1,0 +1,14 @@
+{
+  "properties": [
+    {
+      "name": "smallinvoice.url",
+      "type": "java.lang.String",
+      "description": "Description for smallinvoice.url."
+    },
+    {
+      "name": "smallinvoiceapireference.security.oauth.client-id",
+      "type": "java.lang.String",
+      "description": "Description for smallinvoiceapireference.security.oauth.client-id."
+    }
+
+  ] }
