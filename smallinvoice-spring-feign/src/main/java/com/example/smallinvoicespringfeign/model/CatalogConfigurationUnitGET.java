@@ -18,7 +18,7 @@ import org.hibernate.validator.constraints.*;
 /**
  * CatalogConfigurationUnitGET
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-07-29T11:25:10.409375+02:00[Europe/Zurich]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-07-29T19:43:05.733009+02:00[Europe/Zurich]")
 public class CatalogConfigurationUnitGET  implements Serializable {
   private static final long serialVersionUID = 1L;
 
@@ -28,8 +28,45 @@ public class CatalogConfigurationUnitGET  implements Serializable {
   @JsonProperty("name")
   private String name;
 
+  /**
+   * scope, one of: s - service, p - product, a - all
+   */
+  public enum ScopeEnum {
+    S("s"),
+    
+    P("p"),
+    
+    A("a");
+
+    private String value;
+
+    ScopeEnum(String value) {
+      this.value = value;
+    }
+
+    @JsonValue
+    public String getValue() {
+      return value;
+    }
+
+    @Override
+    public String toString() {
+      return String.valueOf(value);
+    }
+
+    @JsonCreator
+    public static ScopeEnum fromValue(String value) {
+      for (ScopeEnum b : ScopeEnum.values()) {
+        if (b.value.equals(value)) {
+          return b;
+        }
+      }
+      throw new IllegalArgumentException("Unexpected value '" + value + "'");
+    }
+  }
+
   @JsonProperty("scope")
-  private String scope;
+  private ScopeEnum scope;
 
   @JsonProperty("custom")
   private Boolean custom;
@@ -115,7 +152,7 @@ public class CatalogConfigurationUnitGET  implements Serializable {
     this.name = name;
   }
 
-  public CatalogConfigurationUnitGET scope(String scope) {
+  public CatalogConfigurationUnitGET scope(ScopeEnum scope) {
     this.scope = scope;
     return this;
   }
@@ -128,11 +165,11 @@ public class CatalogConfigurationUnitGET  implements Serializable {
   @NotNull
 
 
-  public String getScope() {
+  public ScopeEnum getScope() {
     return scope;
   }
 
-  public void setScope(String scope) {
+  public void setScope(ScopeEnum scope) {
     this.scope = scope;
   }
 

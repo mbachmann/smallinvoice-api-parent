@@ -16,15 +16,85 @@ import org.hibernate.validator.constraints.*;
 /**
  * DocumentSendByPostPATCH
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-07-29T11:25:10.409375+02:00[Europe/Zurich]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-07-29T19:43:05.733009+02:00[Europe/Zurich]")
 public class DocumentSendByPostPATCH  implements Serializable {
   private static final long serialVersionUID = 1L;
 
+  /**
+   * palette; possible values: C - colour, BW - black&white
+   */
+  public enum PaletteEnum {
+    C("C"),
+    
+    BW("BW");
+
+    private String value;
+
+    PaletteEnum(String value) {
+      this.value = value;
+    }
+
+    @JsonValue
+    public String getValue() {
+      return value;
+    }
+
+    @Override
+    public String toString() {
+      return String.valueOf(value);
+    }
+
+    @JsonCreator
+    public static PaletteEnum fromValue(String value) {
+      for (PaletteEnum b : PaletteEnum.values()) {
+        if (b.value.equals(value)) {
+          return b;
+        }
+      }
+      throw new IllegalArgumentException("Unexpected value '" + value + "'");
+    }
+  }
+
   @JsonProperty("palette")
-  private String palette;
+  private PaletteEnum palette;
+
+  /**
+   * printing type; possible values: D - duplex (two-sided), S - simplex (one-sided)
+   */
+  public enum PrintEnum {
+    D("D"),
+    
+    S("S");
+
+    private String value;
+
+    PrintEnum(String value) {
+      this.value = value;
+    }
+
+    @JsonValue
+    public String getValue() {
+      return value;
+    }
+
+    @Override
+    public String toString() {
+      return String.valueOf(value);
+    }
+
+    @JsonCreator
+    public static PrintEnum fromValue(String value) {
+      for (PrintEnum b : PrintEnum.values()) {
+        if (b.value.equals(value)) {
+          return b;
+        }
+      }
+      throw new IllegalArgumentException("Unexpected value '" + value + "'");
+    }
+  }
 
   @JsonProperty("print")
-  private String print;
+  private PrintEnum print;
 
   /**
    * post speed for reminding contact (valid only when action is CP); possible values: P - priority, E - economy 
@@ -64,7 +134,7 @@ public class DocumentSendByPostPATCH  implements Serializable {
   @JsonProperty("speed")
   private SpeedEnum speed;
 
-  public DocumentSendByPostPATCH palette(String palette) {
+  public DocumentSendByPostPATCH palette(PaletteEnum palette) {
     this.palette = palette;
     return this;
   }
@@ -77,15 +147,15 @@ public class DocumentSendByPostPATCH  implements Serializable {
   @NotNull
 
 
-  public String getPalette() {
+  public PaletteEnum getPalette() {
     return palette;
   }
 
-  public void setPalette(String palette) {
+  public void setPalette(PaletteEnum palette) {
     this.palette = palette;
   }
 
-  public DocumentSendByPostPATCH print(String print) {
+  public DocumentSendByPostPATCH print(PrintEnum print) {
     this.print = print;
     return this;
   }
@@ -98,11 +168,11 @@ public class DocumentSendByPostPATCH  implements Serializable {
   @NotNull
 
 
-  public String getPrint() {
+  public PrintEnum getPrint() {
     return print;
   }
 
-  public void setPrint(String print) {
+  public void setPrint(PrintEnum print) {
     this.print = print;
   }
 

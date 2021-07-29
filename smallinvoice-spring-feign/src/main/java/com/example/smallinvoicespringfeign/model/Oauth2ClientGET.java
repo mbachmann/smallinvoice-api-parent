@@ -4,6 +4,7 @@ import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.time.OffsetDateTime;
@@ -19,7 +20,7 @@ import org.hibernate.validator.constraints.*;
 /**
  * Oauth2ClientGET
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-07-29T11:25:10.409375+02:00[Europe/Zurich]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-07-29T19:43:05.733009+02:00[Europe/Zurich]")
 public class Oauth2ClientGET  implements Serializable {
   private static final long serialVersionUID = 1L;
 
@@ -32,8 +33,43 @@ public class Oauth2ClientGET  implements Serializable {
   @JsonProperty("name")
   private String name;
 
+  /**
+   * oauth client grant type; possible values: CC - client credentials, AC - authorization code
+   */
+  public enum GrantTypeEnum {
+    CC("CC"),
+    
+    AC("AC");
+
+    private String value;
+
+    GrantTypeEnum(String value) {
+      this.value = value;
+    }
+
+    @JsonValue
+    public String getValue() {
+      return value;
+    }
+
+    @Override
+    public String toString() {
+      return String.valueOf(value);
+    }
+
+    @JsonCreator
+    public static GrantTypeEnum fromValue(String value) {
+      for (GrantTypeEnum b : GrantTypeEnum.values()) {
+        if (b.value.equals(value)) {
+          return b;
+        }
+      }
+      throw new IllegalArgumentException("Unexpected value '" + value + "'");
+    }
+  }
+
   @JsonProperty("grant_type")
-  private String grantType;
+  private GrantTypeEnum grantType;
 
   @JsonProperty("redirect_uri")
   private String redirectUri;
@@ -112,7 +148,7 @@ public class Oauth2ClientGET  implements Serializable {
     this.name = name;
   }
 
-  public Oauth2ClientGET grantType(String grantType) {
+  public Oauth2ClientGET grantType(GrantTypeEnum grantType) {
     this.grantType = grantType;
     return this;
   }
@@ -125,11 +161,11 @@ public class Oauth2ClientGET  implements Serializable {
   @NotNull
 
 
-  public String getGrantType() {
+  public GrantTypeEnum getGrantType() {
     return grantType;
   }
 
-  public void setGrantType(String grantType) {
+  public void setGrantType(GrantTypeEnum grantType) {
     this.grantType = grantType;
   }
 

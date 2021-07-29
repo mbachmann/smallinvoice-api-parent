@@ -18,7 +18,7 @@ import org.hibernate.validator.constraints.*;
 /**
  * ReportingCostUnitGET
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-07-29T11:25:10.409375+02:00[Europe/Zurich]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-07-29T19:43:05.733009+02:00[Europe/Zurich]")
 public class ReportingCostUnitGET  implements Serializable {
   private static final long serialVersionUID = 1L;
 
@@ -34,8 +34,43 @@ public class ReportingCostUnitGET  implements Serializable {
   @JsonProperty("description")
   private String description;
 
+  /**
+   * cost unit's type; one of: ['P','U']
+   */
+  public enum TypeEnum {
+    P("P"),
+    
+    U("U");
+
+    private String value;
+
+    TypeEnum(String value) {
+      this.value = value;
+    }
+
+    @JsonValue
+    public String getValue() {
+      return value;
+    }
+
+    @Override
+    public String toString() {
+      return String.valueOf(value);
+    }
+
+    @JsonCreator
+    public static TypeEnum fromValue(String value) {
+      for (TypeEnum b : TypeEnum.values()) {
+        if (b.value.equals(value)) {
+          return b;
+        }
+      }
+      throw new IllegalArgumentException("Unexpected value '" + value + "'");
+    }
+  }
+
   @JsonProperty("type")
-  private String type;
+  private TypeEnum type;
 
   /**
    * Gets or Sets permissions
@@ -160,7 +195,7 @@ public class ReportingCostUnitGET  implements Serializable {
     this.description = description;
   }
 
-  public ReportingCostUnitGET type(String type) {
+  public ReportingCostUnitGET type(TypeEnum type) {
     this.type = type;
     return this;
   }
@@ -173,11 +208,11 @@ public class ReportingCostUnitGET  implements Serializable {
   @NotNull
 
 
-  public String getType() {
+  public TypeEnum getType() {
     return type;
   }
 
-  public void setType(String type) {
+  public void setType(TypeEnum type) {
     this.type = type;
   }
 

@@ -1,0 +1,300 @@
+[
+  {
+    "id": 584042745,
+    "number": "10002",
+    "contact_id": 481092782,
+    "contact": {
+      "id": 481092782,
+      "number": "1000",
+      "relation": [
+        "CL"
+      ],
+      "type": "C",
+      "gender_salutation_active": false,
+      "name": "Garage Zylinder AG",
+      "communication_language": "de",
+      "communication_channel": "U",
+      "communication_newsletter": "A",
+      "discount_rate": 0.0,
+      "discount_type": "P",
+      "created": "2021-07-29 08:43:58",
+      "main_address_id": 648482128
+    },
+    "contact_address_id": 648482128,
+    "contact_address": {
+      "default": true,
+      "id": 648482128,
+      "country": "CH",
+      "street": "Thalwilstrasse",
+      "street_no": "4",
+      "postcode": "3013",
+      "city": "Bern",
+      "hide_on_documents": false,
+      "default_prepage": false
+    },
+    "date": "2021-07-29",
+    "currency": "CHF",
+    "total": 863.6,
+    "vat_included": false,
+    "discount_rate": 0.0,
+    "discount_type": "P",
+    "language": "de",
+    "layout_id": 370877195,
+    "status": "B",
+    "created": "2021-07-29 08:44:01",
+    "positions": [
+      {
+        "type": "N",
+        "catalog_type": "P",
+        "number": "100",
+        "name": "Schrauben 8x30mm",
+        "description": "",
+        "price": 0.18,
+        "vat": 7.7,
+        "amount": 2.0,
+        "unit_id": 7,
+        "total": 0.39,
+        "show_only_total": false
+      },
+      {
+        "type": "N",
+        "catalog_type": "S",
+        "number": "101",
+        "name": "Lieferung",
+        "description": "",
+        "price": 200.0,
+        "vat": 7.7,
+        "amount": 4.0,
+        "unit_id": 13,
+        "total": 861.6,
+        "show_only_total": false
+      },
+      {
+        "type": "N",
+        "catalog_type": "P",
+        "number": "102",
+        "name": "Schrauben 10x50mm",
+        "description": "",
+        "price": 0.25,
+        "vat": 7.7,
+        "amount": 6.0,
+        "unit_id": 7,
+        "total": 1.62,
+        "show_only_total": false
+      }
+    ],
+    "texts": [
+      {
+        "status": "D",
+        "title": "Lieferschein Nr. {RECEIPTNO} / Kunden Nr. {CUSTOMERNO}",
+        "introduction": "",
+        "conditions": ""
+      }
+    ],
+    "free_texts": [],
+    "permissions": [
+      "view",
+      "edit",
+      "manage"
+    ]
+  },
+  {
+    "id": 513725817,
+    "number": "10001",
+    "contact_id": 819206106,
+    "contact": {
+      "id": 819206106,
+      "number": "1002",
+      "relation": [
+        "CL",
+        "CR"
+      ],
+      "type": "C",
+      "gender_salutation_active": false,
+      "name": "Coiffure Kathrin",
+      "communication_language": "de",
+      "communication_channel": "U",
+      "communication_newsletter": "A",
+      "discount_rate": 0.0,
+      "discount_type": "P",
+      "created": "2021-07-29 08:43:59",
+      "main_address_id": 806704217
+    },
+    "contact_address_id": 806704217,
+    "contact_address": {
+      "default": true,
+      "id": 806704217,
+      "country": "CH",
+      "street": "Bernstrasse",
+      "street_no": "123E",
+      "postcode": "3013",
+      "city": "Bern",
+      "hide_on_documents": false,
+      "default_prepage": false
+    },
+    "date": "2021-07-29",
+    "currency": "CHF",
+    "total": 432.07,
+    "vat_included": false,
+    "discount_rate": 0.0,
+    "discount_type": "P",
+    "language": "de",
+    "layout_id": 370877195,
+    "status": "S",
+    "created": "2021-07-29 08:44:01",
+    "positions": [
+      {
+        "type": "N",
+        "catalog_type": "P",
+        "number": "100",
+        "name": "Schrauben 8x30mm",
+        "description": "",
+        "price": 0.18,
+        "vat": 7.7,
+        "amount": 1.0,
+        "unit_id": 7,
+        "total": 0.19,
+        "show_only_total": false
+      },
+      {
+        "type": "N",
+        "catalog_type": "S",
+        "number": "101",
+        "name": "Lieferung",
+        "description": "",
+        "price": 200.0,
+        "vat": 7.7,
+        "amount": 2.0,
+        "unit_id": 13,
+        "total": 430.8,
+        "show_only_total": false
+      },
+      {
+        "type": "N",
+        "catalog_type": "P",
+        "number": "102",
+        "name": "Schrauben 10x50mm",
+        "description": "",
+        "price": 0.25,
+        "vat": 7.7,
+        "amount": 4.0,
+        "unit_id": 7,
+        "total": 1.08,
+        "show_only_total": false
+      }
+    ],
+    "texts": [
+      {
+        "status": "D",
+        "title": "Lieferschein Nr. {RECEIPTNO} / Kunden Nr. {CUSTOMERNO}",
+        "introduction": "",
+        "conditions": ""
+      }
+    ],
+    "free_texts": [],
+    "permissions": [
+      "view",
+      "edit",
+      "manage"
+    ]
+  },
+  {
+    "id": 181447691,
+    "number": "10000",
+    "contact_id": 481092782,
+    "contact": {
+      "id": 481092782,
+      "number": "1000",
+      "relation": [
+        "CL"
+      ],
+      "type": "C",
+      "gender_salutation_active": false,
+      "name": "Garage Zylinder AG",
+      "communication_language": "de",
+      "communication_channel": "U",
+      "communication_newsletter": "A",
+      "discount_rate": 0.0,
+      "discount_type": "P",
+      "created": "2021-07-29 08:43:58",
+      "main_address_id": 648482128
+    },
+    "contact_address_id": 648482128,
+    "contact_address": {
+      "default": true,
+      "id": 648482128,
+      "country": "CH",
+      "street": "Thalwilstrasse",
+      "street_no": "4",
+      "postcode": "3013",
+      "city": "Bern",
+      "hide_on_documents": false,
+      "default_prepage": false
+    },
+    "date": "2021-07-29",
+    "currency": "CHF",
+    "total": 216.13,
+    "vat_included": false,
+    "discount_rate": 0.0,
+    "discount_type": "P",
+    "language": "de",
+    "layout_id": 370877195,
+    "status": "DR",
+    "created": "2021-07-29 08:44:00",
+    "positions": [
+      {
+        "type": "N",
+        "catalog_type": "P",
+        "number": "100",
+        "name": "Schrauben 8x30mm",
+        "description": "",
+        "price": 0.18,
+        "vat": 7.7,
+        "amount": 1.0,
+        "unit_id": 7,
+        "total": 0.19,
+        "show_only_total": false
+      },
+      {
+        "type": "N",
+        "catalog_type": "S",
+        "number": "101",
+        "name": "Lieferung",
+        "description": "",
+        "price": 200.0,
+        "vat": 7.7,
+        "amount": 1.0,
+        "unit_id": 13,
+        "total": 215.4,
+        "show_only_total": false
+      },
+      {
+        "type": "N",
+        "catalog_type": "P",
+        "number": "102",
+        "name": "Schrauben 10x50mm",
+        "description": "",
+        "price": 0.25,
+        "vat": 7.7,
+        "amount": 2.0,
+        "unit_id": 7,
+        "total": 0.54,
+        "show_only_total": false
+      }
+    ],
+    "texts": [
+      {
+        "status": "D",
+        "title": "Lieferschein Nr. {RECEIPTNO} / Kunden Nr. {CUSTOMERNO}",
+        "introduction": "",
+        "conditions": ""
+      }
+    ],
+    "free_texts": [],
+    "permissions": [
+      "view",
+      "edit",
+      "manage"
+    ]
+  }
+]

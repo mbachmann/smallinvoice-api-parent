@@ -4,6 +4,7 @@ import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.time.LocalDate;
@@ -18,18 +19,102 @@ import org.hibernate.validator.constraints.*;
 /**
  * DocumentInvoicePaymentGET
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-07-29T11:25:10.409375+02:00[Europe/Zurich]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-07-29T19:43:05.733009+02:00[Europe/Zurich]")
 public class DocumentInvoicePaymentGET  implements Serializable {
   private static final long serialVersionUID = 1L;
 
   @JsonProperty("id")
   private Integer id;
 
+  /**
+   * type of the payment; possible values: N - normal, C - cash discount, D - rounding difference, W - write off
+   */
+  public enum TypeEnum {
+    N("N"),
+    
+    C("C"),
+    
+    D("D"),
+    
+    W("W");
+
+    private String value;
+
+    TypeEnum(String value) {
+      this.value = value;
+    }
+
+    @JsonValue
+    public String getValue() {
+      return value;
+    }
+
+    @Override
+    public String toString() {
+      return String.valueOf(value);
+    }
+
+    @JsonCreator
+    public static TypeEnum fromValue(String value) {
+      for (TypeEnum b : TypeEnum.values()) {
+        if (b.value.equals(value)) {
+          return b;
+        }
+      }
+      throw new IllegalArgumentException("Unexpected value '" + value + "'");
+    }
+  }
+
   @JsonProperty("type")
-  private String type;
+  private TypeEnum type;
+
+  /**
+   * channel of the payment; possible values: T - bank transfer, C - cash, PP - Paypal, PF - Postfinance, CC - Credit card, PR - Payrexx, SC - Smartcommerce
+   */
+  public enum ChannelEnum {
+    T("T"),
+    
+    C("C"),
+    
+    PP("PP"),
+    
+    PF("PF"),
+    
+    CC("CC"),
+    
+    PR("PR"),
+    
+    SC("SC");
+
+    private String value;
+
+    ChannelEnum(String value) {
+      this.value = value;
+    }
+
+    @JsonValue
+    public String getValue() {
+      return value;
+    }
+
+    @Override
+    public String toString() {
+      return String.valueOf(value);
+    }
+
+    @JsonCreator
+    public static ChannelEnum fromValue(String value) {
+      for (ChannelEnum b : ChannelEnum.values()) {
+        if (b.value.equals(value)) {
+          return b;
+        }
+      }
+      throw new IllegalArgumentException("Unexpected value '" + value + "'");
+    }
+  }
 
   @JsonProperty("channel")
-  private String channel;
+  private ChannelEnum channel;
 
   @JsonProperty("amount")
   private Float amount;
@@ -66,7 +151,7 @@ public class DocumentInvoicePaymentGET  implements Serializable {
     this.id = id;
   }
 
-  public DocumentInvoicePaymentGET type(String type) {
+  public DocumentInvoicePaymentGET type(TypeEnum type) {
     this.type = type;
     return this;
   }
@@ -79,15 +164,15 @@ public class DocumentInvoicePaymentGET  implements Serializable {
   @NotNull
 
 
-  public String getType() {
+  public TypeEnum getType() {
     return type;
   }
 
-  public void setType(String type) {
+  public void setType(TypeEnum type) {
     this.type = type;
   }
 
-  public DocumentInvoicePaymentGET channel(String channel) {
+  public DocumentInvoicePaymentGET channel(ChannelEnum channel) {
     this.channel = channel;
     return this;
   }
@@ -100,11 +185,11 @@ public class DocumentInvoicePaymentGET  implements Serializable {
   @NotNull
 
 
-  public String getChannel() {
+  public ChannelEnum getChannel() {
     return channel;
   }
 
-  public void setChannel(String channel) {
+  public void setChannel(ChannelEnum channel) {
     this.channel = channel;
   }
 

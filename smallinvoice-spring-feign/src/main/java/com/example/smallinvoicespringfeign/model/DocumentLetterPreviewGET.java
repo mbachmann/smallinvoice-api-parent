@@ -4,6 +4,7 @@ import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import org.openapitools.jackson.nullable.JsonNullable;
@@ -15,15 +16,56 @@ import org.hibernate.validator.constraints.*;
 /**
  * DocumentLetterPreviewGET
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-07-29T11:25:10.409375+02:00[Europe/Zurich]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-07-29T19:43:05.733009+02:00[Europe/Zurich]")
 public class DocumentLetterPreviewGET  implements Serializable {
   private static final long serialVersionUID = 1L;
 
   @JsonProperty("page")
   private Integer page;
 
+  /**
+   * width in pixels; possible values: 240, 595, 600, 972, 1240 
+   */
+  public enum SizeEnum {
+    NUMBER_240(240),
+    
+    NUMBER_595(595),
+    
+    NUMBER_600(600),
+    
+    NUMBER_972(972),
+    
+    NUMBER_1240(1240);
+
+    private Integer value;
+
+    SizeEnum(Integer value) {
+      this.value = value;
+    }
+
+    @JsonValue
+    public Integer getValue() {
+      return value;
+    }
+
+    @Override
+    public String toString() {
+      return String.valueOf(value);
+    }
+
+    @JsonCreator
+    public static SizeEnum fromValue(Integer value) {
+      for (SizeEnum b : SizeEnum.values()) {
+        if (b.value.equals(value)) {
+          return b;
+        }
+      }
+      throw new IllegalArgumentException("Unexpected value '" + value + "'");
+    }
+  }
+
   @JsonProperty("size")
-  private Integer size;
+  private SizeEnum size = SizeEnum.NUMBER_972;
 
   public DocumentLetterPreviewGET page(Integer page) {
     this.page = page;
@@ -45,7 +87,7 @@ public class DocumentLetterPreviewGET  implements Serializable {
     this.page = page;
   }
 
-  public DocumentLetterPreviewGET size(Integer size) {
+  public DocumentLetterPreviewGET size(SizeEnum size) {
     this.size = size;
     return this;
   }
@@ -57,11 +99,11 @@ public class DocumentLetterPreviewGET  implements Serializable {
   @ApiModelProperty(value = "width in pixels; possible values: 240, 595, 600, 972, 1240 ")
 
 
-  public Integer getSize() {
+  public SizeEnum getSize() {
     return size;
   }
 
-  public void setSize(Integer size) {
+  public void setSize(SizeEnum size) {
     this.size = size;
   }
 

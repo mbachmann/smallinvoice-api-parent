@@ -11779,6 +11779,9 @@ components:
           description: id of the request
         category:
           type: string
+          enum:
+            - V
+            - FS
           description: 'category of the request; possible values: V - VAT statement,
             FS - Annual financial statement'
         period_from:
@@ -11798,6 +11801,11 @@ components:
           description: country ISO2
         legal_form:
           type: string
+          enum:
+            - SE
+            - LLC
+            - L
+            - LP
           description: 'legal form; possible values: SE - Sole proprietorship, LLC
             - GmbH, L - AG, LP - General partnership'
         contact_company:
@@ -12058,6 +12066,9 @@ components:
           description: id of the request
         category:
           type: string
+          enum:
+            - V
+            - FS
           description: 'category of the request; possible values: V - VAT statement,
             FS - Annual financial statement'
         period_from:
@@ -12077,6 +12088,11 @@ components:
           description: country ISO2
         legal_form:
           type: string
+          enum:
+            - SE
+            - LLC
+            - L
+            - LP
           description: 'legal form; possible values: SE - Sole proprietorship, LLC
             - GmbH, L - AG, LP - General partnership'
         contact_company:
@@ -12179,6 +12195,9 @@ components:
       properties:
         category:
           type: string
+          enum:
+            - V
+            - FS
           description: 'category of the request; possible values: V - VAT statement,
             FS - Annual financial statement'
         period_from:
@@ -12198,6 +12217,11 @@ components:
           description: country ISO2
         legal_form:
           type: string
+          enum:
+            - SE
+            - LLC
+            - L
+            - LP
           description: 'legal form; possible values: SE - Sole proprietorship, LLC
             - GmbH, L - AG, LP - General partnership'
         contact_person:
@@ -12656,6 +12680,10 @@ components:
           type: string
         scope:
           type: string
+          enum:
+            - s
+            - p
+            - a
           description: 'scope, one of: s - service, p - product, a - all'
         custom:
           type: boolean
@@ -13037,9 +13065,9 @@ components:
         auto_sync_direction:
           type: string
           enum:
-            - 'in'
-            - 'out'
-            - 'null'
+            - in
+            - out
+            - null
           description: 'one of: [in, out, null (means no direction specified)]'
         permissions:
           type: array
@@ -15179,6 +15207,13 @@ components:
           description: 'page number; possible values: 1 .. page amount'
         size:
           type: integer
+          enum:
+            - 240
+            - 595
+            - 600
+            - 972
+            - 1240
+          default: 972
           description: 'width in pixels; possible values: 240, 595, 600, 972, 1240 '
       xml:
         name: DocumentDeliveryNotePreviewGET
@@ -15442,10 +15477,23 @@ components:
           description: payment id
         type:
           type: string
+          enum:
+            - N
+            - C
+            - D
+            - W
           description: 'type of the payment; possible values: N - normal, C - cash
             discount, D - rounding difference, W - write off'
         channel:
           type: string
+          enum:
+            - T
+            - C
+            - PP
+            - PF
+            - CC
+            - PR
+            - SC
           description: 'channel of the payment; possible values: T - bank transfer,
             C - cash, PP - Paypal, PF - Postfinance, CC - Credit card, PR - Payrexx,
             SC - Smartcommerce'
@@ -15479,10 +15527,23 @@ components:
       properties:
         type:
           type: string
+          enum:
+            - N
+            - C
+            - D
+            - W
           description: 'type of the payment; possible values: N - normal, C - cash
             discount, D - rounding difference, W - write off'
         channel:
           type: string
+          enum:
+            - T
+            - C
+            - PP
+            - PF
+            - CC
+            - PR
+            - SC
           description: 'channel of the payment; possible values: T - bank transfer,
             C - cash, PP - Paypal, PF - Postfinance, CC - Credit card, PR - Payrexx,
             SC - Smartcommerce'
@@ -15790,6 +15851,13 @@ components:
           description: 'page number; possible values: 1 .. page amount'
         size:
           type: integer
+          enum:
+            - 240
+            - 595
+            - 600
+            - 972
+            - 1240
+          default: 972
           description: 'width in pixels; possible values: 240, 595, 600, 972, 1240 '
       xml:
         name: DocumentInvoicePreviewGET
@@ -15885,6 +15953,11 @@ components:
           format: date
         frequency:
           type: integer
+          enum:
+            - 1
+            - 3
+            - 6
+            - 12
           description: 'frequency (number of months) of creating a standard invoice
             from recurring invoice; possible values: 1, 3, 6, 12'
         grace:
@@ -16080,6 +16153,11 @@ components:
           format: date
         frequency:
           type: integer
+          enum:
+            - 1
+            - 3
+            - 6
+            - 12
           description: 'frequency (number of months) of creating a standard invoice
             from recurring invoice; possible values: 1, 3, 6, 12'
         grace:
@@ -16215,6 +16293,11 @@ components:
           format: date
         frequency:
           type: integer
+          enum:
+            - 1
+            - 3
+            - 6
+            - 12
           description: 'frequency (number of months) of creating a standard invoice
             from recurring invoice; possible values: 1, 3, 6, 12'
         grace:
@@ -17522,6 +17605,13 @@ components:
           description: 'page number; possible values: 1 .. page amount'
         size:
           type: integer
+          enum:
+            - 240
+            - 595
+            - 600
+            - 972
+            - 1240
+          default: 972
           description: 'width in pixels; possible values: 240, 595, 600, 972, 1240 '
       xml:
         name: DocumentLetterPreviewGET
@@ -18246,6 +18336,13 @@ components:
           description: 'page number; possible values: 1 .. page amount'
         size:
           type: integer
+          enum:
+            - 240
+            - 595
+            - 600
+            - 972
+            - 1240
+          default: 972
           description: 'width in pixels; possible values: 240, 595, 600, 972, 1240 '
       xml:
         name: DocumentOfferPreviewGET
@@ -19026,6 +19123,13 @@ components:
           description: 'page number; possible values: 1 .. page amount'
         size:
           type: integer
+          enum:
+            - 240
+            - 595
+            - 600
+            - 972
+            - 1240
+          default: 972
           description: 'width in pixels; possible values: 240, 595, 600, 972, 1240 '
       xml:
         name: DocumentOrderConfirmationPreviewGET
@@ -19229,6 +19333,13 @@ components:
           description: 'page number; possible values: 1 .. page amount'
         size:
           type: integer
+          enum:
+            - 240
+            - 595
+            - 600
+            - 972
+            - 1240
+          default: 972
           description: 'width in pixels; possible values: 240, 595, 600, 972, 1240 '
       xml:
         name: DocumentPreviewGET
@@ -19338,9 +19449,15 @@ components:
       properties:
         palette:
           type: string
+          enum:
+            - C
+            - BW
           description: 'palette; possible values: C - colour, BW - black&white'
         print:
           type: string
+          enum:
+            - D
+            - S
           description: 'printing type; possible values: D - duplex (two-sided), S
             - simplex (one-sided)'
         speed:
@@ -19964,6 +20081,9 @@ components:
           description: oauth client name (unique in the whole system)
         grant_type:
           type: string
+          enum:
+            - CC
+            - AC
           description: 'oauth client grant type; possible values: CC - client credentials,
             AC - authorization code'
         redirect_uri:
@@ -19999,6 +20119,9 @@ components:
           description: oauth client name (unique in the whole system)
         grant_type:
           type: string
+          enum:
+            - CC
+            - AC
           description: 'oauth client grant type; possible values: CC - client credentials,
             AC - authorization code'
         redirect_uri:
@@ -20020,6 +20143,9 @@ components:
           description: oauth client name (unique in the whole system)
         grant_type:
           type: string
+          enum:
+            - CC
+            - AC
           description: 'oauth client grant type; possible values: CC - client credentials,
             AC - authorization code'
         redirect_uri:
@@ -20457,6 +20583,9 @@ components:
           description: cost unit's description
         type:
           type: string
+          enum:
+            - P
+            - U
           description: 'cost unit''s type; one of: [''P'',''U'']'
         permissions:
           type: array

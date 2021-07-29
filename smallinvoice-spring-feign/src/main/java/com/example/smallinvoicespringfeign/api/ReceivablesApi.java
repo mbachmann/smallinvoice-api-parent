@@ -57,7 +57,7 @@ import javax.validation.constraints.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-07-29T11:25:10.409375+02:00[Europe/Zurich]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-07-29T19:43:05.733009+02:00[Europe/Zurich]")
 @Validated
 @Api(value = "Receivables", description = "the Receivables API")
 public interface ReceivablesApi {
@@ -442,7 +442,7 @@ public interface ReceivablesApi {
         value = "/receivables/delivery-notes/{deliveryNoteIds}",
         produces = "application/json"
     )
-    ResponseEntity<Void> deleteDeliveryNotes(@ApiParam(value = "comma separated delivery note IDs",required=true) @PathVariable("deliveryNoteIds") Integer deliveryNoteIds);
+    ResponseEntity<Void> deleteDeliveryNotes(@ApiParam(value = "comma separated delivery note IDs",required=true) @PathVariable("deliveryNoteIds") Integer... deliveryNoteIds);
 
 
     /**
@@ -479,7 +479,7 @@ public interface ReceivablesApi {
         value = "/receivables/invoices/{invoiceId}/payments/{paymentIds}",
         produces = "application/json"
     )
-    ResponseEntity<Void> deleteInvoicePayment(@ApiParam(value = "invoice ID",required=true) @PathVariable("invoiceId") Integer invoiceId,@ApiParam(value = "payment IDs (comma separated)",required=true) @PathVariable("paymentIds") Integer paymentIds);
+    ResponseEntity<Void> deleteInvoicePayment(@ApiParam(value = "invoice ID",required=true) @PathVariable("invoiceId") Integer invoiceId,@ApiParam(value = "payment IDs (comma separated)",required=true) @PathVariable("paymentIds") Integer... paymentIds);
 
 
     /**
@@ -515,7 +515,7 @@ public interface ReceivablesApi {
         value = "/receivables/invoices/{invoiceIds}",
         produces = "application/json"
     )
-    ResponseEntity<Void> deleteInvoices(@ApiParam(value = "comma separated invoice IDs",required=true) @PathVariable("invoiceIds") Integer invoiceIds);
+    ResponseEntity<Void> deleteInvoices(@ApiParam(value = "comma separated invoice IDs",required=true) @PathVariable("invoiceIds") Integer... invoiceIds);
 
 
     /**
@@ -551,7 +551,7 @@ public interface ReceivablesApi {
         value = "/receivables/offers/{offerIds}",
         produces = "application/json"
     )
-    ResponseEntity<Void> deleteOffers(@ApiParam(value = "comma separated offer IDs",required=true) @PathVariable("offerIds") Integer offerIds);
+    ResponseEntity<Void> deleteOffers(@ApiParam(value = "comma separated offer IDs",required=true) @PathVariable("offerIds") Integer... offerIds);
 
 
     /**
@@ -587,7 +587,7 @@ public interface ReceivablesApi {
         value = "/receivables/order-confirmations/{orderConfirmationIds}",
         produces = "application/json"
     )
-    ResponseEntity<Void> deleteOrderConfirmations(@ApiParam(value = "comma separated order confirmation IDs",required=true) @PathVariable("orderConfirmationIds") Integer orderConfirmationIds);
+    ResponseEntity<Void> deleteOrderConfirmations(@ApiParam(value = "comma separated order confirmation IDs",required=true) @PathVariable("orderConfirmationIds") Integer... orderConfirmationIds);
 
 
     /**

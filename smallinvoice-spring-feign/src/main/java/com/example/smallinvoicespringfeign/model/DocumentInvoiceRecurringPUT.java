@@ -24,7 +24,7 @@ import org.hibernate.validator.constraints.*;
 /**
  * DocumentInvoiceRecurringPUT
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-07-29T11:25:10.409375+02:00[Europe/Zurich]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-07-29T19:43:05.733009+02:00[Europe/Zurich]")
 public class DocumentInvoiceRecurringPUT  implements Serializable {
   private static final long serialVersionUID = 1L;
 
@@ -48,8 +48,47 @@ public class DocumentInvoiceRecurringPUT  implements Serializable {
   @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE)
   private LocalDate endDate;
 
+  /**
+   * frequency (number of months) of creating a standard invoice from recurring invoice; possible values: 1, 3, 6, 12
+   */
+  public enum FrequencyEnum {
+    NUMBER_1(1),
+    
+    NUMBER_3(3),
+    
+    NUMBER_6(6),
+    
+    NUMBER_12(12);
+
+    private Integer value;
+
+    FrequencyEnum(Integer value) {
+      this.value = value;
+    }
+
+    @JsonValue
+    public Integer getValue() {
+      return value;
+    }
+
+    @Override
+    public String toString() {
+      return String.valueOf(value);
+    }
+
+    @JsonCreator
+    public static FrequencyEnum fromValue(Integer value) {
+      for (FrequencyEnum b : FrequencyEnum.values()) {
+        if (b.value.equals(value)) {
+          return b;
+        }
+      }
+      throw new IllegalArgumentException("Unexpected value '" + value + "'");
+    }
+  }
+
   @JsonProperty("frequency")
-  private Integer frequency;
+  private FrequencyEnum frequency;
 
   @JsonProperty("grace")
   private Integer grace;
@@ -364,7 +403,7 @@ public class DocumentInvoiceRecurringPUT  implements Serializable {
     this.endDate = endDate;
   }
 
-  public DocumentInvoiceRecurringPUT frequency(Integer frequency) {
+  public DocumentInvoiceRecurringPUT frequency(FrequencyEnum frequency) {
     this.frequency = frequency;
     return this;
   }
@@ -376,11 +415,11 @@ public class DocumentInvoiceRecurringPUT  implements Serializable {
   @ApiModelProperty(value = "frequency (number of months) of creating a standard invoice from recurring invoice; possible values: 1, 3, 6, 12")
 
 
-  public Integer getFrequency() {
+  public FrequencyEnum getFrequency() {
     return frequency;
   }
 
-  public void setFrequency(Integer frequency) {
+  public void setFrequency(FrequencyEnum frequency) {
     this.frequency = frequency;
   }
 

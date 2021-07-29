@@ -23,15 +23,50 @@ import org.hibernate.validator.constraints.*;
 /**
  * AccountingRequestGET
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-07-29T11:25:10.409375+02:00[Europe/Zurich]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-07-29T19:43:05.733009+02:00[Europe/Zurich]")
 public class AccountingRequestGET  implements Serializable {
   private static final long serialVersionUID = 1L;
 
   @JsonProperty("id")
   private Integer id;
 
+  /**
+   * category of the request; possible values: V - VAT statement, FS - Annual financial statement
+   */
+  public enum CategoryEnum {
+    V("V"),
+    
+    FS("FS");
+
+    private String value;
+
+    CategoryEnum(String value) {
+      this.value = value;
+    }
+
+    @JsonValue
+    public String getValue() {
+      return value;
+    }
+
+    @Override
+    public String toString() {
+      return String.valueOf(value);
+    }
+
+    @JsonCreator
+    public static CategoryEnum fromValue(String value) {
+      for (CategoryEnum b : CategoryEnum.values()) {
+        if (b.value.equals(value)) {
+          return b;
+        }
+      }
+      throw new IllegalArgumentException("Unexpected value '" + value + "'");
+    }
+  }
+
   @JsonProperty("category")
-  private String category;
+  private CategoryEnum category;
 
   @JsonProperty("period_from")
   @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE)
@@ -48,8 +83,47 @@ public class AccountingRequestGET  implements Serializable {
   @JsonProperty("legal_country")
   private String legalCountry;
 
+  /**
+   * legal form; possible values: SE - Sole proprietorship, LLC - GmbH, L - AG, LP - General partnership
+   */
+  public enum LegalFormEnum {
+    SE("SE"),
+    
+    LLC("LLC"),
+    
+    L("L"),
+    
+    LP("LP");
+
+    private String value;
+
+    LegalFormEnum(String value) {
+      this.value = value;
+    }
+
+    @JsonValue
+    public String getValue() {
+      return value;
+    }
+
+    @Override
+    public String toString() {
+      return String.valueOf(value);
+    }
+
+    @JsonCreator
+    public static LegalFormEnum fromValue(String value) {
+      for (LegalFormEnum b : LegalFormEnum.values()) {
+        if (b.value.equals(value)) {
+          return b;
+        }
+      }
+      throw new IllegalArgumentException("Unexpected value '" + value + "'");
+    }
+  }
+
   @JsonProperty("legal_form")
-  private String legalForm;
+  private LegalFormEnum legalForm;
 
   @JsonProperty("contact_company")
   private String contactCompany;
@@ -201,7 +275,7 @@ public class AccountingRequestGET  implements Serializable {
     this.id = id;
   }
 
-  public AccountingRequestGET category(String category) {
+  public AccountingRequestGET category(CategoryEnum category) {
     this.category = category;
     return this;
   }
@@ -214,11 +288,11 @@ public class AccountingRequestGET  implements Serializable {
   @NotNull
 
 
-  public String getCategory() {
+  public CategoryEnum getCategory() {
     return category;
   }
 
-  public void setCategory(String category) {
+  public void setCategory(CategoryEnum category) {
     this.category = category;
   }
 
@@ -309,7 +383,7 @@ public class AccountingRequestGET  implements Serializable {
     this.legalCountry = legalCountry;
   }
 
-  public AccountingRequestGET legalForm(String legalForm) {
+  public AccountingRequestGET legalForm(LegalFormEnum legalForm) {
     this.legalForm = legalForm;
     return this;
   }
@@ -322,11 +396,11 @@ public class AccountingRequestGET  implements Serializable {
   @NotNull
 
 
-  public String getLegalForm() {
+  public LegalFormEnum getLegalForm() {
     return legalForm;
   }
 
-  public void setLegalForm(String legalForm) {
+  public void setLegalForm(LegalFormEnum legalForm) {
     this.legalForm = legalForm;
   }
 

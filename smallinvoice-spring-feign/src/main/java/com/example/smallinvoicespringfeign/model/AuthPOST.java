@@ -17,7 +17,7 @@ import org.hibernate.validator.constraints.*;
  * Request for authentication
  */
 @ApiModel(description = "Request for authentication")
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-07-29T11:25:10.409375+02:00[Europe/Zurich]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-07-29T19:43:05.733009+02:00[Europe/Zurich]")
 public class AuthPOST  implements Serializable {
   private static final long serialVersionUID = 1L;
 

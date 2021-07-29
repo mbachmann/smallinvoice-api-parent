@@ -76,7 +76,7 @@ public class CatalogTest extends AbstractTest {
 
         int serviceCategoryId = createServiceCategoryIfNotExists("Service-Category-A");
 
-        // Change the new created product and save it again with update
+        // Change the new created service and save it again with update
         CatalogServicePUT newService = mapFromJson(mapToJson(serviceResponse.getBody().getItem()), CatalogServicePUT.class);
         newService.setNotes("Some additional Notes");
         newService.setCategoryId(serviceCategoryId);

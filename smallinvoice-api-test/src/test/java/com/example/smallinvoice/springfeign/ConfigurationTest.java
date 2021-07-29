@@ -25,6 +25,7 @@ public class ConfigurationTest extends AbstractTest {
     public void setUp() {
 
     }
+
     @Order(1)
     @Test
     public void createBankAndChangeAccount() throws IOException, InterruptedException {
@@ -45,6 +46,7 @@ public class ConfigurationTest extends AbstractTest {
         }
         TimeUnit.MILLISECONDS.sleep(500);
     }
+
     @Order(2)
     @Test
     public void createAndChangeExchangeRate() throws IOException, InterruptedException {
@@ -56,7 +58,7 @@ public class ConfigurationTest extends AbstractTest {
         int bankAccountId = accountResponse.getBody().getItem().getId();
         assertEquals(exchangeRate, mapFromJson(mapToJson(accountResponse.getBody().getItem()), ConfigurationExchangeRatePOST.class));
 
-        // Change the new created bank account and save it again with update
+        // Change the new created excange rate and save it again with update
         ConfigurationExchangeRatePUT newExchangeRate = mapFromJson(mapToJson(accountResponse.getBody().getItem()), ConfigurationExchangeRatePUT.class);
         newExchangeRate.setRate((float) (newExchangeRate.getRate() * 1.01));
         ResponseEntity<ItemConfigurationExchangeRateGET> exchangeRateResponseChange =  configurationApiClient.updateCurrencyExchangeRate(bankAccountId,newExchangeRate);
@@ -65,6 +67,7 @@ public class ConfigurationTest extends AbstractTest {
         }
         TimeUnit.MILLISECONDS.sleep(500);
     }
+
     @Order(3)
     @Test
     public void getBankAccounts() throws Exception {
@@ -74,6 +77,7 @@ public class ConfigurationTest extends AbstractTest {
             response.getBody().getItems().forEach(item -> getLogger().debug(item.toString()));
         }
     }
+
     @Order(4)
     @Test
     public void getExchangeRates() throws Exception {

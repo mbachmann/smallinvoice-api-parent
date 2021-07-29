@@ -6,6 +6,7 @@ import com.example.smallinvoicespringfeign.model.DescriptiveAccountingInvoicePOS
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.time.LocalDate;
@@ -20,12 +21,47 @@ import org.hibernate.validator.constraints.*;
 /**
  * AccountingRequestPOST
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-07-29T11:25:10.409375+02:00[Europe/Zurich]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-07-29T19:43:05.733009+02:00[Europe/Zurich]")
 public class AccountingRequestPOST  implements Serializable {
   private static final long serialVersionUID = 1L;
 
+  /**
+   * category of the request; possible values: V - VAT statement, FS - Annual financial statement
+   */
+  public enum CategoryEnum {
+    V("V"),
+    
+    FS("FS");
+
+    private String value;
+
+    CategoryEnum(String value) {
+      this.value = value;
+    }
+
+    @JsonValue
+    public String getValue() {
+      return value;
+    }
+
+    @Override
+    public String toString() {
+      return String.valueOf(value);
+    }
+
+    @JsonCreator
+    public static CategoryEnum fromValue(String value) {
+      for (CategoryEnum b : CategoryEnum.values()) {
+        if (b.value.equals(value)) {
+          return b;
+        }
+      }
+      throw new IllegalArgumentException("Unexpected value '" + value + "'");
+    }
+  }
+
   @JsonProperty("category")
-  private String category;
+  private CategoryEnum category;
 
   @JsonProperty("period_from")
   @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE)
@@ -42,8 +78,47 @@ public class AccountingRequestPOST  implements Serializable {
   @JsonProperty("legal_country")
   private String legalCountry;
 
+  /**
+   * legal form; possible values: SE - Sole proprietorship, LLC - GmbH, L - AG, LP - General partnership
+   */
+  public enum LegalFormEnum {
+    SE("SE"),
+    
+    LLC("LLC"),
+    
+    L("L"),
+    
+    LP("LP");
+
+    private String value;
+
+    LegalFormEnum(String value) {
+      this.value = value;
+    }
+
+    @JsonValue
+    public String getValue() {
+      return value;
+    }
+
+    @Override
+    public String toString() {
+      return String.valueOf(value);
+    }
+
+    @JsonCreator
+    public static LegalFormEnum fromValue(String value) {
+      for (LegalFormEnum b : LegalFormEnum.values()) {
+        if (b.value.equals(value)) {
+          return b;
+        }
+      }
+      throw new IllegalArgumentException("Unexpected value '" + value + "'");
+    }
+  }
+
   @JsonProperty("legal_form")
-  private String legalForm;
+  private LegalFormEnum legalForm;
 
   @JsonProperty("contact_person")
   private String contactPerson;
@@ -76,7 +151,7 @@ public class AccountingRequestPOST  implements Serializable {
   @JsonProperty("data_cost_category_count")
   private Integer dataCostCategoryCount;
 
-  public AccountingRequestPOST category(String category) {
+  public AccountingRequestPOST category(CategoryEnum category) {
     this.category = category;
     return this;
   }
@@ -89,11 +164,11 @@ public class AccountingRequestPOST  implements Serializable {
   @NotNull
 
 
-  public String getCategory() {
+  public CategoryEnum getCategory() {
     return category;
   }
 
-  public void setCategory(String category) {
+  public void setCategory(CategoryEnum category) {
     this.category = category;
   }
 
@@ -184,7 +259,7 @@ public class AccountingRequestPOST  implements Serializable {
     this.legalCountry = legalCountry;
   }
 
-  public AccountingRequestPOST legalForm(String legalForm) {
+  public AccountingRequestPOST legalForm(LegalFormEnum legalForm) {
     this.legalForm = legalForm;
     return this;
   }
@@ -197,11 +272,11 @@ public class AccountingRequestPOST  implements Serializable {
   @NotNull
 
 
-  public String getLegalForm() {
+  public LegalFormEnum getLegalForm() {
     return legalForm;
   }
 
-  public void setLegalForm(String legalForm) {
+  public void setLegalForm(LegalFormEnum legalForm) {
     this.legalForm = legalForm;
   }
 

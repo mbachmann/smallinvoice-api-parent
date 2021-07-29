@@ -281,6 +281,31 @@
                   <include name="**/*.java"/>
                 </replace>
                 <!-- corrections in receivables api-->
+                <replace token="Integer deliveryNoteIds"
+                         value="Integer... deliveryNoteIds"
+                         dir="${project.basedir}/src/main/java/com/example/smallinvoicespringfeign/api">
+                  <include name="**/*.java"/>
+                </replace>
+                <replace token="Integer paymentIds"
+                         value="Integer... paymentIds"
+                         dir="${project.basedir}/src/main/java/com/example/smallinvoicespringfeign/api">
+                  <include name="**/*.java"/>
+                </replace>
+                <replace token="Integer invoiceIds"
+                         value="Integer... invoiceIds"
+                         dir="${project.basedir}/src/main/java/com/example/smallinvoicespringfeign/api">
+                  <include name="**/*.java"/>
+                </replace>
+                <replace token="Integer offerIds"
+                         value="Integer... offerIds"
+                         dir="${project.basedir}/src/main/java/com/example/smallinvoicespringfeign/api">
+                  <include name="**/*.java"/>
+                </replace>
+                <replace token="Integer orderConfirmationIds"
+                         value="Integer... orderConfirmationIds"
+                         dir="${project.basedir}/src/main/java/com/example/smallinvoicespringfeign/api">
+                  <include name="**/*.java"/>
+                </replace>
 
                 <!-- corrections in reporting api-->
 

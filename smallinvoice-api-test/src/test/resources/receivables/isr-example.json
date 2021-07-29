@@ -1,0 +1,53 @@
+{
+  "items": [
+    {
+      "id": 596542145,
+      "default": false,
+      "type": "RIS",
+      "position": "A",
+      "name": "",
+      "bank_name": null,
+      "bank_address": null,
+      "recipient_name": "Maria Bernasconi",
+      "recipient_addition": null,
+      "recipient_street": "Place de la Gare 15",
+      "recipient_city": "2502 Biel",
+      "delivery_number": null,
+      "iban": "CH6309000000250097798",
+      "subscriber_number": "",
+      "created": "-0001-11-30 00:00:00",
+      "permissions": [
+        "view",
+        "edit"
+      ]
+    },
+    {
+      "id": 380627389,
+      "default": true,
+      "type": "RIS",
+      "position": "A",
+      "name": "",
+      "bank_name": null,
+      "bank_address": null,
+      "recipient_name": "Robert Schneider SA",
+      "recipient_addition": null,
+      "recipient_street": "Ruelle du Lac 177",
+      "recipient_city": "2503 Biel",
+      "delivery_number": null,
+      "iban": "CH7730000001250094239",
+      "subscriber_number": "",
+      "created": "-0001-11-30 00:00:00",
+      "permissions": [
+        "view",
+        "edit"
+      ]
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "pages": 1,
+    "total": 2,
+    "first": "https:\/\/demo-api.smallinvoice.com\/v2\/receivables\/configuration\/isrs?limit=100&offset=0&with=permissions",
+    "last": "https:\/\/demo-api.smallinvoice.com\/v2\/receivables\/configuration\/isrs?limit=100&offset=0&with=permissions"
+  }
+}
