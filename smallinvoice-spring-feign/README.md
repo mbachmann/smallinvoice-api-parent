@@ -44,8 +44,6 @@ compile "com.example:smallinvoice-spring-feign:1.0.0"
 
 Access to the Small Invoice Backend with `Client credentials`.
 
-[https://api.smallinvoice.com/v2/doc/?action=auth-workflow](https://api.smallinvoice.com/v2/doc/?action=auth-workflow)
-
 Put the configuration to the application.yml file.
 
 ```yaml
