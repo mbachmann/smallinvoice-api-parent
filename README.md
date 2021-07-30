@@ -2,23 +2,23 @@
 
 [https://github.com/mbachmann/smallinvoice-api-parent](https://github.com/mbachmann/smallinvoice-api-parent)
 
-The `smallinvoice-spring-feign` component provides access to the small invoice `REST API V2`.
-It contains the login-api, the [api](smallinvoice-spring-feign/src/main/java/com/example/smallinvoicespringfeign/api)
+The `smallinvoice-spring-feign` component provides access to the _smallinvoice_ `REST API V2`.
+It contains the _login-api_, the [api](smallinvoice-spring-feign/src/main/java/com/example/smallinvoicespringfeign/api)
 to the published end points and all [models](smallinvoice-spring-feign/src/main/java/com/example/smallinvoicespringfeign/model).
 The [configuration](smallinvoice-spring-feign/src/main/java/com/example/smallinvoicespringfeign/configuration/ClientConfiguration.java)
 supports retry in case of certain errors.
 
-This is a multi maven project.
+This is a _multi maven project_.
 
 - The **api component** can be found [smallinvoice-spring-feign maven project](smallinvoice-spring-feign/README.md).
-- The **usage of the component** can be seen in the integration tests of the [smallinvoice-api-test maven project](smallinvoice-api-test/README.md).
+- The **usage of the component** can be seen in the _integration tests_ of the [smallinvoice-api-test maven project](smallinvoice-api-test/README.md).
 
 The API has been generated through an [open api interface](https://swagger.io/specification/) definition file:[smallinvoice-openapi-specification-2.0.0.yaml](smallinvoice-spring-feign/src/main/resources/smallinvoice-openapi-specification-2.0.0.yaml).
-You can copy paste the file into the [swagger editor](https://editor.swagger.io/).
+You can copy and paste the file into the [swagger editor](https://editor.swagger.io/).
 The [smallinvoice api](https://api.smallinvoice.com/v2/doc/?action=endpoints) has some special date-time formats
 (**not** [ISO8601](https://en.wikipedia.org/wiki/ISO_8601) or [RFC3339](https://datatracker.ietf.org/doc/html/rfc3339))
 which does not fit the [open api description](https://swagger.io/docs/specification/data-models/data-types/).
-The component is serializing/deserializing the _open-api date-time format_ to `LocalDateTime` by using `@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")`.
+The component is _serializing/deserializing_ the _open-api date-time format_ to `LocalDateTime` by using `@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")`.
 The component is not serializing properties with a `null value`.
 
 ### Description of the API
@@ -42,7 +42,7 @@ file has to be adjusted, and the [smallinvoice-spring-feign component](smallinvo
 
 ### Integration Tests
 
-The integration tests demonstrate on how to use the component with the smallinvoice api:
+The integration tests demonstrate on how to use the component with the _smallinvoice api_:
 
 - [AuthTest.java](smallinvoice-api-test/src/test/java/com/example/smallinvoice/springfeign/AuthTest.java)
 - [CatalogTest.java](smallinvoice-api-test/src/test/java/com/example/smallinvoice/springfeign/CatalogTest.java)
@@ -51,21 +51,21 @@ The integration tests demonstrate on how to use the component with the smallinvo
 - [ReceivablesTest.java](smallinvoice-api-test/src/test/java/com/example/smallinvoice/springfeign/ReceivablesTest.java)
 - [ReportingTest.java](smallinvoice-api-test/src/test/java/com/example/smallinvoice/springfeign/ReportingTest.java)
 
-The integration tests show some errors. This is due to some misbehavior of the small invoice api:
+The _integration tests_ show some errors. This is due to some misbehavior of the small invoice api:
 
-- getIsrs(): Deserialization error because of wrong date from the API
+- getIsrs(): Deserialization error because of wrong _date-time_ from the API
 - getFirstInvoice(): the filter criteria for invoices to a certain contact_id does not work properly.
 
 ### Project Setup
 
-The smallinvoice API supports two of four oauth2 flows:
+The _smallinvoice_ API supports two of four _oauth2 flows_:
 
 - client credentials flow
 - authorization flow
 
-The test project is using the `client credentials flow`. In oder to run the unit test, the client credentials must be created through small invoice.
+The test project is using the `client credentials flow`. In oder to run the _unit test_, the _client credentials_ must be created through the _smallinvoice app_.
 
-There are two different stagings of small invoice
+There are two different stagings of _smallinvoice_:
 
 - The Demo staging: [https://demo-app.smallinvoice.com/](https://demo-app.smallinvoice.com/)
 - The Production staging: [https://app.smallinvoice.com/](https://app.smallinvoice.com/)
@@ -77,7 +77,7 @@ The `REST API` is available through the urls:
 
 ### Gathering the Client Id and Credentials
 
-Navigate in small invoice to Home -> User -> API V2. Click on the register tab Client-IDs:
+Navigate in _smallinvoice_ to _Home -> User -> API V2_. Click on the _register tab Client-IDs_:
 
 <br/>
 
@@ -85,7 +85,7 @@ Navigate in small invoice to Home -> User -> API V2. Click on the register tab C
 
 <br/>
 
-Fill in the dialog a unique arbitrary name, check all scopes checkboxes and click and click save.
+Fill in the dialog a _unique arbitrary name_, check all _scope checkboxes_ and click and click save.
 
 <br/>
 
@@ -93,7 +93,7 @@ Fill in the dialog a unique arbitrary name, check all scopes checkboxes and clic
 
 <br/>
 
-The resulting dialog shows the client-id and the key.
+The resulting dialog shows the _client-id_ and the _key_.
 
 <br/>
 
@@ -105,5 +105,5 @@ Copy the `client-id` and the `key` and fill it into the file
 [application-smallinvoice.properties](smallinvoice-api-test/src/main/resources/application-smallinvoice.properties).
 Adjust the appropriate staging url `smallinvoice.url`.
 
-The integration tests will run after entering valid client credentials.
+The _integration tests_ will run after entering valid _client credentials_.
 
