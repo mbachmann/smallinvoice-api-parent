@@ -16,7 +16,7 @@ This is a multi maven project.
 The API has been generated through an [open api interface](https://swagger.io/specification/) definition file:[smallinvoice-openapi-specification-2.0.0.yaml](smallinvoice-spring-feign/src/main/resources/smallinvoice-openapi-specification-2.0.0.yaml).
 You can copy paste the file into the [swagger editor](https://editor.swagger.io/).
 The [smallinvoice api](https://api.smallinvoice.com/v2/doc/?action=endpoints) has some special date-time formats
-(**not** [ISO8601](https://en.wikipedia.org/wiki/ISO_8601) or [RFC3339](https://datatracker.ietf.org/doc/html/rfc3339)
+(**not** [ISO8601](https://en.wikipedia.org/wiki/ISO_8601) or [RFC3339](https://datatracker.ietf.org/doc/html/rfc3339))
 which does not fit the [open api description](https://swagger.io/docs/specification/data-models/data-types/).
 The component is serializing/deserializing the _open-api date-time format_ to `LocalDateTime` by using `@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")`.
 
@@ -41,7 +41,7 @@ file has to be adjusted, and the [smallinvoice-spring-feign component](smallinvo
 
 ### Integration Tests
 
-The integrations tests demonstrate on how to use the component with the smallinvoice api:
+The integration tests demonstrate on how to use the component with the smallinvoice api:
 
 - [AuthTest.java](smallinvoice-api-test/src/test/java/com/example/smallinvoice/springfeign/AuthTest.java)
 - [CatalogTest.java](smallinvoice-api-test/src/test/java/com/example/smallinvoice/springfeign/CatalogTest.java)
@@ -53,7 +53,7 @@ The integrations tests demonstrate on how to use the component with the smallinv
 The integration tests show some errors. This is due to some misbehavior of the small invoice api:
 
 - GetIsrs(): Deserialization error because of wrong date from the API
-- GetFirstInvoice(): the filter criteria for invoices to a certain contact_id does not work property
+- GetFirstInvoice(): the filter criteria for invoices to a certain contact_id does not work properly.
 
 ### Project Setup
 
