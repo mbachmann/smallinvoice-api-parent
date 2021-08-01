@@ -94,7 +94,8 @@ public abstract class AbstractTest implements HasLogger {
             try {
                 long length = resource.contentLength();
                 assertTrue(length > 0);
-                byte[] bytes = resource.getInputStream().readAllBytes();
+                byte[] bytes = new byte[(int) length];
+                resource.getInputStream().read(bytes, 0, (int) length);
                 File targetFile = new File(fileName);
                 File targetFolder = new File(targetFile.getParent());
                 if (targetFolder.canWrite()) {

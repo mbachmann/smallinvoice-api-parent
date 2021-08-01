@@ -27,7 +27,7 @@ public class ReceivablesTest extends SharedTest {
     @BeforeEach
     public void setUp() {
         try {
-            // apiService.deleteContactsIfExistsByName("Autogarage Frei");
+            apiService.deleteContactsIfExistsByName("Autogarage Frei");
             contactId = createContactIfNotExistsFromResource("contact/contact2.json", "contact/address1.json", "contact/people1.json", "contact/account1.json");
             contact = apiService.getContactById(contactId, "main_address,groups,permissions,custom_fields");
             contactId = contact.getId();
@@ -113,19 +113,19 @@ public class ReceivablesTest extends SharedTest {
     @Test
     public void getOffersTest() throws Exception {
         String with = "permissions,positions,texts,free_texts,contact_person,contact_prepage_address,contact_address,contact,custom_fields";
-        List<DocumentOfferGET> invoices = apiService.getOffers(with, null);
-        String json = mapToJson(invoices);
-        DocumentOfferGET invoice = apiService.getOfferById(invoices.get(0).getId(), with);
-        assertEquals(mapToJson(invoices.get(0)), mapToJson(invoice));
+        List<DocumentOfferGET> offers = apiService.getOffers(with, null);
+        String json = mapToJson(offers);
+        DocumentOfferGET invoice = apiService.getOfferById(offers.get(0).getId(), with);
+        assertEquals(mapToJson(offers.get(0)), mapToJson(invoice));
     }
 
     @Test
     public void getOrderConfirmationsTest() throws Exception {
         String with = "permissions,positions,texts,free_texts,contact_person,contact_prepage_address,contact_address,contact,custom_fields";
-        List<DocumentOrderConfirmationGET> invoices = apiService.getOrderConfirmations(with, null);
-        String json = mapToJson(invoices);
-        DocumentOrderConfirmationGET invoice = apiService.getOrderConfirmationById(invoices.get(0).getId(), with);
-        assertEquals(mapToJson(invoices.get(0)), mapToJson(invoice));
+        List<DocumentOrderConfirmationGET> orderConfirmations = apiService.getOrderConfirmations(with, null);
+        String json = mapToJson(orderConfirmations);
+        DocumentOrderConfirmationGET invoice = apiService.getOrderConfirmationById(orderConfirmations.get(0).getId(), with);
+        assertEquals(mapToJson(orderConfirmations.get(0)), mapToJson(invoice));
     }
 
     @Test
@@ -153,16 +153,13 @@ public class ReceivablesTest extends SharedTest {
         List<DocumentInvoiceStandardGET> invoices = apiService.getStandardInvoices(with, filter);
         if (invoices != null && invoices.size() > 0) {
             int invoiceId = invoices.get(0).getId();
-            DocumentInvoiceStandardGET invoice = apiService.getStandardInvoiceById(invoiceId, with);
-            if (invoice != null) {
-                return invoice;
-            }
+            return apiService.getStandardInvoiceById(invoiceId, with);
         }
         return null;
     }
 
-    public DocumentDeliveryNotePositionPOST createDeliveryNoteProductPosition(CatalogProductGET product) throws IOException {
-        DocumentDeliveryNotePositionPOST productPosition = mapFromJson(mapToJson(product), DocumentDeliveryNotePositionPOST.class);
+    public DocumentDeliveryNotePositionPOST createDeliveryNoteProductPosition(CatalogProductGET catalogProduct) throws IOException {
+        DocumentDeliveryNotePositionPOST productPosition = mapFromJson(mapToJson(catalogProduct), DocumentDeliveryNotePositionPOST.class);
         productPosition.catalogType(DocumentDeliveryNotePositionPOST.CatalogTypeEnum.P)
                 .type(DocumentDeliveryNotePositionPOST.TypeEnum.N)
                 .amount(1.0F)
@@ -170,8 +167,8 @@ public class ReceivablesTest extends SharedTest {
         return productPosition;
     }
 
-    private DocumentDeliveryNotePositionPOST createDeliveryNoteServicePosition(CatalogServiceGET service) throws IOException {
-        DocumentDeliveryNotePositionPOST servicePosition = mapFromJson(mapToJson(service), DocumentDeliveryNotePositionPOST.class);
+    private DocumentDeliveryNotePositionPOST createDeliveryNoteServicePosition(CatalogServiceGET catalogService) throws IOException {
+        DocumentDeliveryNotePositionPOST servicePosition = mapFromJson(mapToJson(catalogService), DocumentDeliveryNotePositionPOST.class);
         servicePosition.catalogType(DocumentDeliveryNotePositionPOST.CatalogTypeEnum.S)
                 .type(DocumentDeliveryNotePositionPOST.TypeEnum.N)
                 .amount(1.0F)

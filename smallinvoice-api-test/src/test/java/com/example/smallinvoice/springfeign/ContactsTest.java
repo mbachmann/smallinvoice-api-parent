@@ -1,26 +1,21 @@
 package com.example.smallinvoice.springfeign;
 
-import com.example.smallinvoicespringfeign.api.ContactsApiClient;
 import com.example.smallinvoicespringfeign.model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
-import org.springframework.http.ResponseEntity;
 
 import java.io.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ContactsTest extends SharedTest {
-
-    @Autowired
-    private ContactsApiClient contactsApiClient;
 
     @Override
     @BeforeEach
@@ -31,20 +26,15 @@ public class ContactsTest extends SharedTest {
     @Test
     public void getContactsList() {
 
-        apiService.getContacts("main_address,groups,permissions,custom_fields", null);
-        ResponseEntity<ListContacts> response = contactsApiClient.getContacts("main_address,groups,permissions,custom_fields", null, null, 100, 0, null);
-        response.getBody().getItems().forEach(item -> getLogger().debug(item.toString()));
-        assertEquals(response.getBody().getItems().size(),response.getBody().getPagination().getTotal());
+        List<ContactGET> contacts = apiService.getContacts("main_address,groups,permissions,custom_fields", null);
+        contacts.forEach(item -> getLogger().debug(item.toString()));
     }
 
     @Test
-    public void getContactCoiffure()  {
+    public void getContactCoiffure() {
 
-        String contactName = "Coiffure Kathrin";
-        ResponseEntity<ListContacts> response = contactsApiClient.getContacts("permissions", null, "{\"name\":\"" + contactName + "\"}", 100, 0, null);
-        if (response.getBody() != null && response.getBody().getItems() != null) {
-            response.getBody().getItems().forEach(item -> getLogger().debug(item.toString()));
-            ContactGET contact = response.getBody().getItems().get(0);
+        ContactGET contact = apiService.getFirstContactByName("Coiffure Kathrin", "permissions");
+        if (contact != null) {
             apiService.getContactAccounts(contact.getId());
         }
     }
@@ -56,8 +46,8 @@ public class ContactsTest extends SharedTest {
         ContactPOST newContact = mapFromJson(jsonContact, ContactPOST.class);
 
         if (!apiService.checkIfContactExistsByName(newContact.getName())) {
-            ResponseEntity<ItemContactGET> responseCreate = contactsApiClient.createContact(newContact);
-            int contactId = responseCreate.getBody().getItem().getId();
+            ContactGET contactCreated = apiService.createContact(newContact);
+            int contactId =  contactCreated.getId();
 
             createReminderFromResource(contactId, "contact/reminder1.json");
             int addressId = createContactAddressFromResource(contactId, "contact/address2.json");
@@ -85,10 +75,11 @@ public class ContactsTest extends SharedTest {
 
         apiService.deleteContactsIfExistsByName(newContact.getName());
 
-        ResponseEntity<ItemContactGET> responseCreate = contactsApiClient.createContact(newContact);
-        ResponseEntity<ItemContactGET> responseGet = contactsApiClient.getContact(responseCreate.getBody().getItem().getId(), "main_address,groups,permissions,custom_fields");
-        assertEquals(newContact, mapFromJson(mapToJson(responseGet.getBody().getItem()), ContactPOST.class));
-        int contactId = responseCreate.getBody().getItem().getId();
+        ContactGET contactCreated = apiService.createContact(newContact);
+        int contactId =  contactCreated.getId();
+        ContactGET contact = apiService.getContactById(contactId, "main_address,groups,permissions,custom_fields");
+
+        assertEquals(newContact, mapFromJson(mapToJson(contact), ContactPOST.class));
 
         createReminderFromResource(contactId, "contact/reminder1.json");
         int addressId = createContactAddressFromResource(contactId, "contact/address1.json");
@@ -109,10 +100,8 @@ public class ContactsTest extends SharedTest {
         sendLetterByPost(letterId, "contact/post1.json");
         changeLetterStatus(letterId, DocumentLetterChangeStatusPATCH.StatusEnum.S);
 
-        ResponseEntity<Void> responseDelete = contactsApiClient.deleteContacts(contactId);
-        ResponseEntity<Void> responseDeleteGroup1 = contactsApiClient.deleteContactGroups(groupId1,
-                groupId2,
-                groupId3);
+        apiService.deleteContactById(contactId);
+        apiService.deleteContactGroupByIds(groupId1, groupId2, groupId3);
         TimeUnit.SECONDS.sleep(1);
     }
 
@@ -121,9 +110,9 @@ public class ContactsTest extends SharedTest {
         String jsonReminder = readResource(new ClassPathResource(jsonResource));
         ContactReminderPOST contactReminderPOST = mapFromJson(jsonReminder, ContactReminderPOST.class);
         contactReminderPOST.setContactId(contactId);
-        ResponseEntity<ItemContactReminderGET> responseReminder = contactsApiClient.createReminder(contactReminderPOST);
-        if (responseReminder.getBody() != null) {
-            assertEquals(contactReminderPOST, mapFromJson(mapToJson(responseReminder.getBody().getItem()), ContactReminderPOST.class));
+        ContactReminderGET reminder = apiService.createReminder(contactReminderPOST);
+        if (reminder != null) {
+            assertEquals(contactReminderPOST, mapFromJson(mapToJson(reminder), ContactReminderPOST.class));
         }
     }
 
@@ -131,11 +120,12 @@ public class ContactsTest extends SharedTest {
     public int createGroupAndAssign(int contactId, String groupName) throws IOException {
         ContactConfigurationGroupPOST contactGroupPOST = new ContactConfigurationGroupPOST();
         contactGroupPOST.setName(groupName);
-        ResponseEntity<ItemContactConfigurationGroupGET> responseGroup = contactsApiClient.createContactGroup(contactGroupPOST);
-        if (responseGroup.getBody() != null) {
-            assertEquals(contactGroupPOST, mapFromJson(mapToJson(responseGroup.getBody().getItem()), ContactConfigurationGroupPOST.class));
-            int groupId = responseGroup.getBody().getItem().getId();
-            contactsApiClient.assignContactGroups(contactId, String.valueOf(groupId));
+
+        ContactConfigurationGroupGET contactGroup = apiService.createContactGroup(contactGroupPOST);
+        if (contactGroup != null) {
+            assertEquals(contactGroupPOST, mapFromJson(mapToJson(contactGroup), ContactConfigurationGroupPOST.class));
+            int groupId = contactGroup.getId();
+            apiService.assignContactGroup(contactId,groupId);
             return groupId;
         }
         return 0;
@@ -145,51 +135,41 @@ public class ContactsTest extends SharedTest {
         String jsonAccount = readResource(new ClassPathResource(jsonResource));
         DocumentLetterPOST documentLetterPOST = mapFromJson(jsonAccount, DocumentLetterPOST.class);
         documentLetterPOST.contactId(contactId).contactAddressId(addressId).contactPersonId(peopleId);
-        ResponseEntity<ItemDocumentLetterGET> responseLetter = contactsApiClient.createLetter(documentLetterPOST);
-        if (responseLetter.getBody() != null) {
-            return responseLetter.getBody().getItem().getId();
-        }
-        return 0;
+
+        DocumentLetterGET letter = apiService.createLetter(documentLetterPOST);
+        if (letter != null) return letter.getId();
+        else return 0;
     }
 
     public void changeLetterStatus(int letterId, DocumentLetterChangeStatusPATCH.StatusEnum desiredStatus) {
-        DocumentLetterChangeStatusPATCH patch = new DocumentLetterChangeStatusPATCH();
-        patch.setStatus(desiredStatus);
-        contactsApiClient.changeLetterStatus(letterId, patch);
-        ResponseEntity<ItemDocumentLetterGET> response = contactsApiClient.getLetter(letterId, null);
-        if (response.getBody() != null) {
-            assertEquals(DocumentLetterGET.StatusEnum.S, response.getBody().getItem().getStatus());
-        }
+        DocumentLetterGET letter = apiService.changeLetterStatusById(letterId, desiredStatus);
+        DocumentLetterGET letterGet = apiService.getLetterById(letter.getId(), null);
+        if (letterGet!= null) assertEquals(DocumentLetterGET.StatusEnum.S, letterGet.getStatus());
     }
 
     public void writeLetterPdfToResource(int letterId) {
-        ResponseEntity<Resource> response = contactsApiClient.getLetterPdf(letterId);
-        Resource resource  = response.getBody();
+        Resource resource  = apiService.getLetterPdfResource(letterId);
         writeResourceToFile(resource, "src/test/resources/receivedFiles/letterPdf.pdf");
     }
 
     public void writeLetterPreviewToResource(int letterId) {
         // size on of "240, 595, 600, 972, 1240"
-        ResponseEntity<Resource> response = contactsApiClient.getLetterPreview(letterId, 1, 600);
-        Resource resource  = response.getBody();
+        Resource resource  = apiService.getLetterPreviewResource(letterId, 1, 600);
         writeResourceToFile(resource, "src/test/resources/receivedFiles/letterPreview.png");
     }
 
     public void sendLetterByEMail (int letterId, String jsonResource) throws IOException {
         String jsonEmail = readResource(new ClassPathResource(jsonResource));
         DocumentLetterSendByEmailPATCH email = mapFromJson(jsonEmail, DocumentLetterSendByEmailPATCH.class);
-        ResponseEntity<Void> response = contactsApiClient.sendLetterByEMail(letterId,email);
-        assertEquals(204, response.getStatusCode().value());
+        apiService.sendLetterByEMail(letterId, email);
     }
 
     public void sendLetterByPost (int letterId, String jsonResource) throws IOException {
         String jsonEmail = readResource(new ClassPathResource(jsonResource));
         DocumentSendByPostPATCH post = mapFromJson(jsonEmail, DocumentSendByPostPATCH.class);
         // not working at demo account
-        // ResponseEntity<Void> response = contactsApiClient.sendLetterByPost(letterId,post);
-        // assertEquals(204, response.getStatusCode().value());
+        //  apiService.sendLetterByPost(letterId, post);
     }
-
 
     public ContactReminderPOST createReminderData(int contactId) {
         ContactReminderPOST contactReminderPOST = new ContactReminderPOST();

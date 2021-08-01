@@ -31,4 +31,24 @@ public class AbstractApiService implements HasLogger {
         return objectMapper.readValue(json, clazz);
     }
 
+    protected String createOrFilter (String property, String... values) {
+        StringBuilder filterJson = new StringBuilder("{\"or\":[");
+        for (String value : values) {
+            filterJson.append("{\"").append(property).append("\":\"").append(value).append("\"},");
+        }
+        filterJson.deleteCharAt(filterJson.length() - 1);
+        filterJson.append("]}");
+        return filterJson.toString();
+    }
+
+    protected String createOrFilter (String property, Integer... values) {
+        StringBuilder filterJson = new StringBuilder("{\"or\":[");
+        for (int value : values) {
+            filterJson.append("{\"").append(property).append("\":\"").append(value).append("\"},");
+        }
+        filterJson.deleteCharAt(filterJson.length() - 1);
+        filterJson.append("]}");
+        return filterJson.toString();
+    }
+
 }

@@ -3,7 +3,6 @@ package com.example.smallinvoice.springfeign;
 import com.example.smallinvoice.AbstractTest;
 import com.example.smallinvoicespringfeign.api.CatalogApiClient;
 import com.example.smallinvoicespringfeign.api.ContactsApiClient;
-import com.example.smallinvoicespringfeign.api.ReceivablesApiClient;
 import com.example.smallinvoicespringfeign.model.*;
 import com.example.smallinvoicespringfeign.service.SmallInvoiceApiService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,9 +10,6 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.ResponseEntity;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -24,9 +20,6 @@ public class SharedTest extends AbstractTest {
 
     @Autowired
     private CatalogApiClient catalogApiClient;
-
-    @Autowired
-    private ReceivablesApiClient receivablesApiClient;
 
     @Autowired
     SmallInvoiceApiService apiService;
@@ -70,10 +63,9 @@ public class SharedTest extends AbstractTest {
 
         ContactGET firstContact = apiService.getFirstContactByName(contact.getName(), null);
         if (firstContact == null) {
-
-            ResponseEntity<ItemContactGET> contactResponse = contactsApiClient.createContact(contact);
-            if (contactResponse.getBody() != null ) {
-                int contactId = contactResponse.getBody().getItem().getId();
+            ContactGET contactCreated = apiService.createContact(contact);
+            if (contactCreated != null ) {
+                int contactId = contactCreated.getId();
                 createContactAddressFromResource(contactId, addressResource);
                 createContactPeopleFromResource(contactId, peopleResource);
                 createContactAccountFromResource(contactId, accountResource);

@@ -44,7 +44,7 @@ public class CatalogTest extends SharedTest {
 
         String jsonProduct = readResource(new ClassPathResource("catalog/product1.json"));
         CatalogProductPOST product = mapFromJson(jsonProduct, CatalogProductPOST.class);
-        deleteProductIfExists(product.getName());
+        apiService.deleteProductByNameIfExists(product.getName());
 
         ResponseEntity<ItemCatalogProductGET> productResponse =  catalogApiClient.createCatalogProduct(product);
         int productId = productResponse.getBody().getItem().getId();
@@ -68,7 +68,7 @@ public class CatalogTest extends SharedTest {
 
         String jsonContact = readResource(new ClassPathResource("catalog/service1.json"));
         CatalogServicePOST service = mapFromJson(jsonContact, CatalogServicePOST.class);
-        deleteServiceIfExists(service.getName());
+        apiService.deleteServiceByNameIfExists(service.getName());
         ResponseEntity<ItemCatalogServiceGET> serviceResponse =  catalogApiClient.createCatalogService(service);
 
         int serviceId = serviceResponse.getBody().getItem().getId();
@@ -96,19 +96,4 @@ public class CatalogTest extends SharedTest {
             assertEquals (units.get(0), unit);
         }
     }
-
-    public void deleteProductIfExists(String productName) {
-        ResponseEntity<ListProducts> response = catalogApiClient.getCatalogProducts(null, null, "{\"name\":\"" + productName + "\"}", 100, 0, null);
-        if (response.getBody() != null && response.getBody().getPagination().getTotal() > 0) {
-            ResponseEntity<Void> responseDelete = catalogApiClient.deleteCatalogProducts(response.getBody().getItems().get(0).getId());
-        }
-    }
-
-    public void deleteServiceIfExists(String serviceName) {
-        ResponseEntity<ListServices> response = catalogApiClient.getCatalogServices(null, null, "{\"name\":\"" + serviceName + "\"}", 100, 0, null);
-        if (response.getBody() != null && response.getBody().getPagination().getTotal() > 0) {
-            ResponseEntity<Void> responseDelete = catalogApiClient.deleteCatalogServices(response.getBody().getItems().get(0).getId());
-        }
-    }
-
 }

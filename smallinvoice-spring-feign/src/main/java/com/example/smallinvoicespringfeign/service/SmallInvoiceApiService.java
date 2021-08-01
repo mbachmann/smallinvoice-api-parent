@@ -12,6 +12,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -67,21 +69,53 @@ public class SmallInvoiceApiService extends AbstractApiService {
      */
     public ContactGET getFirstContactByName(String contactName, String with) {
         List<ContactGET> contacts = getContacts(with, "{\"name\":\"" + contactName + "\"}");
-        if (contacts != null) return contacts.get(0);
+        if (contacts != null && contacts.size() > 0) return contacts.get(0);
         else return null;
     }
 
+    /**
+     * GET /contacts/{contactId} : Returns data of specified contact
+     *
+     * @param contactId contact ID (required)
+     * @param with      Comma separated, optional keys that should be included in the response. (optional)
+     *                  *                    <br/>"main_address,groups,permissions,custom_fields"
+     * @return ContactGET
+     * Data of the requested contact
+     */
     public ContactGET getContactById(int contactId, String with) {
         ResponseEntity<ItemContactGET> contactItem = contactsApiClient.getContact(contactId, with);
         if (contactItem.getBody() != null) return contactItem.getBody().getItem();
         else return null;
     }
 
+    /**
+     * POST /contacts : Creates a new contact
+     *
+     * @param contactPOST contact POST data
+     * @return ContactGET - Data of the created contact
+     */
+    public ContactGET createContact(ContactPOST contactPOST) {
+        ResponseEntity<ItemContactGET> responseCreate = contactsApiClient.createContact(contactPOST);
+        if (responseCreate.getBody() != null) return responseCreate.getBody().getItem();
+        return null;
+    }
+
+    /**
+     * Deletes specified contact
+     *
+     * @param contactId contact ID (required)
+     */
     public void deleteContactById(int contactId) {
         ResponseEntity<Void> contactItem = contactsApiClient.deleteContacts(contactId);
     }
 
 
+    /**
+     * Check if a contact with a contact name exists
+     *
+     * @param contactName the name of the contact
+     * @return true if contact exists
+     */
     public boolean checkIfContactExistsByName(String contactName) {
         List<ContactGET> contacts = getContacts(null, "{\"name\":\"" + contactName + "\"}");
         if (contacts != null) return contacts.size() > 0;
@@ -89,7 +123,8 @@ public class SmallInvoiceApiService extends AbstractApiService {
     }
 
     /**
-     * Delete the contact if exists by name
+     * Deletes contacts if exists by name
+     *
      * @param contactName the name of the contact
      */
     public void deleteContactsIfExistsByName(String contactName) {
@@ -121,10 +156,11 @@ public class SmallInvoiceApiService extends AbstractApiService {
 
     /**
      * GET /contacts/{contactId}/accounts : Returns list of accounts for specified contact
+     *
      * @param contactId the contact id
      * @return {@code List<ContactAccountGET>} Data of the requested accounts
      */
-    public List<ContactAccountGET> getContactAccounts (int contactId) {
+    public List<ContactAccountGET> getContactAccounts(int contactId) {
         ResponseEntity<ListContactAccounts> responseAccounts = contactsApiClient.getContactAccounts(contactId, "permissions", null, null, 100, 0, null);
         if (responseAccounts.getBody() != null) {
             responseAccounts.getBody().getItems().forEach(account -> getLogger().debug(account.toString()));
@@ -133,29 +169,226 @@ public class SmallInvoiceApiService extends AbstractApiService {
         return null;
     }
 
+    /**
+     * GET /contacts/configuration/groups : Returns list of contact groups
+     *
+     * @param with   Comma separated, optional keys that should be included in the response. (optional)
+     * @param filter Filter expression (JSON) (optional) <br/>"{\"name\":\"" + groupName + "\"}"
+     * @return {@code List<ContactConfigurationGroupGET>} Data of the requested contact groups
+     */
+    public List<ContactConfigurationGroupGET> getContactGroups(String with, String filter) {
+        try {
+            ResponseEntity<ListContactConfigurationGroups> response = contactsApiClient.getContactGroups(with, null, filter, 100, 0, null);
+            if (response.getBody() != null) {
+                response.getBody().getItems().forEach(item -> getLogger().debug(item.toString()));
+                return response.getBody().getItems();
+            }
+        } catch (RetryableException | SmallInvoiceNotFoundException ignored) {
+        }
+        return null;
+    }
+
+    /**
+     * POST /contacts/configuration/groups : Creates new contact group
+     * @param contactGroupPOST the contact group data
+     * @return  ContactConfigurationGroupGET - Data of the created contact group
+     */
+    public ContactConfigurationGroupGET createContactGroup(ContactConfigurationGroupPOST contactGroupPOST) {
+        ResponseEntity<ItemContactConfigurationGroupGET> responseGroup = contactsApiClient.createContactGroup(contactGroupPOST);
+        if (responseGroup.getBody() != null) return  responseGroup.getBody().getItem();
+        return null;
+    }
+
+    /**
+     * PATCH /contacts/{contactId}/assign-groups/{groupsIds} : Assigns groups to specified contact
+     * @param contactId contact ID (required)
+     * @param groupId the group id to assign
+     * @return ContactGET Data of the contact to which to grooup was assigned
+     */
+    public ContactGET assignContactGroup(int contactId, int groupId) {
+        ResponseEntity<ItemContactGET> contact = contactsApiClient.assignContactGroups(contactId, String.valueOf(groupId));
+        if (contact.getBody() != null) return  contact.getBody().getItem();
+        return null;
+    }
+
+    /**
+     * Deletes specified contact group
+     *
+     * @param contactGroupId contact group ID (required)
+     */
+    public void deleteContactGroupById(int contactGroupId) {
+        ResponseEntity<Void> contactGroupItem = contactsApiClient.deleteContactGroups(contactGroupId);
+    }
+
+    /**
+     * Deletes specified contact groups
+     *
+     * @param contactGroupIds contact group IDs (required)
+     */
+    public void deleteContactGroupByIds(Integer... contactGroupIds) {
+        ResponseEntity<Void> responseDelete = contactsApiClient.deleteContactGroups(contactGroupIds);
+    }
+
+    /**
+     * Deletes the specified groups if they exists
+     *
+     * @param groupNames the names of the contact groups
+     */
     public void deleteContactGroupsIfExists(String... groupNames) {
 
-        StringBuilder filterJson = new StringBuilder("{\"or\":[");
-        for (String groupName : groupNames) {
-            filterJson.append("{\"name\":\"").append(groupName).append("\"},");
-        }
-        filterJson.deleteCharAt(filterJson.length() - 1);
-        filterJson.append("]}");
-        try {
-            ResponseEntity<ListContactConfigurationGroups> responseGroups = contactsApiClient.getContactGroups(null, null, filterJson.toString(), 100, 0, null);
-            if (responseGroups.getBody() != null) {
-                responseGroups.getBody().getItems().forEach(item -> contactsApiClient.deleteContactGroups(item.getId()));
-            }
-        } catch (RetryableException ignored) {
+        String filter = createOrFilter("name", groupNames);
+        List<ContactConfigurationGroupGET> groups = getContactGroups(null, filter);
+
+        if (groups != null) {
+            groups.forEach(item -> deleteContactGroupById(item.getId()));
         }
     }
+
+    /**
+     * POST /contacts/reminders : Creates new reminder
+     * @param contactReminderPOST contactReminderPOST – reminder JSON data (required)
+     * @return ContactReminderGET Data of the created reminder
+     */
+    public ContactReminderGET createReminder(ContactReminderPOST contactReminderPOST) {
+        ResponseEntity<ItemContactReminderGET> responseReminder = contactsApiClient.createReminder(contactReminderPOST);
+        if (responseReminder.getBody() != null) return responseReminder.getBody().getItem();
+        return null;
+    }
+
+    // ============ Letter ==============
+
+    /**
+     * GET /contacts/letters : Returns list of letters
+     *
+     * @param with   Comma separated, optional keys that should be included in the response (optional).
+     *               <br/> "permissions,free_texts,contact_prepage_address,contact_address,contact,custom_fields"
+     * @param filter Filter expression (JSON) (optional)
+     * @return {@code List<DocumentLetterGET>} - Data of the requested letters
+     */
+    public @Valid List<DocumentLetterGET> getLetters(String with, String filter) {
+        try {
+            ResponseEntity<ListLetters> response = contactsApiClient.getLetters(with, null, filter, 100, 0, null);
+            if (response.getBody() != null) {
+                response.getBody().getItems().forEach(item -> getLogger().debug(item.toString()));
+                return response.getBody().getItems();
+            }
+        } catch (RetryableException | SmallInvoiceNotFoundException ignored) {
+        }
+        return null;
+    }
+
+    /**
+     * GET /contacts/letters/{letterId} : Returns data of specified letter
+     * @param letterId the ID of the letter
+     * @param with   Comma separated, optional keys that should be included in the response (optional).
+     *               <br/> "permissions,free_texts,contact_prepage_address,contact_address,contact,custom_fields"
+     * @return DocumentLetterGET Data of the requested letter
+     */
+    public DocumentLetterGET getLetterById(int letterId, String with) {
+        ResponseEntity<ItemDocumentLetterGET> response = contactsApiClient.getLetter(letterId, with);
+        if (response.getBody() != null) return response.getBody().getItem();
+        else return null;
+    }
+
+    /**
+     * POST /contacts/letters : Creates new letter
+     *
+     * @param documentLetterPOST DocumentLetterPOST – the letter data
+     * @return DocumentLetterGET Data of the created letter
+     */
+    public DocumentLetterGET createLetter(DocumentLetterPOST documentLetterPOST) {
+        ResponseEntity<ItemDocumentLetterGET> response = contactsApiClient.createLetter(documentLetterPOST);
+        return Objects.requireNonNull(response.getBody()).getItem();
+    }
+
+    /**
+     * PUT /contacts/letters/{letterId} : Updates specified letter
+     *
+     * @param letter DocumentLetterGET - the letter data (required)
+     * @return Data of the updated letter
+     * @throws IOException if mapping from DocumentLetterGET to DocumentLetterPUT fails
+     */
+    public DocumentLetterGET updateLetter(DocumentLetterGET letter) throws IOException {
+        DocumentLetterPUT changedLetter = mapFromJson(mapToJson(letter), DocumentLetterPUT.class);
+        ResponseEntity<ItemDocumentLetterGET> response = contactsApiClient.updateLetter(letter.getId(), changedLetter);
+        return Objects.requireNonNull(response.getBody()).getItem();
+    }
+
+    /**
+     * PATCH /contacts/letters/{letterId}/change-status : Changes status of specified letter
+     *
+     * @param letterId       letterId ID (required)
+     * @param status         DocumentLetterChangeStatusPATCH.StatusEnum.
+     *                       <br/> StatusEnum – status of letter, possible values: DR - draft, S - sent, D - deleted (but still visible)
+     * @return Data of the changed letter
+     */
+    public DocumentLetterGET changeLetterStatusById(int letterId, DocumentLetterChangeStatusPATCH.StatusEnum status) {
+        DocumentLetterChangeStatusPATCH patch = new DocumentLetterChangeStatusPATCH();
+        patch.   status(status)
+                .dateTime(LocalDateTime.now());
+        ResponseEntity<ItemDocumentLetterGET> response = contactsApiClient.changeLetterStatus(letterId, patch);
+        return Objects.requireNonNull(response.getBody()).getItem();
+    }
+
+    /**
+     * GET /contacts/letters/{letterId}/pdf : Gets pdf of specified letter
+     *
+     * @param letterId letter ID (required)
+     * @return The PDF as a Resource
+     */
+    public Resource getLetterPdfResource(int letterId) {
+        ResponseEntity<Resource> response = contactsApiClient.getLetterPdf(letterId);
+        return response.getBody();
+    }
+
+    /**
+     * GET /contacts/letters/{letterId}/preview : Gets preview of specified letter
+     *
+     * @param letterId       letter note ID (required)
+     * @param page           page – page number [1 .. pages amount] (optional, default to 1)
+     * @param size           width in pixels (optional,
+     *                       <br/> allowableValues = 240, 595, 600, 972, 1240, defaultValue = 972)
+     * @return The png image as resource
+     */
+    public Resource getLetterPreviewResource(int letterId, Integer page, Integer size) {
+        // size on of "240, 595, 600, 972, 1240"
+        ResponseEntity<Resource> response = contactsApiClient.getLetterPreview(letterId, page, size);
+        return response.getBody();
+    }
+
+    /**
+     * PATCH /contacts/letters/{letterId}/send-by-email : Sends specified letter by email
+     *
+     * @param letterId       letter ID (required)
+     * @param email          DocumentLetterSendByEmailPATCH – sending mail data details
+     */
+    public void sendLetterByEMail(int letterId, DocumentLetterSendByEmailPATCH email) {
+        ResponseEntity<Void> response = contactsApiClient.sendLetterByEMail(letterId, email);
+    }
+
+    /**
+     * PATCH /contacts/letters/{letterId}/send-by-post : Sends specified letter by post
+     *
+     * @param letterId       letterI note ID (required)
+     * @param post           documentSendByPostPATCH – sending post data details
+     */
+    public void sendLetterByPost(int letterId, DocumentSendByPostPATCH post) {
+        ResponseEntity<Void> response = contactsApiClient.sendLetterByPost(letterId, post);
+    }
+
 
     // ==================================
     //          Configuration
     // ==================================
 
 
-    public List<ConfigurationBankAccountGET> getBankAccounts() throws Exception {
+    /**
+     * Get all Bankaccounts
+     *
+     * @return {@code List<ConfigurationBankAccountGET>} Data of the requested bank accounts
+     * @throws InterruptedException about the TimeUnit
+     */
+    public List<ConfigurationBankAccountGET> getBankAccounts() throws InterruptedException {
         ResponseEntity<ListConfigurationBankAccounts> response = null;
         try {
             response = configurationApiClient.getBankAccounts(null, null, null, 100, 0, null);
@@ -167,8 +400,13 @@ public class SmallInvoiceApiService extends AbstractApiService {
         else return null;
     }
 
-
-    public List<ConfigurationExchangeRateGET> getExchangeRates() throws Exception {
+    /**
+     * Gets all exchange rates
+     *
+     * @return {@code List<ConfigurationExchangeRateGET>} Data of the requested exchange rates
+     * @throws InterruptedException about the TimeUnit
+     */
+    public List<ConfigurationExchangeRateGET> getExchangeRates()  throws InterruptedException {
         ResponseEntity<ListConfigurationExchangeRates> response = null;
         try {
             response = configurationApiClient.getCurrencyExchangeRates(null, null, 100, 0, null);
@@ -184,6 +422,11 @@ public class SmallInvoiceApiService extends AbstractApiService {
     //             Catalog
     // ==================================
 
+    /**
+     * Creates a catalog product category if it does not exist
+     * @param categoryName the name of the category to get created
+     * @return the created category id, 0 in case of an error
+     */
     public int createProductCategoryIfNotExists(String categoryName) {
 
         int categoryId = 0;
@@ -202,6 +445,11 @@ public class SmallInvoiceApiService extends AbstractApiService {
         return categoryId;
     }
 
+    /**
+     * Creates a catalog service category if it does not exist
+     * @param categoryName the name of the category to get created
+     * @return the created category id, 0 in case of an error
+     */
     public int createServiceCategoryIfNotExists(String categoryName) {
 
         int categoryId = 0;
@@ -222,7 +470,8 @@ public class SmallInvoiceApiService extends AbstractApiService {
 
     /**
      * GET /catalog/configuration/units : Returns list of units
-     * @param with Comma separated, optional keys that should be included in the response. (optional)
+     *
+     * @param with   Comma separated, optional keys that should be included in the response. (optional)
      * @param filter Filter expression (JSON) (optional)
      * @return {@code List<CatalogConfigurationUnitGET>} Data of the requested unit types
      */
@@ -236,8 +485,9 @@ public class SmallInvoiceApiService extends AbstractApiService {
 
     /**
      * GET /catalog/configuration/units/{unitId} : Returns data of specified unit
+     *
      * @param catalogUnitId unit ID (required)
-     * @param with Comma separated, optional keys that should be included in the response. (optional)
+     * @param with          Comma separated, optional keys that should be included in the response. (optional)
      * @return CatalogConfigurationUnitGET Data of the requested unit
      */
     public CatalogConfigurationUnitGET getCatalogUnitById(int catalogUnitId, String with) {
@@ -246,10 +496,39 @@ public class SmallInvoiceApiService extends AbstractApiService {
         else return null;
     }
 
+    /**
+     * DELETE /catalog/products/{productIds} : Deletes specified products
+     * @param productName the name of the product
+     */
+    public void deleteProductByNameIfExists(String productName) {
+        ResponseEntity<ListProducts> response = catalogApiClient.getCatalogProducts(null, null, "{\"name\":\"" + productName + "\"}", 100, 0, null);
+        if (response.getBody() != null && response.getBody().getPagination().getTotal() > 0) {
+            ResponseEntity<Void> responseDelete = catalogApiClient.deleteCatalogProducts(response.getBody().getItems().get(0).getId());
+        }
+    }
+
+    /**
+     * DELETE /catalog/services/{serviceIds} : Deletes specified services
+     * @param serviceName the name of the service
+     */
+    public void deleteServiceByNameIfExists(String serviceName) {
+        ResponseEntity<ListServices> response = catalogApiClient.getCatalogServices(null, null, "{\"name\":\"" + serviceName + "\"}", 100, 0, null);
+        if (response.getBody() != null && response.getBody().getPagination().getTotal() > 0) {
+            ResponseEntity<Void> responseDelete = catalogApiClient.deleteCatalogServices(response.getBody().getItems().get(0).getId());
+        }
+    }
+
+
+    // ==================================
+    //          Receivables
+    // ==================================
+
+    // ===== ISRs (Einzahlungsschein mit Referenznummer (ESR)) ===
 
     /**
      * GET /receivables/configuration/isrs : Returns list of ISRs (Einzahlungsschein mit Referenznummer (ESR))
-     * @param with Comma separated, optional keys that should be included in the response. (optional)
+     *
+     * @param with   Comma separated, optional keys that should be included in the response. (optional)
      * @param filter Filter expression (JSON) (optional)
      * @return {@code List<ReceivablesConfigurationIsrGET>} Data of the requested ISRs
      */
@@ -264,6 +543,7 @@ public class SmallInvoiceApiService extends AbstractApiService {
 
     /**
      * GET /receivables/configuration/isrs/{isrId} : Returns data of specified ISR (Einzahlungsschein mit Referenznummer (ESR))
+     *
      * @param isrNoteId ISR ID (required)
      * @param with
      * @return
@@ -273,11 +553,6 @@ public class SmallInvoiceApiService extends AbstractApiService {
         if (response.getBody() != null) return response.getBody();
         else return null;
     }
-
-    // ==================================
-    //          Receivables
-    // ==================================
-
 
     // ======== Delivery Notes ==========
 
@@ -346,7 +621,8 @@ public class SmallInvoiceApiService extends AbstractApiService {
      * @param status         documentDeliveryNoteChangeStatusPATCH.<br/> StatusEnum – change status, possible values: DR - draft, S - sent, B - billed, D - deleted (but still visible)
      * @return Data of the changed delivery note
      */
-    public DocumentDeliveryNoteGET changeDeliveryNoteStatusById(int deliveryNoteId, DocumentDeliveryNoteChangeStatusPATCH.StatusEnum status) {
+    public DocumentDeliveryNoteGET changeDeliveryNoteStatusById(
+            int deliveryNoteId, DocumentDeliveryNoteChangeStatusPATCH.StatusEnum status) {
         DocumentDeliveryNoteChangeStatusPATCH patch = new DocumentDeliveryNoteChangeStatusPATCH();
         patch.status(status)
                 .dateTime(LocalDateTime.now());
