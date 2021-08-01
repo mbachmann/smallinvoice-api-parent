@@ -11,6 +11,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.env.Environment;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -23,6 +24,7 @@ import java.util.Arrays;
 @EnableFeignClients(
         basePackages = { "com.example.smallinvoicespringfeign.api"}
 )
+@ComponentScan({"com.example.smallinvoicespringfeign","com.example.smallinvoice"})
 public class DemoApplication {
 
     @Autowired

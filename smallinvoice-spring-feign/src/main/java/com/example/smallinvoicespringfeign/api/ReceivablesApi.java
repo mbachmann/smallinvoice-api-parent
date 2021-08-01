@@ -57,7 +57,7 @@ import javax.validation.constraints.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-07-29T19:43:05.733009+02:00[Europe/Zurich]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-07-31T13:05:18.255013+02:00[Europe/Zurich]")
 @Validated
 @Api(value = "Receivables", description = "the Receivables API")
 public interface ReceivablesApi {
@@ -1046,77 +1046,6 @@ public interface ReceivablesApi {
 
 
     /**
-     * GET /receivables/order-confirmations/{orderConfirmationId} : Returns data of specified order confirmation
-     * Returns data of specified order confirmation
-     *
-     * @param orderConfirmationId order confirmation ID (required)
-     * @param with Comma separated, optional keys that should be included in the response. (optional)
-     * @return Data of the requested order confirmation (status code 200)
-     *         or Bad request (status code 400)
-     *         or Unauthorized (status code 401)
-     *         or No permissions for specified entity (no response body) OR feature is missing (with response body) (status code 403)
-     *         or Entity not found (status code 404)
-     *         or Method not allowed (status code 405)
-     *         or Too many requests (status code 429)
-     *         or Server error (status code 500)
-     */
-    @ApiOperation(value = "Returns data of specified order confirmation", nickname = "getOderConfirmation", notes = "Returns data of specified order confirmation", response = ItemDocumentOrderConfirmationGET.class, authorizations = {
-        
-        @Authorization(value = "bearerAuth"),
-        @Authorization(value = "oauth", scopes = {
-            @AuthorizationScope(scope = "order_confirmation", description = "Order confirmations") })
-         }, tags={ "Receivables", })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "Data of the requested order confirmation", response = ItemDocumentOrderConfirmationGET.class),
-        @ApiResponse(code = 400, message = "Bad request", response = Response4xx.class),
-        @ApiResponse(code = 401, message = "Unauthorized", response = Response401.class),
-        @ApiResponse(code = 403, message = "No permissions for specified entity (no response body) OR feature is missing (with response body)", response = Response403.class),
-        @ApiResponse(code = 404, message = "Entity not found", response = Response404.class),
-        @ApiResponse(code = 405, message = "Method not allowed", response = Response4xx.class),
-        @ApiResponse(code = 429, message = "Too many requests", response = Response4xx.class),
-        @ApiResponse(code = 500, message = "Server error") })
-    @GetMapping(
-        value = "/receivables/order-confirmations/{orderConfirmationId}",
-        produces = "application/json"
-    )
-    ResponseEntity<ItemDocumentOrderConfirmationGET> getOderConfirmation(@ApiParam(value = "order confirmation ID",required=true) @PathVariable("orderConfirmationId") Integer orderConfirmationId,@ApiParam(value = "Comma separated, optional keys that should be included in the response.") @Valid @RequestParam(value = "with", required = false) String with);
-
-
-    /**
-     * GET /receivables/order-confirmations/{orderConfirmationId}/pdf : Gets pdf of specified order confirmation
-     * Gets pdf of specified order confirmation
-     *
-     * @param orderConfirmationId order confirmation ID (required)
-     * @return ok (status code 200)
-     *         or Unauthorized (status code 401)
-     *         or No permissions for specified entity (no response body) OR feature is missing (with response body) (status code 403)
-     *         or Entity not found (status code 404)
-     *         or Method not allowed (status code 405)
-     *         or Too many requests (status code 429)
-     *         or Server error (status code 500)
-     */
-    @ApiOperation(value = "Gets pdf of specified order confirmation", nickname = "getOderConfirmationPdf", notes = "Gets pdf of specified order confirmation", response = org.springframework.core.io.Resource.class, authorizations = {
-        
-        @Authorization(value = "bearerAuth"),
-        @Authorization(value = "oauth", scopes = {
-            @AuthorizationScope(scope = "order_confirmation", description = "Order confirmations") })
-         }, tags={ "Receivables", })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "ok", response = org.springframework.core.io.Resource.class),
-        @ApiResponse(code = 401, message = "Unauthorized", response = Response401.class),
-        @ApiResponse(code = 403, message = "No permissions for specified entity (no response body) OR feature is missing (with response body)", response = Response403.class),
-        @ApiResponse(code = 404, message = "Entity not found", response = Response404.class),
-        @ApiResponse(code = 405, message = "Method not allowed", response = Response4xx.class),
-        @ApiResponse(code = 429, message = "Too many requests", response = Response4xx.class),
-        @ApiResponse(code = 500, message = "Server error") })
-    @GetMapping(
-        value = "/receivables/order-confirmations/{orderConfirmationId}/pdf",
-        produces = "application/pdf"
-    )
-    ResponseEntity<org.springframework.core.io.Resource> getOderConfirmationPdf(@ApiParam(value = "order confirmation ID",required=true) @PathVariable("orderConfirmationId") Integer orderConfirmationId);
-
-
-    /**
      * GET /receivables/offers/{offerId} : Returns data of specified offer
      * Returns data of specified offer
      *
@@ -1262,6 +1191,77 @@ public interface ReceivablesApi {
         produces = "application/json"
     )
     ResponseEntity<ListOffers> getOffers(@ApiParam(value = "Comma separated, optional keys that should be included in the response.") @Valid @RequestParam(value = "with", required = false) String with,@ApiParam(value = "Value for full text search") @Valid @RequestParam(value = "q", required = false) String q,@ApiParam(value = "Filter expression (JSON)") @Valid @RequestParam(value = "filter", required = false) String filter,@ApiParam(value = "Limits the number of items returned. Number in a range [1-200]", defaultValue = "100") @Valid @RequestParam(value = "limit", required = false, defaultValue="100") Integer limit,@ApiParam(value = "Offset of the first item to return. The offset of the initial item is 0. ", defaultValue = "0") @Valid @RequestParam(value = "offset", required = false, defaultValue="0") Integer offset,@ApiParam(value = "Sorting expression. Key or comma separated keys. Key preceded with minus (-) means descending.", defaultValue = "-number") @Valid @RequestParam(value = "sort", required = false, defaultValue="-number") String sort);
+
+
+    /**
+     * GET /receivables/order-confirmations/{orderConfirmationId} : Returns data of specified order confirmation
+     * Returns data of specified order confirmation
+     *
+     * @param orderConfirmationId order confirmation ID (required)
+     * @param with Comma separated, optional keys that should be included in the response. (optional)
+     * @return Data of the requested order confirmation (status code 200)
+     *         or Bad request (status code 400)
+     *         or Unauthorized (status code 401)
+     *         or No permissions for specified entity (no response body) OR feature is missing (with response body) (status code 403)
+     *         or Entity not found (status code 404)
+     *         or Method not allowed (status code 405)
+     *         or Too many requests (status code 429)
+     *         or Server error (status code 500)
+     */
+    @ApiOperation(value = "Returns data of specified order confirmation", nickname = "getOrderConfirmation", notes = "Returns data of specified order confirmation", response = ItemDocumentOrderConfirmationGET.class, authorizations = {
+        
+        @Authorization(value = "bearerAuth"),
+        @Authorization(value = "oauth", scopes = {
+            @AuthorizationScope(scope = "order_confirmation", description = "Order confirmations") })
+         }, tags={ "Receivables", })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "Data of the requested order confirmation", response = ItemDocumentOrderConfirmationGET.class),
+        @ApiResponse(code = 400, message = "Bad request", response = Response4xx.class),
+        @ApiResponse(code = 401, message = "Unauthorized", response = Response401.class),
+        @ApiResponse(code = 403, message = "No permissions for specified entity (no response body) OR feature is missing (with response body)", response = Response403.class),
+        @ApiResponse(code = 404, message = "Entity not found", response = Response404.class),
+        @ApiResponse(code = 405, message = "Method not allowed", response = Response4xx.class),
+        @ApiResponse(code = 429, message = "Too many requests", response = Response4xx.class),
+        @ApiResponse(code = 500, message = "Server error") })
+    @GetMapping(
+        value = "/receivables/order-confirmations/{orderConfirmationId}",
+        produces = "application/json"
+    )
+    ResponseEntity<ItemDocumentOrderConfirmationGET> getOrderConfirmation(@ApiParam(value = "order confirmation ID",required=true) @PathVariable("orderConfirmationId") Integer orderConfirmationId,@ApiParam(value = "Comma separated, optional keys that should be included in the response.") @Valid @RequestParam(value = "with", required = false) String with);
+
+
+    /**
+     * GET /receivables/order-confirmations/{orderConfirmationId}/pdf : Gets pdf of specified order confirmation
+     * Gets pdf of specified order confirmation
+     *
+     * @param orderConfirmationId order confirmation ID (required)
+     * @return ok (status code 200)
+     *         or Unauthorized (status code 401)
+     *         or No permissions for specified entity (no response body) OR feature is missing (with response body) (status code 403)
+     *         or Entity not found (status code 404)
+     *         or Method not allowed (status code 405)
+     *         or Too many requests (status code 429)
+     *         or Server error (status code 500)
+     */
+    @ApiOperation(value = "Gets pdf of specified order confirmation", nickname = "getOrderConfirmationPdf", notes = "Gets pdf of specified order confirmation", response = org.springframework.core.io.Resource.class, authorizations = {
+        
+        @Authorization(value = "bearerAuth"),
+        @Authorization(value = "oauth", scopes = {
+            @AuthorizationScope(scope = "order_confirmation", description = "Order confirmations") })
+         }, tags={ "Receivables", })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "ok", response = org.springframework.core.io.Resource.class),
+        @ApiResponse(code = 401, message = "Unauthorized", response = Response401.class),
+        @ApiResponse(code = 403, message = "No permissions for specified entity (no response body) OR feature is missing (with response body)", response = Response403.class),
+        @ApiResponse(code = 404, message = "Entity not found", response = Response404.class),
+        @ApiResponse(code = 405, message = "Method not allowed", response = Response4xx.class),
+        @ApiResponse(code = 429, message = "Too many requests", response = Response4xx.class),
+        @ApiResponse(code = 500, message = "Server error") })
+    @GetMapping(
+        value = "/receivables/order-confirmations/{orderConfirmationId}/pdf",
+        produces = "application/pdf"
+    )
+    ResponseEntity<org.springframework.core.io.Resource> getOrderConfirmationPdf(@ApiParam(value = "order confirmation ID",required=true) @PathVariable("orderConfirmationId") Integer orderConfirmationId);
 
 
     /**

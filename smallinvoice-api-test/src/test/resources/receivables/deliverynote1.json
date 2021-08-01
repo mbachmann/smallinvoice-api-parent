@@ -1,0 +1,56 @@
+{
+  "number": null,
+  "contact_id": null,
+  "contact_address_id": null,
+  "date": null,
+  "currency": "CHF",
+  "vat_included": false,
+  "discount_rate": 0.0,
+  "discount_type": "P",
+  "language": "de",
+  "positions": [
+    {
+      "type": "N",
+      "catalog_type": "P",
+      "number": null,
+      "name": "Schrauben 8x30mm",
+      "description": "",
+      "price": 0.18,
+      "vat": 7.7,
+      "amount": 2.0,
+      "unit_id": 7,
+      "total": 0.39,
+      "show_only_total": false
+    },
+    {
+      "type": "N",
+      "catalog_type": "S",
+      "number": null,
+      "name": "Lieferung",
+      "description": "",
+      "price": 200.0,
+      "vat": 7.7,
+      "amount": 4.0,
+      "unit_id": 13,
+      "total": 861.6,
+      "show_only_total": false
+    }
+  ],
+  "texts": [
+    {
+      "status": "D",
+      "title": "Lieferschein Nr. {RECEIPTNO} / Kunden Nr. {CUSTOMERNO}",
+      "introduction": "This is an introduction",
+      "conditions": "This is a condition"
+    }
+  ],
+  "free_texts": [
+    {
+      "text": "This is a free text",
+      "font_size": 9,
+      "position_x": 10,
+      "position_y": 10,
+      "page": 1
+    }
+  ]
+}

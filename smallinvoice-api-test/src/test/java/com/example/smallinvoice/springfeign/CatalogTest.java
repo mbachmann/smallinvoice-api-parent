@@ -1,6 +1,5 @@
 package com.example.smallinvoice.springfeign;
 
-import com.example.smallinvoice.AbstractTest;
 import com.example.smallinvoicespringfeign.api.CatalogApiClient;
 import com.example.smallinvoicespringfeign.model.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,11 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.ResponseEntity;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class CatalogTest extends AbstractTest {
+public class CatalogTest extends SharedTest {
 
     @Autowired
     private CatalogApiClient catalogApiClient;
@@ -50,7 +50,7 @@ public class CatalogTest extends AbstractTest {
         int productId = productResponse.getBody().getItem().getId();
         assertEquals(product, mapFromJson(mapToJson(productResponse.getBody().getItem()), CatalogProductPOST.class));
 
-        int productCategoryId = createProductCategoryIfNotExists("Product-Category-A");
+        int productCategoryId = apiService.createProductCategoryIfNotExists("Product-Category-A");
 
         // Change the new created product and save it again with update
         CatalogProductPUT newProduct = mapFromJson(mapToJson(productResponse.getBody().getItem()), CatalogProductPUT.class);
@@ -74,7 +74,7 @@ public class CatalogTest extends AbstractTest {
         int serviceId = serviceResponse.getBody().getItem().getId();
         assertEquals(service, mapFromJson(mapToJson(serviceResponse.getBody().getItem()), CatalogServicePOST.class));
 
-        int serviceCategoryId = createServiceCategoryIfNotExists("Service-Category-A");
+        int serviceCategoryId = apiService.createServiceCategoryIfNotExists("Service-Category-A");
 
         // Change the new created service and save it again with update
         CatalogServicePUT newService = mapFromJson(mapToJson(serviceResponse.getBody().getItem()), CatalogServicePUT.class);
@@ -89,11 +89,11 @@ public class CatalogTest extends AbstractTest {
 
     @Test
     public void getUnits() throws Exception {
-        ResponseEntity<ListCatalogConfigurationUnits> response = catalogApiClient.getUnits("permissions", null, null, 100, 0, null);
-        if (response.getBody() != null) {
-            response.getBody().getItems().forEach(unit -> getLogger().debug(unit.toString()));
-            ResponseEntity<ItemCatalogConfigurationUnitGET> responseUnit = catalogApiClient.getUnit(response.getBody().getItems().get(0).getId(), "permissions");
-            assertEquals (mapToJson(response.getBody().getItems().get(0)), mapToJson(responseUnit.getBody().getItem()));
+        List<CatalogConfigurationUnitGET> units = apiService.getCatalogUnits("permissions", null);
+        if (units != null) {
+            units.forEach(unit -> getLogger().debug(unit.toString()));
+            CatalogConfigurationUnitGET unit = apiService.getCatalogUnitById(units.get(0).getId(),"permissions");
+            assertEquals (units.get(0), unit);
         }
     }
 
@@ -111,31 +111,4 @@ public class CatalogTest extends AbstractTest {
         }
     }
 
-    public int createProductCategoryIfNotExists (String categoryName) {
-        ResponseEntity<ListProductsCategories> response = catalogApiClient.getCatalogProductCategories(null, null, "{\"name\":\"" + categoryName + "\"}", 100, 0, null);
-        int categoryId = 0;
-        if (response.getBody() != null && response.getBody().getPagination().getTotal() == 0) {
-            CatalogCategoryPOST category = new CatalogCategoryPOST();
-            category.setName(categoryName);
-            ResponseEntity<ItemCatalogCategoryGET> responseCategory = catalogApiClient.createCatalogProductCategory(category);
-            categoryId = responseCategory.getBody().getItem().getId();
-        } else {
-            categoryId = response.getBody().getItems().get(0).getId();
-        }
-        return categoryId;
-    }
-
-    public int createServiceCategoryIfNotExists (String categoryName) {
-        ResponseEntity<ListServicesCategories> response = catalogApiClient.getCatalogServiceCategories(null, null, "{\"name\":\"" + categoryName + "\"}", 100, 0, null);
-        int categoryId = 0;
-        if (response.getBody() != null && response.getBody().getPagination().getTotal() == 0) {
-            CatalogCategoryPOST category = new CatalogCategoryPOST();
-            category.setName(categoryName);
-            ResponseEntity<ItemCatalogCategoryGET> responseCategory = catalogApiClient.createCatalogServiceCategory(category);
-            categoryId = responseCategory.getBody().getItem().getId();
-        } else {
-            categoryId = response.getBody().getItems().get(0).getId();
-        }
-        return categoryId;
-    }
 }

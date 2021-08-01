@@ -1,6 +1,5 @@
 package com.example.smallinvoice.springfeign;
 
-import com.example.smallinvoice.AbstractTest;
 import com.example.smallinvoicespringfeign.api.ConfigurationApiClient;
 import com.example.smallinvoicespringfeign.model.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,11 +10,11 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.ResponseEntity;
 
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ConfigurationTest extends AbstractTest {
+public class ConfigurationTest extends SharedTest {
 
     @Autowired
     private ConfigurationApiClient configurationApiClient;
@@ -44,12 +43,11 @@ public class ConfigurationTest extends AbstractTest {
         if (bankAccountResponseChange.getBody() != null) {
             assertEquals(newBankAccount, mapFromJson(mapToJson(bankAccountResponseChange.getBody().getItem()), ConfigurationBankAccountPUT.class));
         }
-        TimeUnit.MILLISECONDS.sleep(500);
     }
 
     @Order(2)
     @Test
-    public void createAndChangeExchangeRate() throws IOException, InterruptedException {
+    public void createAndChangeExchangeRate() throws IOException {
         String jsonExchangeRate = readResource(new ClassPathResource("configuration/exchangerate1.json"));
         ConfigurationExchangeRatePOST exchangeRate = mapFromJson(jsonExchangeRate, ConfigurationExchangeRatePOST.class);
         deleteExchangeRateIfExists(exchangeRate.getCurrencyFrom(), exchangeRate.getCurrencyTo());
@@ -65,27 +63,23 @@ public class ConfigurationTest extends AbstractTest {
         if (exchangeRateResponseChange.getBody() != null) {
             assertEquals(newExchangeRate, mapFromJson(mapToJson(exchangeRateResponseChange.getBody().getItem()), ConfigurationExchangeRatePUT.class));
         }
-        TimeUnit.MILLISECONDS.sleep(500);
     }
 
     @Order(3)
     @Test
     public void getBankAccounts() throws Exception {
-        ResponseEntity<ListConfigurationBankAccounts> response = configurationApiClient.getBankAccounts("permissions", null, null, 100, 0, null);
-        assertEquals(200, response.getStatusCodeValue());
-        if (response.getBody() != null) {
-            response.getBody().getItems().forEach(item -> getLogger().debug(item.toString()));
+        List<ConfigurationBankAccountGET> bankAccounts = apiService.getBankAccounts();
+        if (bankAccounts != null) {
+            bankAccounts.forEach(item -> getLogger().debug(item.toString()));
         }
     }
 
     @Order(4)
     @Test
     public void getExchangeRates() throws Exception {
-        // TimeUnit.MILLISECONDS.sleep(1000);
-        ResponseEntity<ListConfigurationExchangeRates> response = configurationApiClient.getCurrencyExchangeRates(null, null, 100, 0, null);
-        assertEquals(200, response.getStatusCodeValue());
-        if (response.getBody() != null) {
-            response.getBody().getItems().forEach(item -> getLogger().debug(item.toString()));
+        List<ConfigurationExchangeRateGET> exchangeRates = apiService.getExchangeRates();
+        if (exchangeRates != null) {
+            exchangeRates.forEach(item -> getLogger().debug(item.toString()));
         }
     }
 

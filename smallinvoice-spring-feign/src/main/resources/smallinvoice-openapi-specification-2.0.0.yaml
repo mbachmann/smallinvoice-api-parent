@@ -8127,7 +8127,7 @@ paths:
         - Receivables
       summary: Returns data of specified order confirmation
       description: Returns data of specified order confirmation
-      operationId: getOderConfirmation
+      operationId: getOrderConfirmation
       parameters:
         - name: orderConfirmationId
           in: path
@@ -8274,7 +8274,7 @@ paths:
         - Receivables
       summary: Gets pdf of specified order confirmation
       description: Gets pdf of specified order confirmation
-      operationId: getOderConfirmationPdf
+      operationId: getOrderConfirmationPdf
       parameters:
         - name: orderConfirmationId
           in: path

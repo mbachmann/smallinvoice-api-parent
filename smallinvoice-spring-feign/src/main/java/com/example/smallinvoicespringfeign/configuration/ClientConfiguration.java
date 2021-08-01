@@ -94,7 +94,7 @@ public class ClientConfiguration {
 
   @Bean
   public Retryer feignRetryer(){
-    return new Retryer.Default(100, 1000, 4);
+    return new Retryer.Default(100, 1000, 3);
   }
 
   @Bean

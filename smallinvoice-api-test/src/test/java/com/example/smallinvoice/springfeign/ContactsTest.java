@@ -1,6 +1,5 @@
 package com.example.smallinvoice.springfeign;
 
-import com.example.smallinvoice.AbstractTest;
 import com.example.smallinvoicespringfeign.api.ContactsApiClient;
 import com.example.smallinvoicespringfeign.model.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ContactsTest extends AbstractTest {
+public class ContactsTest extends SharedTest {
 
     @Autowired
     private ContactsApiClient contactsApiClient;
@@ -32,6 +31,7 @@ public class ContactsTest extends AbstractTest {
     @Test
     public void getContactsList() {
 
+        apiService.getContacts("main_address,groups,permissions,custom_fields", null);
         ResponseEntity<ListContacts> response = contactsApiClient.getContacts("main_address,groups,permissions,custom_fields", null, null, 100, 0, null);
         response.getBody().getItems().forEach(item -> getLogger().debug(item.toString()));
         assertEquals(response.getBody().getItems().size(),response.getBody().getPagination().getTotal());
@@ -45,7 +45,7 @@ public class ContactsTest extends AbstractTest {
         if (response.getBody() != null && response.getBody().getItems() != null) {
             response.getBody().getItems().forEach(item -> getLogger().debug(item.toString()));
             ContactGET contact = response.getBody().getItems().get(0);
-            readAccounts(contact.getId());
+            apiService.getContactAccounts(contact.getId());
         }
     }
 
@@ -55,24 +55,24 @@ public class ContactsTest extends AbstractTest {
         String jsonContact = readResource(new ClassPathResource("contact/contact3.json"));
         ContactPOST newContact = mapFromJson(jsonContact, ContactPOST.class);
 
-        if (!checkContactIfExists(newContact.getName())) {
+        if (!apiService.checkIfContactExistsByName(newContact.getName())) {
             ResponseEntity<ItemContactGET> responseCreate = contactsApiClient.createContact(newContact);
             int contactId = responseCreate.getBody().getItem().getId();
 
-            createReminder(contactId, "contact/reminder1.json");
-            int addressId = createAddress(contactId, "contact/address2.json");
-            int peopleId1 = createPeople(contactId, "contact/people1.json");
-            int peopleId2 = createPeople(contactId, "contact/people2.json");
-            createAccount(contactId, "contact/account1.json");
-            createAccount(contactId, "contact/account2.json");
-            readAccounts(contactId);
+            createReminderFromResource(contactId, "contact/reminder1.json");
+            int addressId = createContactAddressFromResource(contactId, "contact/address2.json");
+            int peopleId1 = createContactPeopleFromResource(contactId, "contact/people1.json");
+            int peopleId2 = createContactPeopleFromResource(contactId, "contact/people2.json");
+            createContactAccountFromResource(contactId, "contact/account1.json");
+            createContactAccountFromResource(contactId, "contact/account2.json");
+            apiService.getContactAccounts(contactId);
 
-            deleteGroupsIfExists("EX-A", "EX-B", "EX-C");
+            apiService.deleteContactGroupsIfExists("EX-A", "EX-B", "EX-C");
             int groupId1 = createGroupAndAssign(contactId, "EX-A");
             int groupId2 = createGroupAndAssign(contactId, "EX-B");
             int groupId3 = createGroupAndAssign(contactId, "EX-C");
 
-            int letterId = createLetter(contactId, addressId, peopleId1, "contact/letter1.json");
+            int letterId = createLetterFromResource(contactId, addressId, peopleId1, "contact/letter1.json");
             TimeUnit.SECONDS.sleep(1);
         }
     }
@@ -83,28 +83,28 @@ public class ContactsTest extends AbstractTest {
         String jsonContact = readResource(new ClassPathResource("contact/contact4.json"));
         ContactPOST newContact = mapFromJson(jsonContact, ContactPOST.class);
 
-        deleteContactIfExists(newContact.getName());
+        apiService.deleteContactsIfExistsByName(newContact.getName());
 
         ResponseEntity<ItemContactGET> responseCreate = contactsApiClient.createContact(newContact);
         ResponseEntity<ItemContactGET> responseGet = contactsApiClient.getContact(responseCreate.getBody().getItem().getId(), "main_address,groups,permissions,custom_fields");
         assertEquals(newContact, mapFromJson(mapToJson(responseGet.getBody().getItem()), ContactPOST.class));
         int contactId = responseCreate.getBody().getItem().getId();
 
-        createReminder(contactId, "contact/reminder1.json");
-        int addressId = createAddress(contactId, "contact/address1.json");
-        int peopleId = createPeople(contactId, "contact/people1.json");
-        createAccount(contactId, "contact/account1.json");
-        createAccount(contactId, "contact/account2.json");
-        readAccounts(contactId);
+        createReminderFromResource(contactId, "contact/reminder1.json");
+        int addressId = createContactAddressFromResource(contactId, "contact/address1.json");
+        int peopleId = createContactPeopleFromResource(contactId, "contact/people1.json");
+        createContactAccountFromResource(contactId, "contact/account1.json");
+        createContactAccountFromResource(contactId, "contact/account2.json");
+        apiService.getContactAccounts(contactId);
 
-        deleteGroupsIfExists("Kino-A", "Kino-B", "Kino-C");
+        apiService.deleteContactGroupsIfExists("Kino-A", "Kino-B", "Kino-C");
         int groupId1 = createGroupAndAssign(contactId, "Kino-A");
         int groupId2 = createGroupAndAssign(contactId, "Kino-B");
         int groupId3 = createGroupAndAssign(contactId, "Kino-C");
 
-        int letterId = createLetter(contactId, addressId, peopleId, "contact/letter1.json");
-        getLetterPdf(letterId);
-        getLetterPreview(letterId);
+        int letterId = createLetterFromResource(contactId, addressId, peopleId, "contact/letter1.json");
+        writeLetterPdfToResource(letterId);
+        writeLetterPreviewToResource(letterId);
         sendLetterByEMail(letterId, "contact/email1.json");
         sendLetterByPost(letterId, "contact/post1.json");
         changeLetterStatus(letterId, DocumentLetterChangeStatusPATCH.StatusEnum.S);
@@ -116,24 +116,8 @@ public class ContactsTest extends AbstractTest {
         TimeUnit.SECONDS.sleep(1);
     }
 
-    public void deleteContactIfExists(String contactName) {
-        ResponseEntity<ListContacts> response = contactsApiClient.getContacts(null, null, "{\"name\":\"" + contactName + "\"}", 100, 0, null);
-        if (response.getBody() != null && response.getBody().getPagination().getTotal() > 0) {
-            ResponseEntity<Void> responseDelete = contactsApiClient.deleteContacts(response.getBody().getItems().get(0).getId());
-            assertEquals(200, responseDelete.getStatusCode().value());
-        }
-    }
 
-    private boolean checkContactIfExists(String contactName) {
-        ResponseEntity<ListContacts> response = contactsApiClient.getContacts(null, null, "{\"name\":\"" + contactName + "\"}", 100, 0, null);
-        if (response.getBody() != null) {
-            return (response.getBody().getPagination().getTotal() > 0);
-        }
-        return false;
-    }
-
-
-    public void createReminder(int contactId, String jsonResource) throws IOException {
+    public void createReminderFromResource(int contactId, String jsonResource) throws IOException {
         String jsonReminder = readResource(new ClassPathResource(jsonResource));
         ContactReminderPOST contactReminderPOST = mapFromJson(jsonReminder, ContactReminderPOST.class);
         contactReminderPOST.setContactId(contactId);
@@ -141,62 +125,8 @@ public class ContactsTest extends AbstractTest {
         if (responseReminder.getBody() != null) {
             assertEquals(contactReminderPOST, mapFromJson(mapToJson(responseReminder.getBody().getItem()), ContactReminderPOST.class));
         }
-
     }
 
-    public int createAddress(int contactId, String jsonResource) throws IOException {
-        String jsonAddress = readResource(new ClassPathResource(jsonResource));
-        ContactAddressPOST contactaddressPOST = mapFromJson(jsonAddress, ContactAddressPOST.class);
-        ResponseEntity<ItemContactAddressGET> responseAddress = contactsApiClient.createContactAddress(contactId, contactaddressPOST);
-        if (responseAddress.getBody() != null) {
-            assertEquals(contactaddressPOST, mapFromJson(mapToJson(responseAddress.getBody().getItem()), ContactAddressPOST.class));
-            return responseAddress.getBody().getItem().getId();
-        }
-        return 0;
-    }
-
-    public int createPeople(int id, String jsonResource) throws IOException {
-        String jsonPeople = readResource(new ClassPathResource(jsonResource));
-        ContactPeoplePOST contactPeoplePOST = mapFromJson(jsonPeople, ContactPeoplePOST.class);
-        ResponseEntity<ItemContactPeopleGET> responsePeople = contactsApiClient.createContactPeople(id, contactPeoplePOST);
-        if (responsePeople.getBody() != null) {
-            assertEquals(contactPeoplePOST, mapFromJson(mapToJson(responsePeople.getBody().getItem()), ContactPeoplePOST.class));
-            return responsePeople.getBody().getItem().getId();
-        }
-        return 0;
-
-    }
-
-    public void createAccount(int contactId, String jsonResource) throws IOException {
-        String jsonAccount = readResource(new ClassPathResource(jsonResource));
-        ContactAccountPOST contactAccountPOST = mapFromJson(jsonAccount, ContactAccountPOST.class);
-        ResponseEntity<ItemContactAccountGET> responseAccount = contactsApiClient.createContactAccount(contactId, contactAccountPOST);
-        if (responseAccount.getBody() != null) {
-            assertEquals(contactAccountPOST, mapFromJson(mapToJson(responseAccount.getBody().getItem()), ContactAccountPOST.class));
-        }
-    }
-
-    public void readAccounts(int contactId) {
-        ResponseEntity<ListContactAccounts> responseAccounts = contactsApiClient.getContactAccounts(contactId, "permissions", null, null, 100, 0, null);
-        if (responseAccounts.getBody() != null) {
-            responseAccounts.getBody().getItems().forEach(account -> getLogger().debug(account.toString()));
-        }
-
-    }
-
-    public void deleteGroupsIfExists (String... groupNames) {
-
-        StringBuilder filterJson = new StringBuilder("{\"or\":[");
-        for (String groupName : groupNames) {
-            filterJson.append("{\"name\":\"").append(groupName).append("\"},");
-        }
-        filterJson.deleteCharAt(filterJson.length()-1);
-        filterJson.append("]}");
-        ResponseEntity<ListContactConfigurationGroups> responseGroups = contactsApiClient.getContactGroups("permissions", null, filterJson.toString(), 100, 0, null);
-        if (responseGroups.getBody() != null) {
-            responseGroups.getBody().getItems().forEach( item -> contactsApiClient.deleteContactGroups(item.getId()) );
-        }
-    }
 
     public int createGroupAndAssign(int contactId, String groupName) throws IOException {
         ContactConfigurationGroupPOST contactGroupPOST = new ContactConfigurationGroupPOST();
@@ -211,7 +141,7 @@ public class ContactsTest extends AbstractTest {
         return 0;
     }
 
-    public int createLetter(int contactId, int addressId, int peopleId, String jsonResource) throws IOException {
+    public int createLetterFromResource(int contactId, int addressId, int peopleId, String jsonResource) throws IOException {
         String jsonAccount = readResource(new ClassPathResource(jsonResource));
         DocumentLetterPOST documentLetterPOST = mapFromJson(jsonAccount, DocumentLetterPOST.class);
         documentLetterPOST.contactId(contactId).contactAddressId(addressId).contactPersonId(peopleId);
@@ -232,13 +162,13 @@ public class ContactsTest extends AbstractTest {
         }
     }
 
-    public void getLetterPdf(int letterId) {
+    public void writeLetterPdfToResource(int letterId) {
         ResponseEntity<Resource> response = contactsApiClient.getLetterPdf(letterId);
         Resource resource  = response.getBody();
         writeResourceToFile(resource, "src/test/resources/receivedFiles/letterPdf.pdf");
     }
 
-    public void getLetterPreview(int letterId) {
+    public void writeLetterPreviewToResource(int letterId) {
         // size on of "240, 595, 600, 972, 1240"
         ResponseEntity<Resource> response = contactsApiClient.getLetterPreview(letterId, 1, 600);
         Resource resource  = response.getBody();

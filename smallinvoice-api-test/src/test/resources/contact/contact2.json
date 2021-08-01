@@ -1,5 +1,5 @@
 {
-  "number": "1010",
+  "number": null,
   "relation": [
     "CL",
     "CR"
@@ -8,7 +8,7 @@
   "gender": null,
   "gender_salutation_active": false,
   "name": "Autogarage Frei",
-  "name_addition": "Zusatz Information",
+  "name_addition": null,
   "salutation": "Sehr geehrte Frau Frei",
   "phone": "079 123 45 567",
   "fax": null,
