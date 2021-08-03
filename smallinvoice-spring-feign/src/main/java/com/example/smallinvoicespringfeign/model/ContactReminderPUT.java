@@ -18,7 +18,7 @@ import org.hibernate.validator.constraints.*;
 /**
  * ContactReminderPUT
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-08-03T10:50:58.837+02:00[Europe/Zurich]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-08-03T11:25:04.200+02:00[Europe/Zurich]")
 public class ContactReminderPUT  implements Serializable {
   private static final long serialVersionUID = 1L;
 

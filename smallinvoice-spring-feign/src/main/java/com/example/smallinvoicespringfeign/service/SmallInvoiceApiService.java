@@ -971,12 +971,12 @@ public class SmallInvoiceApiService extends AbstractApiService {
      * GET /receivables/configuration/isrs/{isrId} : Returns data of specified ISR (Einzahlungsschein mit Referenznummer (ESR))
      *
      * @param isrNoteId ISR ID (required)
-     * @param with
-     * @return
+     * @param with Comma separated, optional keys that should be included in the response (optional).
+     * @return ReceivablesConfigurationIsrGET one ISR Record
      */
     public ReceivablesConfigurationIsrGET getIsrById(int isrNoteId, String with) {
-        ResponseEntity<ReceivablesConfigurationIsrGET> response = receivablesApiClient.getIsr(isrNoteId, with);
-        if (response.getBody() != null) return response.getBody();
+        ResponseEntity<ItemReceivablesConfigurationIsrGET> response = receivablesApiClient.getIsr(isrNoteId, with);
+        if (response.getBody() != null) return response.getBody().getItem();
         else return null;
     }
 
@@ -1507,6 +1507,38 @@ public class SmallInvoiceApiService extends AbstractApiService {
         ResponseEntity<Void> response = receivablesApiClient.sendOfferByPost(offerId, post);
     }
 
+    /**
+     * Creates a document position
+     * @param catalogProduct CatalogProductGET - catalog product data
+     * @param amount the amount of products
+     * @return DocumentOfferPositionPOST - the position
+     * @throws IOException in case of mapping error
+     */
+    public DocumentOfferPositionPOST createOfferProductPosition(CatalogProductGET catalogProduct, float amount) throws IOException {
+        DocumentOfferPositionPOST productPosition = mapFromJson(mapToJson(catalogProduct), DocumentOfferPositionPOST.class);
+        productPosition.catalogType(DocumentOfferPositionPOST.CatalogTypeEnum.P)
+                .type(DocumentOfferPositionPOST.TypeEnum.N)
+                .amount(amount)
+                .showOnlyTotal(false);
+        return productPosition;
+    }
+
+    /**
+     * Creates a document position
+     * @param catalogService CatalogServiceGET - catalog service data
+     * @param amount the amount of services
+     * @return DocumentOfferPositionPOST - the position
+     * @throws IOException in case of mapping error
+     */
+    public DocumentOfferPositionPOST createOfferServicePosition(CatalogServiceGET catalogService, float amount) throws IOException {
+        DocumentOfferPositionPOST servicePosition = mapFromJson(mapToJson(catalogService), DocumentOfferPositionPOST.class);
+        servicePosition.catalogType(DocumentOfferPositionPOST.CatalogTypeEnum.S)
+                .type(DocumentOfferPositionPOST.TypeEnum.N)
+                .amount(amount)
+                .showOnlyTotal(false);
+        return servicePosition;
+    }
+
 
     // ======== Order Confirmations ==========
 
@@ -1639,6 +1671,37 @@ public class SmallInvoiceApiService extends AbstractApiService {
         ResponseEntity<Void> response = receivablesApiClient.sendOrderConfirmationByPost(orderConfirmationId, post);
     }
 
+    /**
+     * Creates a document position
+     * @param catalogProduct CatalogProductGET - catalog product data
+     * @param amount the amount of products
+     * @return DocumentOrderConfirmationPositionPOST - the position
+     * @throws IOException in case of mapping error
+     */
+    public DocumentOrderConfirmationPositionPOST createOrderConfirmationProductPosition(CatalogProductGET catalogProduct, float amount) throws IOException {
+        DocumentOrderConfirmationPositionPOST productPosition = mapFromJson(mapToJson(catalogProduct), DocumentOrderConfirmationPositionPOST.class);
+        productPosition.catalogType(DocumentOrderConfirmationPositionPOST.CatalogTypeEnum.P)
+                .type(DocumentOrderConfirmationPositionPOST.TypeEnum.N)
+                .amount(amount)
+                .showOnlyTotal(false);
+        return productPosition;
+    }
+
+    /**
+     * Creates a document position
+     * @param catalogService CatalogServiceGET - catalog service data
+     * @param amount the amount of services
+     * @return DocumentOrderConfirmationPositionPOST - the position
+     * @throws IOException in case of mapping error
+     */
+    public DocumentOrderConfirmationPositionPOST createOrderConfirmationServicePosition(CatalogServiceGET catalogService, float amount) throws IOException {
+        DocumentOrderConfirmationPositionPOST servicePosition = mapFromJson(mapToJson(catalogService), DocumentOrderConfirmationPositionPOST.class);
+        servicePosition.catalogType(DocumentOrderConfirmationPositionPOST.CatalogTypeEnum.S)
+                .type(DocumentOrderConfirmationPositionPOST.TypeEnum.N)
+                .amount(amount)
+                .showOnlyTotal(false);
+        return servicePosition;
+    }
 
     // ==================================
     //          Reporting

@@ -111,7 +111,8 @@ public class ReceivablesTest extends SharedTest {
     }
 
     /**
-     * Delivery note with 2 positions from Catalog and 2 positions not from catalog (just free name and description)
+     * Invoice with 2 positions from Catalog and 2 positions not from catalog (just free name and description)
+     * needs an ISR record in order to run, demo creates 2 isrs
      *
      * @throws IOException In case of reading resources
      */
@@ -161,6 +162,45 @@ public class ReceivablesTest extends SharedTest {
         assertEquals(mapToJson(offers.get(0)), mapToJson(invoice));
     }
 
+    /**
+     * Offer with 2 positions from Catalog and 2 positions not from catalog (just free name and description)
+     *
+     * @throws IOException In case of reading resources
+     */
+    @Test
+    public void createOffer() throws IOException {
+
+        DocumentOfferPositionPOST position1 = apiService.createOfferProductPosition(product1, 1.0F);
+        DocumentOfferPositionPOST position2 = apiService.createOfferServicePosition(service1, 1.0F);
+
+        String jsonOffer = readResource(new ClassPathResource("receivables/offer1.json"));
+        DocumentOfferPOST offer = mapFromJson(jsonOffer, DocumentOfferPOST.class);
+
+        offer
+                .contactId(contactId)
+                .contactAddressId(contact.getMainAddressId())
+                .contactPersonId(people.getId())
+                .date(LocalDate.now())
+                .validUntil(LocalDate.now().plusDays(30))
+                .addPositionsItem(position1)
+                .addPositionsItem(position2);
+
+        DocumentOfferGET createdOffer = apiService.createOffer(offer);
+
+        createdOffer.periodText("This is a new period test");
+        DocumentOfferGET updatedOffer = apiService.updateOffer(createdOffer);
+
+        writeOfferPdfToResource(updatedOffer.getId());
+        writeOfferPreviewToResource(updatedOffer.getId());
+        sendOfferByEMail(updatedOffer.getId(), "contact/email1.json");
+        // not possible with demo account
+        // sendOfferByPost(updatedOffer.getId(), "contact/post1.json");
+
+        DocumentOfferGET changedOffer = apiService.changeOfferStatusById(updatedOffer.getId(),  DocumentOfferChangeStatusPATCH.StatusEnum.S);
+        assertEquals(apiService.getOfferById(changedOffer.getId(), null), changedOffer);
+    }
+
+
     @Test
     public void getOrderConfirmationsTest() throws Exception {
         String with = "permissions,positions,texts,free_texts,contact_person,contact_prepage_address,contact_address,contact,custom_fields";
@@ -169,6 +209,44 @@ public class ReceivablesTest extends SharedTest {
         DocumentOrderConfirmationGET invoice = apiService.getOrderConfirmationById(orderConfirmations.get(0).getId(), with);
         assertEquals(mapToJson(orderConfirmations.get(0)), mapToJson(invoice));
     }
+
+    /**
+     * Rder confirmation with 2 positions from Catalog and 2 positions not from catalog (just free name and description)
+     *
+     * @throws IOException In case of reading resources
+     */
+    @Test
+    public void createOrderConfirmation() throws IOException {
+
+        DocumentOrderConfirmationPositionPOST position1 = apiService.createOrderConfirmationProductPosition(product1, 1.0F);
+        DocumentOrderConfirmationPositionPOST position2 = apiService.createOrderConfirmationServicePosition(service1, 1.0F);
+
+        String jsonOrderConfirmation = readResource(new ClassPathResource("receivables/orderconfirmation1.json"));
+        DocumentOrderConfirmationPOST deliveryNote = mapFromJson(jsonOrderConfirmation, DocumentOrderConfirmationPOST.class);
+
+        deliveryNote
+                .contactId(contactId)
+                .contactAddressId(contact.getMainAddressId())
+                .contactPersonId(people.getId())
+                .date(LocalDate.now())
+                .addPositionsItem(position1)
+                .addPositionsItem(position2);
+
+        DocumentOrderConfirmationGET createdOrderConfirmation = apiService.createOrderConfirmation(deliveryNote);
+
+        createdOrderConfirmation.periodText("This is a new period test");
+        DocumentOrderConfirmationGET updatedOrderConfirmation = apiService.updateOrderConfirmation(createdOrderConfirmation);
+
+        writeOrderConfirmationPdfToResource(updatedOrderConfirmation.getId());
+        writeOrderConfirmationPreviewToResource(updatedOrderConfirmation.getId());
+        sendOrderConfirmationByEMail(updatedOrderConfirmation.getId(), "contact/email1.json");
+        // not possible with demo account
+        // sendOrderConfirmationByPost(updatedOrderConfirmation.getId(), "contact/post1.json");
+
+        DocumentOrderConfirmationGET changedOrderConfirmation = apiService.changeOrderConfirmationStatusById(updatedOrderConfirmation.getId(),  DocumentOrderConfirmationChangeStatusPATCH.StatusEnum.S);
+        assertEquals(apiService.getOrderConfirmationById(changedOrderConfirmation.getId(), null), changedOrderConfirmation);
+    }
+
 
     @Test
     public void getPaymentsTest() throws Exception {
@@ -279,13 +357,13 @@ public class ReceivablesTest extends SharedTest {
 
     public void writeOrderConfirmationPdfToResource(int offerId) {
         Resource resource  = apiService.getOrderConfirmationPdfResource(offerId);
-        writeResourceToFile(resource, "src/test/resources/receivedFiles/offerPdf.pdf");
+        writeResourceToFile(resource, "src/test/resources/receivedFiles/orderConfirmationPdf.pdf");
     }
 
     public void writeOrderConfirmationPreviewToResource(int offerId) {
         // size on of "240, 595, 600, 972, 1240"
         Resource resource  = apiService.getOrderConfirmationPreviewResource(offerId, 1, 600);
-        writeResourceToFile(resource, "src/test/resources/receivedFiles/offerPreview.png");
+        writeResourceToFile(resource, "src/test/resources/receivedFiles/orderConfirmationPreview.png");
     }
 
     public void sendOrderConfirmationByEMail (int offerId, String jsonResource) throws IOException {

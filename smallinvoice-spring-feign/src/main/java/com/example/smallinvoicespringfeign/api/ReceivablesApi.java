@@ -29,13 +29,13 @@ import com.example.smallinvoicespringfeign.model.ItemDocumentInvoicePaymentGET;
 import com.example.smallinvoicespringfeign.model.ItemDocumentInvoiceStandardGET;
 import com.example.smallinvoicespringfeign.model.ItemDocumentOfferGET;
 import com.example.smallinvoicespringfeign.model.ItemDocumentOrderConfirmationGET;
+import com.example.smallinvoicespringfeign.model.ItemReceivablesConfigurationIsrGET;
 import com.example.smallinvoicespringfeign.model.ListDeliveryNotes;
 import com.example.smallinvoicespringfeign.model.ListDocumentInvoicePayments;
 import com.example.smallinvoicespringfeign.model.ListInvoicesStandard;
 import com.example.smallinvoicespringfeign.model.ListOffers;
 import com.example.smallinvoicespringfeign.model.ListOrderConfirmations;
 import com.example.smallinvoicespringfeign.model.ListReceivablesConfigurationIsrs;
-import com.example.smallinvoicespringfeign.model.ReceivablesConfigurationIsrGET;
 import com.example.smallinvoicespringfeign.model.Response401;
 import com.example.smallinvoicespringfeign.model.Response402;
 import com.example.smallinvoicespringfeign.model.Response403;
@@ -57,7 +57,7 @@ import javax.validation.constraints.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-08-03T10:50:58.837+02:00[Europe/Zurich]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-08-03T11:25:04.200+02:00[Europe/Zurich]")
 @Validated
 @Api(value = "Receivables", description = "the Receivables API")
 public interface ReceivablesApi {
@@ -984,14 +984,14 @@ public interface ReceivablesApi {
      *         or Too many requests (status code 429)
      *         or Server error (status code 500)
      */
-    @ApiOperation(value = "Returns data of specified ISR", nickname = "getIsr", notes = "Returns data of specified ISR", response = ReceivablesConfigurationIsrGET.class, authorizations = {
+    @ApiOperation(value = "Returns data of specified ISR", nickname = "getIsr", notes = "Returns data of specified ISR", response = ItemReceivablesConfigurationIsrGET.class, authorizations = {
         
         @Authorization(value = "bearerAuth"),
         @Authorization(value = "oauth", scopes = {
             @AuthorizationScope(scope = "configuration", description = "Settings") })
          }, tags={ "Receivables", })
     @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "Data of the requested ISR", response = ReceivablesConfigurationIsrGET.class),
+        @ApiResponse(code = 200, message = "Data of the requested ISR", response = ItemReceivablesConfigurationIsrGET.class),
         @ApiResponse(code = 400, message = "Bad request", response = Response4xx.class),
         @ApiResponse(code = 401, message = "Unauthorized", response = Response401.class),
         @ApiResponse(code = 403, message = "No permissions for specified entity (no response body) OR feature is missing (with response body)", response = Response403.class),
@@ -1003,7 +1003,7 @@ public interface ReceivablesApi {
         value = "/receivables/configuration/isrs/{isrId}",
         produces = "application/json"
     )
-    ResponseEntity<ReceivablesConfigurationIsrGET> getIsr(@ApiParam(value = "ISR ID",required=true) @PathVariable("isrId") Integer isrId,@ApiParam(value = "Comma separated, optional keys that should be included in the response.") @Valid @RequestParam(value = "with", required = false) String with);
+    ResponseEntity<ItemReceivablesConfigurationIsrGET> getIsr(@ApiParam(value = "ISR ID",required=true) @PathVariable("isrId") Integer isrId,@ApiParam(value = "Comma separated, optional keys that should be included in the response.") @Valid @RequestParam(value = "with", required = false) String with);
 
 
     /**
