@@ -20,7 +20,7 @@ import org.hibernate.validator.constraints.*;
 /**
  * ReceivablesConfigurationIsrGET
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-07-31T13:05:18.255013+02:00[Europe/Zurich]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-08-03T10:50:58.837+02:00[Europe/Zurich]")
 public class ReceivablesConfigurationIsrGET  implements Serializable {
   private static final long serialVersionUID = 1L;
 
@@ -138,11 +138,8 @@ public class ReceivablesConfigurationIsrGET  implements Serializable {
   private String iban;
 
   @JsonProperty("subscriber_number")
-  private String subscriberNumber;
-
-  @JsonProperty("created")
   @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
-  private LocalDateTime created;
+  private LocalDateTime subscriberNumber;
 
   /**
    * Gets or Sets permissions
@@ -456,47 +453,26 @@ public class ReceivablesConfigurationIsrGET  implements Serializable {
     this.iban = iban;
   }
 
-  public ReceivablesConfigurationIsrGET subscriberNumber(String subscriberNumber) {
+  public ReceivablesConfigurationIsrGET subscriberNumber(LocalDateTime subscriberNumber) {
     this.subscriberNumber = subscriberNumber;
-    return this;
-  }
-
-  /**
-   * Get subscriberNumber
-   * @return subscriberNumber
-  */
-  @ApiModelProperty(required = true, value = "")
-  @NotNull
-
-
-  public String getSubscriberNumber() {
-    return subscriberNumber;
-  }
-
-  public void setSubscriberNumber(String subscriberNumber) {
-    this.subscriberNumber = subscriberNumber;
-  }
-
-  public ReceivablesConfigurationIsrGET created(LocalDateTime created) {
-    this.created = created;
     return this;
   }
 
   /**
    * date that ISR was created
-   * @return created
+   * @return subscriberNumber
   */
   @ApiModelProperty(required = true, value = "date that ISR was created")
   @NotNull
 
   @Valid
 
-  public LocalDateTime getCreated() {
-    return created;
+  public LocalDateTime getSubscriberNumber() {
+    return subscriberNumber;
   }
 
-  public void setCreated(LocalDateTime created) {
-    this.created = created;
+  public void setSubscriberNumber(LocalDateTime subscriberNumber) {
+    this.subscriberNumber = subscriberNumber;
   }
 
   public ReceivablesConfigurationIsrGET permissions(List<PermissionsEnum> permissions) {
@@ -551,13 +527,12 @@ public class ReceivablesConfigurationIsrGET  implements Serializable {
         Objects.equals(this.deliveryNumber, receivablesConfigurationIsrGET.deliveryNumber) &&
         Objects.equals(this.iban, receivablesConfigurationIsrGET.iban) &&
         Objects.equals(this.subscriberNumber, receivablesConfigurationIsrGET.subscriberNumber) &&
-        Objects.equals(this.created, receivablesConfigurationIsrGET.created) &&
         Objects.equals(this.permissions, receivablesConfigurationIsrGET.permissions);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, _default, type, position, name, bankName, bankAddress, recipientName, recipientAddition, recipientStreet, recipientCity, deliveryNumber, iban, subscriberNumber, created, permissions);
+    return Objects.hash(id, _default, type, position, name, bankName, bankAddress, recipientName, recipientAddition, recipientStreet, recipientCity, deliveryNumber, iban, subscriberNumber, permissions);
   }
 
   @Override
@@ -579,7 +554,6 @@ public class ReceivablesConfigurationIsrGET  implements Serializable {
     sb.append("    deliveryNumber: ").append(toIndentedString(deliveryNumber)).append("\n");
     sb.append("    iban: ").append(toIndentedString(iban)).append("\n");
     sb.append("    subscriberNumber: ").append(toIndentedString(subscriberNumber)).append("\n");
-    sb.append("    created: ").append(toIndentedString(created)).append("\n");
     sb.append("    permissions: ").append(toIndentedString(permissions)).append("\n");
     sb.append("}");
     return sb.toString();

@@ -115,8 +115,10 @@ public class ReceivablesTest extends SharedTest {
      *
      * @throws IOException In case of reading resources
      */
-    // @Test
+    @Test
     public void createInvoice() throws IOException {
+        List<ReceivablesConfigurationIsrGET> isrs = apiService.getIsrs(null, null);
+        ReceivablesConfigurationIsrGET isr = isrs.size() > 0 ? isrs.get(0) : null;
 
         DocumentInvoicePositionPOST position1 = apiService.createInvoiceProductPosition(product1, 1.0F);
         DocumentInvoicePositionPOST position2 = apiService.createInvoiceServicePosition(service1, 1.0F);
@@ -129,6 +131,8 @@ public class ReceivablesTest extends SharedTest {
                 .contactAddressId(contact.getMainAddressId())
                 .contactPersonId(people.getId())
                 .date(LocalDate.now())
+                .due(LocalDate.now().plusDays(30))
+                .isrId(isr != null ? isr.getId() : null)
                 .addPositionsItem(position1)
                 .addPositionsItem(position2);
 

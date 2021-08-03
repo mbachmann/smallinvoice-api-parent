@@ -16,7 +16,7 @@ import org.hibernate.validator.constraints.*;
 /**
  * ItemConfigurationExchangeRateGET
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-07-31T13:05:18.255013+02:00[Europe/Zurich]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-08-03T10:50:58.837+02:00[Europe/Zurich]")
 public class ItemConfigurationExchangeRateGET  implements Serializable {
   private static final long serialVersionUID = 1L;
 
