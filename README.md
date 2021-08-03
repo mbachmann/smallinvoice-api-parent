@@ -59,11 +59,11 @@ The _integration tests_ show some errors. This is due to some misbehavior of the
 
 The _integration tests_ are testing almost all end points. For the receivables endpoints were the following documents created:
 
-- Letter: [letterPdf.pdf](smallinvoice-api-test/src/test/resources/receivedFiles/letterPdf.pdf), ![letterPreview.png](smallinvoice-api-test/src/test/resources/receivedFiles/letterPreview.png)
-- Delivery Note: [deliveryNotePdf.pdf](smallinvoice-api-test/src/test/resources/receivedFiles/deliveryNotePdf.pdf), ![deliveryNotePreview.png](smallinvoice-api-test/src/test/resources/receivedFiles/deliveryNotePreview.png)
-- Invoice: [invoicePdf.pdf](smallinvoice-api-test/src/test/resources/receivedFiles/invoicePdf.pdf), ![invoicePreview.png](smallinvoice-api-test/src/test/resources/receivedFiles/invoicePreview.png)
-- Offer: [offerPdf.pdf](smallinvoice-api-test/src/test/resources/receivedFiles/offerPdf.pdf), ![offerPreview.png](smallinvoice-api-test/src/test/resources/receivedFiles/offerPreview.png)
-- Order Confirmation: [orderConfirmationPdf.pdf](smallinvoice-api-test/src/test/resources/receivedFiles/orderConfirmationPdf.pdf), ![orderConfirmationPreview.png](smallinvoice-api-test/src/test/resources/receivedFiles/orderConfirmationPreview.png)
+- Letter: [letterPdf.pdf](smallinvoice-api-test/src/test/resources/receivedFiles/letterPdf.pdf)
+- Delivery Note: [deliveryNotePdf.pdf](smallinvoice-api-test/src/test/resources/receivedFiles/deliveryNotePdf.pdf)
+- Invoice: [invoicePdf.pdf](smallinvoice-api-test/src/test/resources/receivedFiles/invoicePdf.pdf)
+- Offer: [offerPdf.pdf](smallinvoice-api-test/src/test/resources/receivedFiles/offerPdf.pdf)
+- Order Confirmation: [orderConfirmationPdf.pdf](smallinvoice-api-test/src/test/resources/receivedFiles/orderConfirmationPdf.pdf)
 
 
 ### Project Setup
