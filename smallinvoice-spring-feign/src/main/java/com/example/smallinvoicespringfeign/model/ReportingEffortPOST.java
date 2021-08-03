@@ -4,6 +4,7 @@ import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.time.LocalDate;
@@ -16,12 +17,49 @@ import org.hibernate.validator.constraints.*;
 /**
  * ReportingEffortPOST
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-08-03T11:25:04.200+02:00[Europe/Zurich]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-08-03T21:09:37.732+02:00[Europe/Zurich]")
 public class ReportingEffortPOST  implements Serializable {
   private static final long serialVersionUID = 1L;
 
+  /**
+   * type of assigned entity, one of: P - project, CU - cost unit, C - contact
+   */
+  public enum EntityTypeEnum {
+    P("P"),
+    
+    CU("CU"),
+    
+    C("C");
+
+    private String value;
+
+    EntityTypeEnum(String value) {
+      this.value = value;
+    }
+
+    @JsonValue
+    public String getValue() {
+      return value;
+    }
+
+    @Override
+    public String toString() {
+      return String.valueOf(value);
+    }
+
+    @JsonCreator
+    public static EntityTypeEnum fromValue(String value) {
+      for (EntityTypeEnum b : EntityTypeEnum.values()) {
+        if (b.value.equals(value)) {
+          return b;
+        }
+      }
+      throw new IllegalArgumentException("Unexpected value '" + value + "'");
+    }
+  }
+
   @JsonProperty("entity_type")
-  private String entityType;
+  private EntityTypeEnum entityType;
 
   @JsonProperty("entity_id")
   private Integer entityId;
@@ -45,7 +83,7 @@ public class ReportingEffortPOST  implements Serializable {
   @JsonProperty("hourly_rate")
   private Float hourlyRate;
 
-  public ReportingEffortPOST entityType(String entityType) {
+  public ReportingEffortPOST entityType(EntityTypeEnum entityType) {
     this.entityType = entityType;
     return this;
   }
@@ -58,11 +96,11 @@ public class ReportingEffortPOST  implements Serializable {
   @NotNull
 
 
-  public String getEntityType() {
+  public EntityTypeEnum getEntityType() {
     return entityType;
   }
 
-  public void setEntityType(String entityType) {
+  public void setEntityType(EntityTypeEnum entityType) {
     this.entityType = entityType;
   }
 

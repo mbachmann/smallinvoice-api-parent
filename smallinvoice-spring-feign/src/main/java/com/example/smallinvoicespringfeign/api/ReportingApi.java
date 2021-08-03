@@ -43,7 +43,7 @@ import javax.validation.constraints.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-08-03T11:25:04.200+02:00[Europe/Zurich]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-08-03T21:09:37.732+02:00[Europe/Zurich]")
 @Validated
 @Api(value = "Reporting", description = "the Reporting API")
 public interface ReportingApi {
@@ -53,7 +53,7 @@ public interface ReportingApi {
      * Updates status for specified project
      *
      * @param projectId project ID (required)
-     * @param status status to be set, on of:  [&#39;O&#39; - open, &#39;C&#39; - closed, &#39;B&#39; - billed, &#39;P&#39; - pending] (required)
+     * @param status status to be set, on of: * &#39;O&#39; - open * &#39;C&#39; - closed * &#39;B&#39; - billed * &#39;P&#39; - pending  (required)
      * @return Data of the changed project (status code 200)
      *         or Bad request (status code 400)
      *         or Unauthorized (status code 401)
@@ -84,7 +84,7 @@ public interface ReportingApi {
         value = "/reporting/projects/{projectId}/change-status/{status}",
         produces = "application/json"
     )
-    ResponseEntity<ItemReportingProjectGET> changeProjectStatus(@ApiParam(value = "project ID",required=true) @PathVariable("projectId") Integer projectId,@ApiParam(value = "status to be set, on of:  ['O' - open, 'C' - closed, 'B' - billed, 'P' - pending]",required=true) @PathVariable("status") String status);
+    ResponseEntity<ItemReportingProjectGET> changeProjectStatus(@ApiParam(value = "project ID",required=true) @PathVariable("projectId") Integer projectId,@ApiParam(value = "status to be set, on of: * 'O' - open * 'C' - closed * 'B' - billed * 'P' - pending ",required=true, allowableValues = "\"O\", \"C\", \"B\", \"P\"") @PathVariable("status") String status);
 
 
     /**
@@ -264,7 +264,7 @@ public interface ReportingApi {
         value = "/reporting/cost-units/{costUnitsIds}",
         produces = "application/json"
     )
-    ResponseEntity<Void> deleteCostUnits(@ApiParam(value = "comma separated cost unit IDs",required=true) @PathVariable("costUnitsIds") Integer costUnitsIds);
+    ResponseEntity<Void> deleteCostUnits(@ApiParam(value = "comma separated cost unit IDs",required=true) @PathVariable("costUnitsIds") Integer... costUnitsIds);
 
 
     /**
@@ -300,7 +300,7 @@ public interface ReportingApi {
         value = "/reporting/efforts/{effortIds}",
         produces = "application/json"
     )
-    ResponseEntity<Void> deleteEfforts(@ApiParam(value = "efforts IDs (comma separated)",required=true) @PathVariable("effortIds") Integer effortIds);
+    ResponseEntity<Void> deleteEfforts(@ApiParam(value = "efforts IDs (comma separated)",required=true) @PathVariable("effortIds") Integer... effortIds);
 
 
     /**
@@ -317,7 +317,7 @@ public interface ReportingApi {
      *         or Too many requests (status code 429)
      *         or Server error (status code 500)
      */
-    @ApiOperation(value = "Deletes specified projects", nickname = "deleteProject", notes = "Deletes specified projects", authorizations = {
+    @ApiOperation(value = "Deletes specified projects", nickname = "deleteProjects", notes = "Deletes specified projects", authorizations = {
         
         @Authorization(value = "bearerAuth"),
         @Authorization(value = "oauth", scopes = {
@@ -336,7 +336,7 @@ public interface ReportingApi {
         value = "/reporting/projects/{projectIds}",
         produces = "application/json"
     )
-    ResponseEntity<Void> deleteProject(@ApiParam(value = "projects IDs (comma separated)",required=true) @PathVariable("projectIds") Integer projectIds);
+    ResponseEntity<Void> deleteProjects(@ApiParam(value = "projects IDs (comma separated)",required=true) @PathVariable("projectIds") Integer... projectIds);
 
 
     /**
@@ -372,7 +372,7 @@ public interface ReportingApi {
         value = "/reporting/working-hours/{timeIds}",
         produces = "application/json"
     )
-    ResponseEntity<Void> deleteWorkingHours(@ApiParam(value = "working hours IDs (comma separated)",required=true) @PathVariable("timeIds") String timeIds);
+    ResponseEntity<Void> deleteWorkingHours(@ApiParam(value = "working hours IDs (comma separated)",required=true) @PathVariable("timeIds") String... timeIds);
 
 
     /**

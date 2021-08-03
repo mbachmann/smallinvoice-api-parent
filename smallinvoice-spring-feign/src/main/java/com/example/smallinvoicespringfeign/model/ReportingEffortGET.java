@@ -21,7 +21,7 @@ import org.hibernate.validator.constraints.*;
 /**
  * ReportingEffortGET
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-08-03T11:25:04.200+02:00[Europe/Zurich]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-08-03T21:09:37.732+02:00[Europe/Zurich]")
 public class ReportingEffortGET  implements Serializable {
   private static final long serialVersionUID = 1L;
 
@@ -34,8 +34,45 @@ public class ReportingEffortGET  implements Serializable {
   @JsonProperty("user_name")
   private String userName;
 
+  /**
+   * type of assigned entity, one of: P - project, CU - cost unit, C - contact
+   */
+  public enum EntityTypeEnum {
+    P("P"),
+    
+    CU("CU"),
+    
+    C("C");
+
+    private String value;
+
+    EntityTypeEnum(String value) {
+      this.value = value;
+    }
+
+    @JsonValue
+    public String getValue() {
+      return value;
+    }
+
+    @Override
+    public String toString() {
+      return String.valueOf(value);
+    }
+
+    @JsonCreator
+    public static EntityTypeEnum fromValue(String value) {
+      for (EntityTypeEnum b : EntityTypeEnum.values()) {
+        if (b.value.equals(value)) {
+          return b;
+        }
+      }
+      throw new IllegalArgumentException("Unexpected value '" + value + "'");
+    }
+  }
+
   @JsonProperty("entity_type")
-  private String entityType;
+  private EntityTypeEnum entityType;
 
   @JsonProperty("entity_id")
   private Integer entityId;
@@ -167,7 +204,7 @@ public class ReportingEffortGET  implements Serializable {
     this.userName = userName;
   }
 
-  public ReportingEffortGET entityType(String entityType) {
+  public ReportingEffortGET entityType(EntityTypeEnum entityType) {
     this.entityType = entityType;
     return this;
   }
@@ -180,11 +217,11 @@ public class ReportingEffortGET  implements Serializable {
   @NotNull
 
 
-  public String getEntityType() {
+  public EntityTypeEnum getEntityType() {
     return entityType;
   }
 
-  public void setEntityType(String entityType) {
+  public void setEntityType(EntityTypeEnum entityType) {
     this.entityType = entityType;
   }
 

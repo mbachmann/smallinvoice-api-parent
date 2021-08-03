@@ -10293,11 +10293,21 @@ paths:
             type: integer
         - name: status
           in: path
-          description: 'status to be set, on of:  [''O'' - open, ''C'' - closed, ''B''
-          - billed, ''P'' - pending]'
+          description: >
+             status to be set, on of:
+             * 'O' - open
+             * 'C' - closed
+             * 'B' - billed
+             * 'P' - pending
           required: true
           schema:
             type: string
+            enum:
+              - O
+              - C
+              - B
+              - P
+
       responses:
         200:
           description: Data of the changed project
@@ -10360,7 +10370,7 @@ paths:
         - Reporting
       summary: Deletes specified projects
       description: Deletes specified projects
-      operationId: deleteProject
+      operationId: deleteProjects
       parameters:
         - name: projectIds
           in: path
@@ -20669,6 +20679,10 @@ components:
           description: full name of user
         entity_type:
           type: string
+          enum:
+            - P
+            - CU
+            - C
           description: 'type of assigned entity, one of: P - project, CU - cost unit,
             C - contact'
         entity_id:
@@ -20727,6 +20741,10 @@ components:
       properties:
         entity_type:
           type: string
+          enum:
+            - P
+            - CU
+            - C
           description: 'type of assigned entity, one of: P - project, CU - cost unit,
             C - contact'
         entity_id:
@@ -20830,7 +20848,14 @@ components:
           format: float
         status:
           type: string
-          description: 'project''s status; one of: [''0'',''1'',''2'',''3'']'
+          enum:
+            - O
+            - C
+            - B
+            - P
+          description: 'status to be set, on of:  [''O'' - open, ''C'' - closed, ''B''
+                    - billed, ''P'' - pending]'
+
         permissions:
           type: array
           items:

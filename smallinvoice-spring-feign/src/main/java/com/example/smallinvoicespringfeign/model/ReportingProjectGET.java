@@ -19,7 +19,7 @@ import org.hibernate.validator.constraints.*;
 /**
  * ReportingProjectGET
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-08-03T11:25:04.200+02:00[Europe/Zurich]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-08-03T21:09:37.732+02:00[Europe/Zurich]")
 public class ReportingProjectGET  implements Serializable {
   private static final long serialVersionUID = 1L;
 
@@ -51,8 +51,47 @@ public class ReportingProjectGET  implements Serializable {
   @JsonProperty("hourly_rate")
   private Float hourlyRate;
 
+  /**
+   * status to be set, on of:  ['O' - open, 'C' - closed, 'B' - billed, 'P' - pending]
+   */
+  public enum StatusEnum {
+    O("O"),
+    
+    C("C"),
+    
+    B("B"),
+    
+    P("P");
+
+    private String value;
+
+    StatusEnum(String value) {
+      this.value = value;
+    }
+
+    @JsonValue
+    public String getValue() {
+      return value;
+    }
+
+    @Override
+    public String toString() {
+      return String.valueOf(value);
+    }
+
+    @JsonCreator
+    public static StatusEnum fromValue(String value) {
+      for (StatusEnum b : StatusEnum.values()) {
+        if (b.value.equals(value)) {
+          return b;
+        }
+      }
+      throw new IllegalArgumentException("Unexpected value '" + value + "'");
+    }
+  }
+
   @JsonProperty("status")
-  private String status;
+  private StatusEnum status;
 
   /**
    * Gets or Sets permissions
@@ -282,24 +321,24 @@ public class ReportingProjectGET  implements Serializable {
     this.hourlyRate = hourlyRate;
   }
 
-  public ReportingProjectGET status(String status) {
+  public ReportingProjectGET status(StatusEnum status) {
     this.status = status;
     return this;
   }
 
   /**
-   * project's status; one of: ['0','1','2','3']
+   * status to be set, on of:  ['O' - open, 'C' - closed, 'B' - billed, 'P' - pending]
    * @return status
   */
-  @ApiModelProperty(required = true, value = "project's status; one of: ['0','1','2','3']")
+  @ApiModelProperty(required = true, value = "status to be set, on of:  ['O' - open, 'C' - closed, 'B' - billed, 'P' - pending]")
   @NotNull
 
 
-  public String getStatus() {
+  public StatusEnum getStatus() {
     return status;
   }
 
-  public void setStatus(String status) {
+  public void setStatus(StatusEnum status) {
     this.status = status;
   }
 

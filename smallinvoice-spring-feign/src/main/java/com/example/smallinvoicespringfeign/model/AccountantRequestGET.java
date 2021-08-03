@@ -23,7 +23,7 @@ import org.hibernate.validator.constraints.*;
 /**
  * AccountantRequestGET
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-08-03T11:25:04.200+02:00[Europe/Zurich]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-08-03T21:09:37.732+02:00[Europe/Zurich]")
 public class AccountantRequestGET  implements Serializable {
   private static final long serialVersionUID = 1L;
 

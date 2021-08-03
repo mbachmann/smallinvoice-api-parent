@@ -65,6 +65,9 @@ The _integration tests_ are testing almost all end points. For the receivables e
 - Offer: [offerPdf.pdf](smallinvoice-api-test/src/test/resources/receivedFiles/offerPdf.pdf)
 - Order Confirmation: [orderConfirmationPdf.pdf](smallinvoice-api-test/src/test/resources/receivedFiles/orderConfirmationPdf.pdf)
 
+Addtionally, the image preview image files has been generated in the png format:
+
+- [receivedFiles](smallinvoice-api-test/src/test/resources/receivedFiles)
 
 ### Project Setup
 

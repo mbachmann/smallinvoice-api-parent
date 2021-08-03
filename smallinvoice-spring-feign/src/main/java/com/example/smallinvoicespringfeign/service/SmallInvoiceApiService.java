@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -33,6 +34,9 @@ public class SmallInvoiceApiService extends AbstractApiService {
 
     @Autowired
     private ConfigurationApiClient configurationApiClient;
+
+    @Autowired
+    private ReportingApiClient reportingApiClient;
 
 
     // ==================================
@@ -1706,6 +1710,327 @@ public class SmallInvoiceApiService extends AbstractApiService {
     // ==================================
     //          Reporting
     // ==================================
+
+
+    // ========== Activities ============
+
+    /**
+     * GET /reporting/activities : Returns list of activities entries
+     *
+     * @param filter filter Filter expression (JSON) (optional)
+     * @param with    with with Comma separated, optional keys that should be included in the response. (optional)
+     *                    <br/>"permissions"
+     * @return {@code List<ActivityGET>} - Data of the requested activities entries
+     */
+    public @Valid List<ActivityGET> getReportingActivities(String with, String filter) {
+        try {
+            ResponseEntity<ListReportingActivities> response = reportingApiClient.getActivities( with, null, filter, 100, 0, null);
+            if (response.getBody() != null) {
+                response.getBody().getItems().forEach(item -> getLogger().debug(item.toString()));
+                return response.getBody().getItems();
+            }
+        } catch (RetryableException | SmallInvoiceNotFoundException ignored) {
+        }
+        return null;
+    }
+
+    /**
+     * GET /reporting/activities/{activityId} : Returns data of specified activity entry
+     *
+     * @param activityId activity ID (required)
+     * @param with    with with Comma separated, optional keys that should be included in the response. (optional)
+     *                    <br/>"permissions"
+     * @return ActivityGET - Data of the requested activity
+     */
+    public @NotNull @Valid ActivityGET getReportingActivityById(Integer activityId, String with) {
+
+        ResponseEntity<ItemActivityGET> response = reportingApiClient.getActivity(activityId, with);
+        if (response.getBody() != null) return response.getBody().getItem();
+        else return null;
+    }
+
+
+    // ========= Cost Unit ==============
+    /**
+     * GET /reporting/cost-units : Returns list of cost units
+     *
+     * @param filter filter Filter expression (JSON) (optional)
+     * @return {@code List<ReportingCostUnitGET>} - Data of the requested cost units
+     */
+    public @Valid List<ReportingCostUnitGET> getReportingCostUnits(String filter) {
+        try {
+            ResponseEntity<ListReportingCostUnits> response = reportingApiClient.getCostUnits( null, filter, 100, 0, null);
+            if (response.getBody() != null) {
+                response.getBody().getItems().forEach(item -> getLogger().debug(item.toString()));
+                return response.getBody().getItems();
+            }
+        } catch (RetryableException | SmallInvoiceNotFoundException ignored) {
+        }
+        return null;
+    }
+
+    /**
+     * GET /reporting/cost-units/{costUnitId} : Returns data of specified cost unit
+     *
+     * @param costUnitId cost unit ID (required)
+     * @return ReportingCostUnitGET - Data of the requested cost unit
+     */
+    public ReportingCostUnitGET getReportingCostUnitById(int costUnitId) {
+
+        ResponseEntity<ItemReportingCostUnitGET> response = reportingApiClient.getCostUnit(costUnitId);
+        if (response.getBody() != null) return response.getBody().getItem();
+        else return null;
+    }
+
+    /**
+     * DELETE /reporting/cost-units/{costUnitIds} : Deletes specified cost unit
+     * @param costUnitIds comma separated costUnit IDs (required)
+     */
+    public void deleteReportingCostUnitByIds(Integer... costUnitIds) {
+        ResponseEntity<Void> response = reportingApiClient.deleteCostUnits(costUnitIds);
+    }
+
+    /**
+     * POST /reporting/cost-units : Creates new cost unit
+     *
+     * @param costUnit ReportingCostUnitPOST – costUnit
+     * @return ReportingCostUnitGET - Data of the created costUnit
+     */
+    public ReportingCostUnitGET createReportingCostUnit(ReportingCostUnitPOST costUnit) {
+        ResponseEntity<ItemReportingCostUnitGET> response = reportingApiClient.createCostUnit(costUnit);
+        return Objects.requireNonNull(response.getBody()).getItem();
+    }
+
+    /**
+     * PUT /reporting/cost-units/{costUnitId} : Updates specified cost unit
+     *
+     * @param costUnit ReportingCostUnitGET - costUnit (required)
+     * @return ReportingCostUnitGET -Data of the updated costUnit
+     * @throws IOException if mapping from ReportingCostUnitGET to ReportingCostUnitPUT fails
+     */
+    public ReportingCostUnitGET updateReportingCostUnit(ReportingCostUnitGET costUnit) throws IOException {
+        ReportingCostUnitPUT changedReportingCostUnit = mapFromJson(mapToJson(costUnit), ReportingCostUnitPUT.class);
+        ResponseEntity<ItemReportingCostUnitGET> response = reportingApiClient.updateCostUnit(costUnit.getId(), changedReportingCostUnit);
+        return Objects.requireNonNull(response.getBody()).getItem();
+    }
+
+    // ========= Efforts ==============
+    /**
+     * GET /reporting/efforts : Returns list of efforts
+     * @param with  with with Comma separated, optional keys that should be included in the response. (optional)
+     *              <br/>"user_name,activity_name,permissions"
+     * @param filter filter Filter expression (JSON) (optional)
+     * @return {@code List<ReportingEffortGET>} - Data of the requested efforts
+     */
+    public @Valid List<ReportingEffortGET> getReportingEfforts(String with, String filter) {
+        try {
+            ResponseEntity<ListReportingEfforts> response = reportingApiClient.getEfforts( with, null, filter, 100, 0, null);
+            if (response.getBody() != null) {
+                response.getBody().getItems().forEach(item -> getLogger().debug(item.toString()));
+                return response.getBody().getItems();
+            }
+        } catch (RetryableException | SmallInvoiceNotFoundException ignored) {
+        }
+        return null;
+    }
+
+    /**
+     * GET /reporting/efforts/{effortId} : Returns data of specified effort
+     *
+     * @param effortId effort ID (required)
+     * @param with    with with Comma separated, optional keys that should be included in the response. (optional)
+     *                *             <br/>"permissions,custom_fields"
+     * @return ReportingEffortGET - Data of the requested effort
+     */
+    public @NotNull @Valid ReportingEffortGET getReportingEffortById(int effortId, String with) {
+
+        ResponseEntity<ItemReportingEffortGET> response = reportingApiClient.getEffort(effortId, with);
+        if (response.getBody() != null) return response.getBody().getItem();
+        else return null;
+    }
+
+    /**
+     * DELETE /reporting/efforts/{effortIds} : Deletes specified effort
+     * @param effortIds comma separated effort IDs (required)
+     */
+    public void deleteReportingEffortByIds(Integer... effortIds) {
+        ResponseEntity<Void> response = reportingApiClient.deleteEfforts(effortIds);
+    }
+
+    /**
+     * POST /reporting/efforts : Creates new effort
+     *
+     * @param effort ReportingEffortPOST – effort
+     * @return ReportingEffortGET - Data of the created effort
+     */
+    public ReportingEffortGET createReportingEffort(ReportingEffortPOST effort) {
+        ResponseEntity<ItemReportingEffortGET> response = reportingApiClient.createEffort(effort);
+        return Objects.requireNonNull(response.getBody()).getItem();
+    }
+
+    /**
+     * PUT /reporting/efforts/{effortId} : Updates specified effort
+     *
+     * @param effort ReportingEffortGET - effort (required)
+     * @return ReportingEffortGET - Data of the updated effort
+     * @throws IOException if mapping from ReportingEffortPUT to ReportingEffortPUT fails
+     */
+    public ReportingEffortGET updateReportingEffort(ReportingEffortGET effort) throws IOException {
+        ReportingEffortPUT changedReportingEffort = mapFromJson(mapToJson(effort), ReportingEffortPUT.class);
+        ResponseEntity<ItemReportingEffortGET> response = reportingApiClient.updateEffort(effort.getId(), changedReportingEffort);
+        return Objects.requireNonNull(response.getBody()).getItem();
+    }
+
+    // ========= Projects ==============
+    /**
+     * GET /reporting/projects : Returns list of projects
+     * @param with  with with Comma separated, optional keys that should be included in the response. (optional)
+     *              <br/>"contact_name,permissions"
+     * @param filter filter Filter expression (JSON) (optional)
+     * @return {@code List<ReportingProjectGET>} - Data of the requested projects
+     */
+    public @Valid List<ReportingProjectGET> getReportingProjects(String with, String filter) {
+        try {
+            ResponseEntity<ListReportingProjects> response = reportingApiClient.getProjects( with, null, filter, 100, 0, null);
+            if (response.getBody() != null) {
+                response.getBody().getItems().forEach(item -> getLogger().debug(item.toString()));
+                return response.getBody().getItems();
+            }
+        } catch (RetryableException | SmallInvoiceNotFoundException ignored) {
+        }
+        return null;
+    }
+
+    /**
+     * GET /reporting/projects/{projectId} : Returns data of specified project
+     *
+     * @param projectId project ID (required)
+     * @param with    with with Comma separated, optional keys that should be included in the response. (optional)
+     *                *             <br/>"permissions,custom_fields"
+     * @return ReportingProjectGET - Data of the requested project
+     */
+    public @NotNull @Valid ReportingProjectGET getReportingProjectById(int projectId, String with) {
+
+        ResponseEntity<ItemReportingProjectGET> response = reportingApiClient.getProject(projectId, with);
+        if (response.getBody() != null) return response.getBody().getItem();
+        else return null;
+    }
+
+    /**
+     * DELETE /reporting/projects/{projectIds} : Deletes specified projects
+     * @param projectIds comma separated project IDs (required)
+     */
+    public void deleteReportingProjectByIds(Integer... projectIds) {
+        ResponseEntity<Void> response = reportingApiClient.deleteProjects(projectIds);
+    }
+
+    /**
+     * POST /reporting/projects : Creates new project
+     *
+     * @param project ReportingProjectPOST – project
+     * @return ReportingProjectGET - Data of the created project
+     */
+    public ReportingProjectGET createReportingProject(ReportingProjectPOST project) {
+        ResponseEntity<ItemReportingProjectGET> response = reportingApiClient.createProject(project);
+        return Objects.requireNonNull(response.getBody()).getItem();
+    }
+
+    /**
+     * PUT /reporting/projects/{projectId} : Updates specified project
+     *
+     * @param project ReportingProjectGET - project (required)
+     * @return ReportingProjectGET - Data of the updated project
+     * @throws IOException if mapping from ReportingProjectPUT to ReportingProjectPUT fails
+     */
+    public ReportingProjectGET updateReportingProject(ReportingProjectGET project) throws IOException {
+        ReportingProjectPUT changedReportingProject = mapFromJson(mapToJson(project), ReportingProjectPUT.class);
+        ResponseEntity<ItemReportingProjectGET> response = reportingApiClient.updateProject(project.getId(), changedReportingProject);
+        return Objects.requireNonNull(response.getBody()).getItem();
+    }
+
+    /**
+     * PATCH /reporting/projects/{projectId}/change-status/{status} : Updates status for specified project
+     *
+     * @param projectId      project ID (required)
+     * @param status         ReportingProjectGET.StatusEnum status of project,
+     *                       <br/> possible values: 'status to be set, on of:  [''O'' - open, ''C'' - closed, ''B''
+     *                     - billed, ''P'' - pending]'
+     * @return ReportingProjectGET - Data of the changed orderConfirmation
+     */
+
+    public ReportingProjectGET changeReportingProjectStatusById(
+            int projectId, ReportingProjectGET.StatusEnum status) {
+
+        ResponseEntity<ItemReportingProjectGET> response = reportingApiClient.changeProjectStatus(projectId, status.toString());
+        return Objects.requireNonNull(response.getBody()).getItem();
+    }
+
+    // ========= Working Hours ==============
+    /**
+     * GET /reporting/working-hours : Returns list of working-hours
+     * @param with with with Comma separated, optional keys that should be included in the response. (optional)
+     *             <br/>"user_name,permissions"
+     * @param filter filter Filter expression (JSON) (optional)
+     * @return {@code List<WorkingHoursGET>} - Data of the requested working-hours
+     */
+    public @Valid List<WorkingHoursGET> getWorkingHours(String with, String filter) {
+        try {
+            ResponseEntity<ListWorkingHours> response = reportingApiClient.getWorkingHours( with, null, filter, 100, 0, null);
+            if (response.getBody() != null) {
+                response.getBody().getItems().forEach(item -> getLogger().debug(item.toString()));
+                return response.getBody().getItems();
+            }
+        } catch (RetryableException | SmallInvoiceNotFoundException ignored) {
+        }
+        return null;
+    }
+
+    /**
+     * GET /reporting/working-hours/{workingHourId} : Returns data of specified workingHour
+     *
+     * @param workingHourId workingHour ID (required)
+     * @param with    with with Comma separated, optional keys that should be included in the response. (optional)
+     *                *             <br/>"user_name,permissions"
+     * @return WorkingHourGET - Data of the requested workingHour
+     */
+    public @NotNull @Valid WorkingHoursGET getWorkingHourById(int workingHourId, String with) {
+
+        ResponseEntity<ItemWorkingHoursGET> response = reportingApiClient.getWorkingHour(workingHourId, with);
+        if (response.getBody() != null) return response.getBody().getItem();
+        else return null;
+    }
+
+    /**
+     * DELETE /reporting/working-hours/{workingHourIds} : Deletes specified working-hours
+     * @param workingHourIds comma separated workingHour IDs (required)
+     */
+    public void deleteWorkingHourByIds(String... workingHourIds) {
+        ResponseEntity<Void> response = reportingApiClient.deleteWorkingHours(workingHourIds);
+    }
+
+    /**
+     * POST /reporting/working-hours : Creates new workingHour
+     *
+     * @param workingHour WorkingHourPOST – workingHour
+     * @return WorkingHourGET - Data of the created workingHour
+     */
+    public WorkingHoursGET createWorkingHour(WorkingHoursPOST workingHour) {
+        ResponseEntity<ItemWorkingHoursGET> response = reportingApiClient.createWorkingHour(workingHour);
+        return Objects.requireNonNull(response.getBody()).getItem();
+    }
+
+    /**
+     * PUT /reporting/working-hours/{workingHourId} : Updates specified workingHour
+     *
+     * @param workingHour WorkingHourGET - workingHour (required)
+     * @return WorkingHoursGET - Data of the updated workingHour
+     * @throws IOException if mapping from WorkingHoursPUT to WorkingHoursPUT fails
+     */
+    public WorkingHoursGET updateWorkingHour(WorkingHoursGET workingHour) throws IOException {
+        WorkingHoursPUT changedWorkingHour = mapFromJson(mapToJson(workingHour), WorkingHoursPUT.class);
+        ResponseEntity<ItemWorkingHoursGET> response = reportingApiClient.updateWorkingHour(workingHour.getId(), changedWorkingHour);
+        return Objects.requireNonNull(response.getBody()).getItem();
+    }
 
 
 }

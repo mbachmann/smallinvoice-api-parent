@@ -1,0 +1,12 @@
+[
+  {
+    "id": 725128183,
+    "name": "Beraten",
+    "service_id": 652370382,
+    "use_service_price": false,
+    "permissions": [
+      "view",
+      "edit"
+    ]
+  }
+]

@@ -1,0 +1,15 @@
+[
+  {
+    "id": 503309551,
+    "user_id": 627581844,
+    "user_name": "Hans Meier",
+    "date": "2021-08-03",
+    "time_start": "19:26",
+    "time_end": "19:27",
+    "created": "2021-08-03 19:27:28",
+    "permissions": [
+      "view",
+      "edit"
+    ]
+  }
+]

@@ -1,7 +1,11 @@
 package com.example.smallinvoicespringfeign.model;
 
+import java.time.LocalTime;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
@@ -21,7 +25,7 @@ import org.hibernate.validator.constraints.*;
 /**
  * WorkingHoursGET
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-08-03T11:25:04.200+02:00[Europe/Zurich]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-08-03T17:15:13.630+02:00[Europe/Zurich]")
 public class WorkingHoursGET  implements Serializable {
   private static final long serialVersionUID = 1L;
 
@@ -39,10 +43,12 @@ public class WorkingHoursGET  implements Serializable {
   private LocalDate date;
 
   @JsonProperty("time_start")
-  private String timeStart;
+  @JsonFormat(pattern="HH:mm")
+  private LocalTime timeStart;
 
   @JsonProperty("time_end")
-  private String timeEnd;
+  @JsonFormat(pattern="HH:mm")
+  private LocalTime timeEnd;
 
   @JsonProperty("created")
   @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
@@ -53,7 +59,7 @@ public class WorkingHoursGET  implements Serializable {
    */
   public enum PermissionsEnum {
     VIEW("view"),
-    
+
     EDIT("edit");
 
     private String value;
@@ -171,7 +177,7 @@ public class WorkingHoursGET  implements Serializable {
     this.date = date;
   }
 
-  public WorkingHoursGET timeStart(String timeStart) {
+  public WorkingHoursGET timeStart(LocalTime timeStart) {
     this.timeStart = timeStart;
     return this;
   }
@@ -183,16 +189,16 @@ public class WorkingHoursGET  implements Serializable {
   @ApiModelProperty(example = "HH:MM", required = true, value = "start of working hours time span (in HH:MM format)")
   @NotNull
 
-@Pattern(regexp="^\\d{2}:\\d{2}$") 
-  public String getTimeStart() {
+@Pattern(regexp="^\\d{2}:\\d{2}$")
+  public LocalTime getTimeStart() {
     return timeStart;
   }
 
-  public void setTimeStart(String timeStart) {
+  public void setTimeStart(LocalTime timeStart) {
     this.timeStart = timeStart;
   }
 
-  public WorkingHoursGET timeEnd(String timeEnd) {
+  public WorkingHoursGET timeEnd(LocalTime timeEnd) {
     this.timeEnd = timeEnd;
     return this;
   }
@@ -204,12 +210,12 @@ public class WorkingHoursGET  implements Serializable {
   @ApiModelProperty(example = "HH:MM", required = true, value = "end of working hours time span (in HH:MM format)")
   @NotNull
 
-@Pattern(regexp="^\\d{2}:\\d{2}$") 
-  public String getTimeEnd() {
+@Pattern(regexp="^\\d{2}:\\d{2}$")
+  public LocalTime getTimeEnd() {
     return timeEnd;
   }
 
-  public void setTimeEnd(String timeEnd) {
+  public void setTimeEnd(LocalTime timeEnd) {
     this.timeEnd = timeEnd;
   }
 
@@ -249,7 +255,7 @@ public class WorkingHoursGET  implements Serializable {
   }
 
   /**
-   * actions that can be performed on an item (possible values: view, edit) 
+   * actions that can be performed on an item (possible values: view, edit)
    * @return permissions
   */
   @ApiModelProperty(value = "actions that can be performed on an item (possible values: view, edit) ")
@@ -292,7 +298,7 @@ public class WorkingHoursGET  implements Serializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class WorkingHoursGET {\n");
-    
+
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    userId: ").append(toIndentedString(userId)).append("\n");
     sb.append("    userName: ").append(toIndentedString(userName)).append("\n");

@@ -27,6 +27,7 @@
     <jackson-threetenbp-version>2.9.10</jackson-threetenbp-version>
     <springfox-version>2.8.0</springfox-version>
     <spring-boot-starter-web-version>2.5.0</spring-boot-starter-web-version>
+    <annotation-char>@</annotation-char>
   </properties>
 
   <dependencies>
@@ -308,7 +309,26 @@
                 </replace>
 
                 <!-- corrections in reporting api-->
-
+                <replace token="Integer costUnitsIds"
+                         value="Integer... costUnitsIds"
+                         dir="${project.basedir}/src/main/java/com/example/smallinvoicespringfeign/api">
+                  <include name="**/*.java"/>
+                </replace>
+                <replace token="Integer effortIds"
+                         value="Integer... effortIds"
+                         dir="${project.basedir}/src/main/java/com/example/smallinvoicespringfeign/api">
+                  <include name="**/*.java"/>
+                </replace>
+                <replace token="Integer projectIds"
+                         value="Integer... projectIds"
+                         dir="${project.basedir}/src/main/java/com/example/smallinvoicespringfeign/api">
+                  <include name="**/*.java"/>
+                </replace>
+                <replace token="String timeIds"
+                         value="String... timeIds"
+                         dir="${project.basedir}/src/main/java/com/example/smallinvoicespringfeign/api">
+                  <include name="**/*.java"/>
+                </replace>
               </tasks>
             </configuration>
             <goals>

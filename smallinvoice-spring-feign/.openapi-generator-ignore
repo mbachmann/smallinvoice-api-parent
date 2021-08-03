@@ -6,3 +6,4 @@ pom.xml
 **/*.properties
 README.md
 src/**/swagger.json
+src/**/WorkingHours*

@@ -258,6 +258,3 @@ src/main/java/com/example/smallinvoicespringfeign/model/Response4xx.java
 src/main/java/com/example/smallinvoicespringfeign/model/ResponseList.java
 src/main/java/com/example/smallinvoicespringfeign/model/ResponsePost200.java
 src/main/java/com/example/smallinvoicespringfeign/model/TokenPairGET.java
-src/main/java/com/example/smallinvoicespringfeign/model/WorkingHoursGET.java
-src/main/java/com/example/smallinvoicespringfeign/model/WorkingHoursPOST.java
-src/main/java/com/example/smallinvoicespringfeign/model/WorkingHoursPUT.java

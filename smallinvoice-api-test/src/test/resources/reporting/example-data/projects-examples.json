@@ -1,0 +1,28 @@
+[
+  {
+    "id": 794208760,
+    "number": "1001",
+    "contact_id": 218736936,
+    "contact_name": "Garage Zylinder AG",
+    "name": "Strom & Netzverkabelung",
+    "start_date": "2021-08-03",
+    "status": "O",
+    "permissions": [
+      "view",
+      "edit"
+    ]
+  },
+  {
+    "id": 696685913,
+    "number": "1000",
+    "contact_id": 218736936,
+    "contact_name": "Garage Zylinder AG",
+    "name": "Vorplatzumbau Juli",
+    "start_date": "2021-08-03",
+    "status": "O",
+    "permissions": [
+      "view",
+      "edit"
+    ]
+  }
+]
