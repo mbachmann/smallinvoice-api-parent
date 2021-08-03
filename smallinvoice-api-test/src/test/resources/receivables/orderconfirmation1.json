@@ -50,7 +50,7 @@
   "texts": [
     {
       "status": "D",
-      "title": "Offerte Nr. {OFFERNO} / Kunden Nr. {CUSTOMERNO}",
+      "title": "Auftragsbestätigungs Nr. {SALESCONFIRMATIONNO} / Kunden Nr. {CUSTOMERNO}",
       "introduction": "",
       "conditions": ""
     }

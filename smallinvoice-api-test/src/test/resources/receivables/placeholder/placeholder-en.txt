@@ -1,0 +1,33 @@
+Invoices:
+{CUSTOMERNO} {INVOICENO} {INVOICEAMOUNT} {DATE} {DATEDUE} {PAYPALLINK} {ESRNO} {SALUTATION} {CLIENTNAME} {CONTACTNAME} {GRACE} {CREATORNAME} {POSTFINANCELINK} {SERVICE} {PERSON_NAME} {PERSON_SURNAME} {PAYREXXLINK} {CURRENCY} {TOTAL} {SMARTCOMMERCELINK}
+
+Offers:
+{CUSTOMERNO} {OFFERNO} {OFFERAMOUNT} {DATE} {DATEDUE} {SALUTATION} {ACCEPTONLINELINK} {CLIENTNAME} {CONTACTNAME} {GRACE} {CREATORNAME} {PERSON_NAME} {PERSON_SURNAME} {CURRENCY} {TOTAL}
+
+Delivery notes:
+{CUSTOMERNO} {RECEIPTNO} {RECEIPTAMOUNT} {DATE} {SALUTATION} {CLIENTNAME} {CONTACTNAME} {CREATORNAME} {PERSON_NAME} {PERSON_SURNAME} {CURRENCY} {TOTAL}
+
+Order confirmations:
+{CUSTOMERNO} {SALESCONFIRMATIONNO} {SALESCONFIRMATIONAMOUNT} {DATE} {SALUTATION} {CLIENTNAME} {CONTACTNAME} {CREATORNAME} {PERSON_NAME} {PERSON_SURNAME} {CURRENCY} {TOTAL}
+
+Letters:
+{SALUTATION} {CLIENTNAME} {CREATORNAME} {PERSON_NAME} {PERSON_SURNAME}
+
+Newsletter:
+{SALUTATION} {CLIENTNAME}
+
+
+Date placeholder in recurring invoices:
+
+The expanded date placeholder can be used in recurring invoices.
+
+e.g. for the date of generation: {D#d.m.Y}
+or date of generation + 1 year: {D#d.m.Y#+1Y}
+or date of generation + 1 year - 1 day: {D#d.m.Y#+1Y#-1D}
+
+
+Custom placeholder:
+
+Predefined custom placeholders can be entered in the configuration and filled out when creating customers. They can then be used freely.
+
+Example: A custom field with the key INSURANCENUMBER can be used as a placeholder in the following way: {CUSTOM:INSURANCENUMBER}

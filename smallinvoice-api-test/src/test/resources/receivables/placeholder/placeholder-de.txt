@@ -1,0 +1,33 @@
+Rechnungen:
+{KUNDENNR} {RECHNUNGSNR} {RECHNUNGSBETRAG} {DATUM} {FAELLIG} {PAYPALLINK} {ESRNR} {ANREDE} {KUNDENNAME} {KONTAKTNAME} {FRIST} {ERSTELLERNAME} {POSTFINANCELINK} {LEISTUNG} {PERSON_VORNAME} {PERSON_NAME} {PAYREXXLINK} {WAEHRUNG} {TOTAL} {SMARTCOMMERCELINK}
+
+Offerten:
+{KUNDENNR} {OFFERTENNR} {OFFERTENBETRAG} {DATUM} {FAELLIG} {ANREDE} {ONLINEAKZEPTIERENLINK} {KUNDENNAME} {KONTAKTNAME} {FRIST} {ERSTELLERNAME} {PERSON_VORNAME} {PERSON_NAME} {WAEHRUNG} {TOTAL}
+
+Lieferscheine:
+{KUNDENNR} {LIEFERSCHEINNR} {LIEFERSCHEINBETRAG} {DATUM} {ANREDE} {KUNDENNAME} {KONTAKTNAME} {ERSTELLERNAME} {PERSON_VORNAME} {PERSON_NAME} {WAEHRUNG} {TOTAL}
+
+Auftragsbestätigungen:
+{KUNDENNR} {AUFTRAGSBESTAETIGUNGSNR} {AUFTRAGSBESTAETIGUNGSBETRAG} {DATUM} {ANREDE} {KUNDENNAME} {KONTAKTNAME} {ERSTELLERNAME} {PERSON_VORNAME} {PERSON_NAME} {WAEHRUNG} {TOTAL}
+
+Briefe:
+{ANREDE} {KUNDENNAME} {ERSTELLERNAME} {PERSON_VORNAME} {PERSON_NAME}
+
+Newsletter:
+{ANREDE} {KUNDENNAME}
+
+
+Datumsplatzhalter in wiederkehrenden Rechnungen:
+
+In wiederkehrenden Rechnungen können erweiterte Datumsplatzhalter verwendet werden.
+
+z.B. für das Datum bei Generierung: {D#d.m.Y}
+oder Datum bei Generierung + 1 Jahr: {D#d.m.Y#+1Y}
+oder Datum bei Generierung + 1 Jahr - 1 Tag: {D#d.m.Y#+1Y#-1D}
+
+
+Custom-Platzhalter:
+
+Vordefinierte Custom-Platzhalter können in der Konfiguration hinterlegt werden und beim Erstellen von Kunden ausgefüllt werden. Anschliessend können sie frei verwendet werden.
+
+Beispiel: Ein Custom-Feld mit dem Schlüssel INSURANCENUMBER kann folgendermassen als Platzhalter verwendet werden: {CUSTOM:INSURANCENUMBER}

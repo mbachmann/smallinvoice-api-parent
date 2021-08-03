@@ -1,0 +1,33 @@
+Factures:
+{CUSTOMERNO} {INVOICENO} {INVOICEAMOUNT} {DATE} {DATEDUE} {PAYPALLINK} {ESRNO} {SALUTATION} {CLIENTNAME} {CONTACTNAME} {GRACE} {CREATORNAME} {POSTFINANCELINK} {SERVICE} {PERSON_NAME} {PERSON_SURNAME} {PAYREXXLINK} {MONNAI} {TOTAL} {SMARTCOMMERCELINK}
+
+Offres:
+{CUSTOMERNO} {OFFERNO} {OFFERAMOUNT} {DATE} {DATEDUE} {SALUTATION} {ACCEPTONLINELINK} {CLIENTNAME} {CONTACTNAME} {GRACE} {CREATORNAME} {PERSON_NAME} {PERSON_SURNAME} {MONNAI} {TOTAL}
+
+Bulletins de livraison:
+{CUSTOMERNO} {RECEIPTNO} {RECEIPTAMOUNT} {DATE} {SALUTATION} {CLIENTNAME} {CONTACTNAME} {CREATORNAME} {PERSON_NAME} {PERSON_SURNAME} {MONNAI} {TOTAL}
+
+Confirmations d’ordre:
+{CUSTOMERNO} {SALESCONFIRMATIONNO} {SALESCONFIRMATIONAMOUNT} {DATE} {SALUTATION} {CLIENTNAME} {CONTACTNAME} {CREATORNAME} {PERSON_NAME} {PERSON_SURNAME} {MONNAI} {TOTAL}
+
+Lettres:
+{SALUTATION} {CLIENTNAME} {CREATORNAME} {PERSON_NAME} {PERSON_SURNAME}
+
+Info lettre:
+{SALUTATION} {CLIENTNAME}
+
+
+Variable de date dans les factures récurrentes:
+
+D’autres variables de date peuvent être utilisées dans les factures récurrentes.
+
+Par ex. pour la date lors de la création: {D#d.m.Y}
+Ou la date lors de la création + 1 an: {D#d.m.Y#+1Y}
+Ou la date lors de la création + 1 an - 1 jour: {D#d.m.Y#+1Y#-1D}
+
+
+Variables personnalisées:
+
+Des variables personnalisées prédéfinies peuvent être enregistrées dans la configuration et complétées à la saisie d’un client. Ensuite, elles peuvent être utilisées librement.
+
+Exemple: un champ personnalisé avec la clé INSURANCENUMBER peut être utilisé comme variable de la manière suivante: {CUSTOM:INSURANCENUMBER}
