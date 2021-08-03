@@ -71,8 +71,8 @@ public class ReceivablesTest extends SharedTest {
     @Test
     public void createDeliveryNote() throws IOException {
 
-        DocumentDeliveryNotePositionPOST position1 = createDeliveryNoteProductPosition(product1);
-        DocumentDeliveryNotePositionPOST position2 = createDeliveryNoteServicePosition(service1);
+        DocumentDeliveryNotePositionPOST position1 = apiService.createDeliveryNoteProductPosition(product1, 1.0F);
+        DocumentDeliveryNotePositionPOST position2 = apiService.createDeliveryNoteServicePosition(service1, 1.0F);
 
         String jsonDeliveryNote = readResource(new ClassPathResource("receivables/deliverynote1.json"));
         DocumentDeliveryNotePOST deliveryNote = mapFromJson(jsonDeliveryNote, DocumentDeliveryNotePOST.class);
@@ -109,6 +109,44 @@ public class ReceivablesTest extends SharedTest {
         DocumentInvoiceStandardGET invoice = apiService.getStandardInvoiceById(invoices.get(0).getId(), with);
         assertEquals(mapToJson(invoices.get(0)), mapToJson(invoice));
     }
+
+    /**
+     * Delivery note with 2 positions from Catalog and 2 positions not from catalog (just free name and description)
+     *
+     * @throws IOException In case of reading resources
+     */
+    // @Test
+    public void createInvoice() throws IOException {
+
+        DocumentInvoicePositionPOST position1 = apiService.createInvoiceProductPosition(product1, 1.0F);
+        DocumentInvoicePositionPOST position2 = apiService.createInvoiceServicePosition(service1, 1.0F);
+
+        String jsonDeliveryNote = readResource(new ClassPathResource("receivables/invoice1.json"));
+        DocumentInvoiceStandardPOST invoice = mapFromJson(jsonDeliveryNote, DocumentInvoiceStandardPOST.class);
+
+        invoice
+                .contactId(contactId)
+                .contactAddressId(contact.getMainAddressId())
+                .contactPersonId(people.getId())
+                .date(LocalDate.now())
+                .addPositionsItem(position1)
+                .addPositionsItem(position2);
+
+        DocumentInvoiceStandardGET createdInvoice = apiService.createInvoiceStandard(invoice);
+
+        createdInvoice.periodText("This is a new period test");
+        DocumentInvoiceStandardGET updatedInvoice = apiService.updateInvoiceStandard(createdInvoice);
+
+        writeInvoiceStandardPdfToResource(updatedInvoice.getId());
+        writeInvoiceStandardPreviewToResource(updatedInvoice.getId());
+        sendInvoiceStandardByEMail(updatedInvoice.getId(), "contact/email1.json");
+        // not possible with demo account
+        // sendInvoiceStandardByPost(updatedInvoice.getId(), "contact/post1.json");
+
+        DocumentInvoiceStandardGET changedInvoice = apiService.changeInvoiceStandardStatusById(updatedInvoice.getId(),  DocumentInvoiceStandardChangeStatusPATCH.StatusEnum.S);
+        assertEquals(apiService.getStandardInvoiceById(changedInvoice.getId(), null), changedInvoice);
+    }
+
 
     @Test
     public void getOffersTest() throws Exception {
@@ -147,34 +185,7 @@ public class ReceivablesTest extends SharedTest {
         }
     }
 
-    public DocumentInvoiceStandardGET getFirstInvoice(int contactId) throws Exception {
-        String with = "contact_name,permissions,positions,texts,free_texts,bank_account,contact_person,contact_prepage_address,contact_address,contact,workflow,custom_fields";
-        String filter = "{\"contact_id\":" + contactId + "}";
-        List<DocumentInvoiceStandardGET> invoices = apiService.getStandardInvoices(with, filter);
-        if (invoices != null && invoices.size() > 0) {
-            int invoiceId = invoices.get(0).getId();
-            return apiService.getStandardInvoiceById(invoiceId, with);
-        }
-        return null;
-    }
-
-    public DocumentDeliveryNotePositionPOST createDeliveryNoteProductPosition(CatalogProductGET catalogProduct) throws IOException {
-        DocumentDeliveryNotePositionPOST productPosition = mapFromJson(mapToJson(catalogProduct), DocumentDeliveryNotePositionPOST.class);
-        productPosition.catalogType(DocumentDeliveryNotePositionPOST.CatalogTypeEnum.P)
-                .type(DocumentDeliveryNotePositionPOST.TypeEnum.N)
-                .amount(1.0F)
-                .showOnlyTotal(false);
-        return productPosition;
-    }
-
-    private DocumentDeliveryNotePositionPOST createDeliveryNoteServicePosition(CatalogServiceGET catalogService) throws IOException {
-        DocumentDeliveryNotePositionPOST servicePosition = mapFromJson(mapToJson(catalogService), DocumentDeliveryNotePositionPOST.class);
-        servicePosition.catalogType(DocumentDeliveryNotePositionPOST.CatalogTypeEnum.S)
-                .type(DocumentDeliveryNotePositionPOST.TypeEnum.N)
-                .amount(1.0F)
-                .showOnlyTotal(false);
-        return servicePosition;
-    }
+    // ======== Helpers Delivery Notes ===========
 
     public void writeDeliveryNotePdfToResource(int letterId) {
         Resource resource  = apiService.getDeliveryNotePdfResource(letterId);
@@ -197,6 +208,92 @@ public class ReceivablesTest extends SharedTest {
         String jsonEmail = readResource(new ClassPathResource(jsonResource));
         DocumentSendByPostPATCH post = mapFromJson(jsonEmail, DocumentSendByPostPATCH.class);
         apiService.sendDeliveryNoteByPost(deliveryNoteId, post);
+    }
+
+    public DocumentInvoiceStandardGET getFirstInvoice(int contactId) throws Exception {
+        String with = "contact_name,permissions,positions,texts,free_texts,bank_account,contact_person,contact_prepage_address,contact_address,contact,workflow,custom_fields";
+        String filter = "{\"contact_id\":" + contactId + "}";
+        List<DocumentInvoiceStandardGET> invoices = apiService.getStandardInvoices(with, filter);
+        if (invoices != null && invoices.size() > 0) {
+            int invoiceId = invoices.get(0).getId();
+            return apiService.getStandardInvoiceById(invoiceId, with);
+        }
+        return null;
+    }
+
+    // ======== Helpers Invoice ===========
+
+    public void writeInvoiceStandardPdfToResource(int invoiceId) {
+        Resource resource  = apiService.getInvoiceStandardPdfResource(invoiceId, null);
+        writeResourceToFile(resource, "src/test/resources/receivedFiles/invoicePdf.pdf");
+    }
+
+    public void writeInvoiceStandardPreviewToResource(int invoiceId) {
+        // size on of "240, 595, 600, 972, 1240"
+        Resource resource  = apiService.getInvoiceStandardPreviewResource(invoiceId, 1, 600);
+        writeResourceToFile(resource, "src/test/resources/receivedFiles/invoicePreview.png");
+    }
+
+    public void sendInvoiceStandardByEMail (int invoiceId, String jsonResource) throws IOException {
+        String jsonEmail = readResource(new ClassPathResource(jsonResource));
+        DocumentInvoiceSendByEmailPATCH email = mapFromJson(jsonEmail, DocumentInvoiceSendByEmailPATCH.class);
+        apiService.sendInvoiceStandardByEMail(invoiceId,email);
+    }
+
+    public void sendInvoiceStandardByPost (int invoiceId, String jsonResource) throws IOException {
+        String jsonEmail = readResource(new ClassPathResource(jsonResource));
+        DocumentSendByPostPATCH post = mapFromJson(jsonEmail, DocumentSendByPostPATCH.class);
+        apiService.sendInvoiceStandardByPost(invoiceId, post);
+    }
+
+    // ======== Helpers Offers ===========
+
+    public void writeOfferPdfToResource(int offerId) {
+        Resource resource  = apiService.getOfferPdfResource(offerId);
+        writeResourceToFile(resource, "src/test/resources/receivedFiles/offerPdf.pdf");
+    }
+
+    public void writeOfferPreviewToResource(int offerId) {
+        // size on of "240, 595, 600, 972, 1240"
+        Resource resource  = apiService.getOfferPreviewResource(offerId, 1, 600);
+        writeResourceToFile(resource, "src/test/resources/receivedFiles/offerPreview.png");
+    }
+
+    public void sendOfferByEMail (int offerId, String jsonResource) throws IOException {
+        String jsonEmail = readResource(new ClassPathResource(jsonResource));
+        DocumentOfferSendByEmailPATCH email = mapFromJson(jsonEmail, DocumentOfferSendByEmailPATCH.class);
+        apiService.sendOfferByEMail(offerId,email);
+    }
+
+    public void sendOfferPost (int invoiceId, String jsonResource) throws IOException {
+        String jsonEmail = readResource(new ClassPathResource(jsonResource));
+        DocumentSendByPostPATCH post = mapFromJson(jsonEmail, DocumentSendByPostPATCH.class);
+        apiService.sendOfferByPost(invoiceId, post);
+    }
+
+    // ======== Helpers Order Confirmations ===========
+
+    public void writeOrderConfirmationPdfToResource(int offerId) {
+        Resource resource  = apiService.getOrderConfirmationPdfResource(offerId);
+        writeResourceToFile(resource, "src/test/resources/receivedFiles/offerPdf.pdf");
+    }
+
+    public void writeOrderConfirmationPreviewToResource(int offerId) {
+        // size on of "240, 595, 600, 972, 1240"
+        Resource resource  = apiService.getOrderConfirmationPreviewResource(offerId, 1, 600);
+        writeResourceToFile(resource, "src/test/resources/receivedFiles/offerPreview.png");
+    }
+
+    public void sendOrderConfirmationByEMail (int offerId, String jsonResource) throws IOException {
+        String jsonEmail = readResource(new ClassPathResource(jsonResource));
+        DocumentOrderConfirmationSendByEmailPATCH email = mapFromJson(jsonEmail, DocumentOrderConfirmationSendByEmailPATCH.class);
+        apiService.sendOrderConfirmationByEMail(offerId,email);
+    }
+
+    public void sendOrderConfirmationPost (int invoiceId, String jsonResource) throws IOException {
+        String jsonEmail = readResource(new ClassPathResource(jsonResource));
+        DocumentSendByPostPATCH post = mapFromJson(jsonEmail, DocumentSendByPostPATCH.class);
+        apiService.sendOrderConfirmationByPost(invoiceId, post);
     }
 
 }

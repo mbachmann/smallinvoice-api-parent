@@ -1,13 +1,10 @@
 package com.example.smallinvoice.springfeign;
 
-import com.example.smallinvoicespringfeign.api.ConfigurationApiClient;
 import com.example.smallinvoicespringfeign.model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.http.ResponseEntity;
 
 import java.io.IOException;
 import java.util.List;
@@ -15,9 +12,6 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ConfigurationTest extends SharedTest {
-
-    @Autowired
-    private ConfigurationApiClient configurationApiClient;
 
     @Override
     @BeforeEach
@@ -30,19 +24,17 @@ public class ConfigurationTest extends SharedTest {
     public void createBankAndChangeAccount() throws IOException, InterruptedException {
         String jsonBankAccount = readResource(new ClassPathResource("configuration/bankaccount1.json"));
         ConfigurationBankAccountPOST bankAccount = mapFromJson(jsonBankAccount, ConfigurationBankAccountPOST.class);
-        deleteBankAccountIfExists(bankAccount.getDescription());
 
-        ResponseEntity<ItemConfigurationBankAccountGET> accountResponse =  configurationApiClient.createBankAccount(bankAccount);
-        int bankAccountId = accountResponse.getBody().getItem().getId();
-        assertEquals(bankAccount, mapFromJson(mapToJson(accountResponse.getBody().getItem()), ConfigurationBankAccountPOST.class));
+        apiService.deleteBankAccountByDescriptionIfExists(bankAccount.getDescription());
+        ConfigurationBankAccountGET  bankAccountGet = apiService.createBankAccount(bankAccount);
+
+        assertEquals(bankAccount, mapFromJson(mapToJson(bankAccountGet), ConfigurationBankAccountPOST.class));
 
         // Change the new created bank account and save it again with update
-        ConfigurationBankAccountPUT newBankAccount = mapFromJson(mapToJson(accountResponse.getBody().getItem()), ConfigurationBankAccountPUT.class);
-        newBankAccount.setNumber("7654321");
-        ResponseEntity<ItemConfigurationBankAccountGET> bankAccountResponseChange =  configurationApiClient.updateBankAccount(bankAccountId,newBankAccount);
-        if (bankAccountResponseChange.getBody() != null) {
-            assertEquals(newBankAccount, mapFromJson(mapToJson(bankAccountResponseChange.getBody().getItem()), ConfigurationBankAccountPUT.class));
-        }
+        bankAccountGet.setNumber("7654321");
+        ConfigurationBankAccountGET  bankAccountUpdated = apiService.updateBankAccount(bankAccountGet);
+
+        if (bankAccountUpdated != null) assertEquals(bankAccountGet, bankAccountUpdated);
     }
 
     @Order(2)
@@ -50,19 +42,17 @@ public class ConfigurationTest extends SharedTest {
     public void createAndChangeExchangeRate() throws IOException {
         String jsonExchangeRate = readResource(new ClassPathResource("configuration/exchangerate1.json"));
         ConfigurationExchangeRatePOST exchangeRate = mapFromJson(jsonExchangeRate, ConfigurationExchangeRatePOST.class);
-        deleteExchangeRateIfExists(exchangeRate.getCurrencyFrom(), exchangeRate.getCurrencyTo());
+        apiService.deleteExchangeRateIfExists(exchangeRate.getCurrencyFrom(), exchangeRate.getCurrencyTo());
 
-        ResponseEntity<ItemConfigurationExchangeRateGET> accountResponse =  configurationApiClient.createCurrencyExchangeRate(exchangeRate);
-        int bankAccountId = accountResponse.getBody().getItem().getId();
-        assertEquals(exchangeRate, mapFromJson(mapToJson(accountResponse.getBody().getItem()), ConfigurationExchangeRatePOST.class));
+        ConfigurationExchangeRateGET exchangeRateGet = apiService.createExchangeRate(exchangeRate);
+
+        assertEquals(exchangeRate, mapFromJson(mapToJson(exchangeRateGet), ConfigurationExchangeRatePOST.class));
 
         // Change the new created excange rate and save it again with update
-        ConfigurationExchangeRatePUT newExchangeRate = mapFromJson(mapToJson(accountResponse.getBody().getItem()), ConfigurationExchangeRatePUT.class);
-        newExchangeRate.setRate((float) (newExchangeRate.getRate() * 1.01));
-        ResponseEntity<ItemConfigurationExchangeRateGET> exchangeRateResponseChange =  configurationApiClient.updateCurrencyExchangeRate(bankAccountId,newExchangeRate);
-        if (exchangeRateResponseChange.getBody() != null) {
-            assertEquals(newExchangeRate, mapFromJson(mapToJson(exchangeRateResponseChange.getBody().getItem()), ConfigurationExchangeRatePUT.class));
-        }
+        exchangeRateGet.setRate((float) (exchangeRateGet.getRate() * 1.01));
+        ConfigurationExchangeRateGET  exchangeRateUpdated = apiService.updateExchangeRate(exchangeRateGet);
+
+        if (exchangeRateUpdated != null) assertEquals(exchangeRateGet, exchangeRateUpdated);
     }
 
     @Order(3)
@@ -80,21 +70,6 @@ public class ConfigurationTest extends SharedTest {
         List<ConfigurationExchangeRateGET> exchangeRates = apiService.getExchangeRates();
         if (exchangeRates != null) {
             exchangeRates.forEach(item -> getLogger().debug(item.toString()));
-        }
-    }
-
-    public void deleteBankAccountIfExists(String description) {
-        ResponseEntity<ListConfigurationBankAccounts> response = configurationApiClient.getBankAccounts(null, null, "{\"description\":\"" + description + "\"}", 100, 0, null);
-        if (response.getBody() != null && response.getBody().getPagination().getTotal() > 0) {
-            ResponseEntity<Void> responseDelete = configurationApiClient.deleteBankAccounts(response.getBody().getItems().get(0).getId());
-        }
-    }
-
-    public void deleteExchangeRateIfExists(String currencyFrom, String currencyTo) {
-        String filterJson = "{\"and\":[{\"currency_from\":\"" + currencyFrom + "\"},{\"currency_to\":\"" + currencyTo + "\"}]}";
-        ResponseEntity<ListConfigurationExchangeRates> response = configurationApiClient.getCurrencyExchangeRates(null, filterJson, 100, 0, null);
-        if (response.getBody() != null && response.getBody().getPagination().getTotal() > 0) {
-            ResponseEntity<Void> responseDelete = configurationApiClient.deleteCurrencyExchangeRates(response.getBody().getItems().get(0).getId());
         }
     }
 

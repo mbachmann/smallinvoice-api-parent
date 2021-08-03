@@ -1,9 +1,6 @@
 package com.example.smallinvoicespringfeign.service;
 
-import com.example.smallinvoicespringfeign.api.CatalogApiClient;
-import com.example.smallinvoicespringfeign.api.ConfigurationApiClient;
-import com.example.smallinvoicespringfeign.api.ContactsApiClient;
-import com.example.smallinvoicespringfeign.api.ReceivablesApiClient;
+import com.example.smallinvoicespringfeign.api.*;
 import com.example.smallinvoicespringfeign.configuration.SmallInvoiceNotFoundException;
 import com.example.smallinvoicespringfeign.model.*;
 import feign.RetryableException;
@@ -13,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,6 +18,9 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 public class SmallInvoiceApiService extends AbstractApiService {
+
+    @Autowired
+    private AuthApiClient authApiClient;
 
     @Autowired
     private ContactsApiClient contactsApiClient;
@@ -34,6 +33,39 @@ public class SmallInvoiceApiService extends AbstractApiService {
 
     @Autowired
     private ConfigurationApiClient configurationApiClient;
+
+
+    // ==================================
+    //           Auth
+    // ==================================
+
+
+    /**
+     * GET /auth/profile : Returns data of authenticated user's profile
+     * @return AuthProfileGET - Data of the authenticated user's profile
+     */
+    public AuthProfileGET getAuthUserProfile() {
+        ResponseEntity<ItemAuthProfileGET> response = authApiClient.getAuthUserProfile();
+        if (response.getBody() != null) {
+            getLogger().debug(response.getBody().getItem().toString());
+            return response.getBody().getItem();
+        }
+        return null;
+    }
+
+    /**
+     * GET /auth/owner : Returns data of authenticated resource owner
+     * @return AuthOwnerGET - Data of the authenticated resource owner
+     */
+    public AuthOwnerGET getAuthenticatedResourceOwner()  {
+        ResponseEntity<ItemAuthOwnerGET> response = authApiClient.getAuthenticatedResourceOwner();
+        if (response.getBody() != null) {
+            getLogger().debug(response.getBody().getItem().toString());
+            return response.getBody().getItem();
+        }
+        return null;
+    }
+
 
     // ==================================
     //            Contact
@@ -344,7 +376,7 @@ public class SmallInvoiceApiService extends AbstractApiService {
     /**
      * GET /contacts/letters/{letterId}/preview : Gets preview of specified letter
      *
-     * @param letterId       letter note ID (required)
+     * @param letterId       letter ID (required)
      * @param page           page – page number [1 .. pages amount] (optional, default to 1)
      * @param size           width in pixels (optional,
      *                       <br/> allowableValues = 240, 595, 600, 972, 1240, defaultValue = 972)
@@ -369,7 +401,7 @@ public class SmallInvoiceApiService extends AbstractApiService {
     /**
      * PATCH /contacts/letters/{letterId}/send-by-post : Sends specified letter by post
      *
-     * @param letterId       letterI note ID (required)
+     * @param letterId       letterID (required)
      * @param post           documentSendByPostPATCH – sending post data details
      */
     public void sendLetterByPost(int letterId, DocumentSendByPostPATCH post) {
@@ -381,6 +413,7 @@ public class SmallInvoiceApiService extends AbstractApiService {
     //          Configuration
     // ==================================
 
+    // ========== Bank Accounts =========
 
     /**
      * Get all Bankaccounts
@@ -401,6 +434,52 @@ public class SmallInvoiceApiService extends AbstractApiService {
     }
 
     /**
+     * DELETE /configuration/bank-accounts/{accountsIds} : Deletes specified bank accounts
+     * @param description The description of the bank account
+     */
+    public void deleteBankAccountByDescriptionIfExists(String description) {
+        ResponseEntity<ListConfigurationBankAccounts> response = configurationApiClient.getBankAccounts(null, null, "{\"description\":\"" + description + "\"}", 100, 0, null);
+        if (response.getBody() != null && response.getBody().getPagination().getTotal() > 0) {
+            ResponseEntity<Void> responseDelete = configurationApiClient.deleteBankAccounts(response.getBody().getItems().get(0).getId());
+        }
+    }
+
+    /**
+     * DELETE /configuration/bank-accounts/{accountsIds} : Deletes specified bank accounts
+     * @param bankAccountsIds comma separated IDs of accounts to be deleted (required)
+     */
+    public void deleteBankAccountByIds(Integer... bankAccountsIds) {
+        ResponseEntity<Void> response = configurationApiClient.deleteBankAccounts(bankAccountsIds);
+    }
+
+    /**
+     * POST /configuration/bank-accounts : Creates new bank account
+     *
+     * @param bankAccount ConfigurationBankAccountPOST – bank account
+     * @return ConfigurationBankAccountGET - Data of the created bank account
+     */
+    public ConfigurationBankAccountGET createBankAccount(ConfigurationBankAccountPOST bankAccount) {
+        ResponseEntity<ItemConfigurationBankAccountGET> response = configurationApiClient.createBankAccount(bankAccount);
+        return Objects.requireNonNull(response.getBody()).getItem();
+    }
+
+    /**
+     * PUT /configuration/bank-accounts/{accountId} : Updates specified bank account
+     *
+     * @param bankAccount ConfigurationBankAccountGET - bank account (required)
+     * @return ConfigurationBankAccountGET - Data of the updated bank account
+     * @throws IOException if mapping from ConfigurationBankAccountGET to ConfigurationBankAccountPUT fails
+     */
+    public ConfigurationBankAccountGET updateBankAccount(ConfigurationBankAccountGET bankAccount) throws IOException {
+        ConfigurationBankAccountPUT changedBankAccount = mapFromJson(mapToJson(bankAccount), ConfigurationBankAccountPUT.class);
+        ResponseEntity<ItemConfigurationBankAccountGET> response = configurationApiClient.updateBankAccount(bankAccount.getId(), changedBankAccount);
+        return Objects.requireNonNull(response.getBody()).getItem();
+    }
+
+    // ========== Exchange Rates =========
+
+
+    /**
      * Gets all exchange rates
      *
      * @return {@code List<ConfigurationExchangeRateGET>} Data of the requested exchange rates
@@ -418,14 +497,64 @@ public class SmallInvoiceApiService extends AbstractApiService {
         else return null;
     }
 
+
+    /**
+     * DELETE /configuration/exchange-rates/{exchangeIds} : Deletes specified currency exchange rates
+     * @param currencyFrom currency like CHF
+     * @param currencyTo curreny like EUR
+     */
+    public void deleteExchangeRateIfExists(String currencyFrom, String currencyTo) {
+        String filterJson = "{\"and\":[{\"currency_from\":\"" + currencyFrom + "\"},{\"currency_to\":\"" + currencyTo + "\"}]}";
+        ResponseEntity<ListConfigurationExchangeRates> response = configurationApiClient.getCurrencyExchangeRates(null, filterJson, 100, 0, null);
+        if (response.getBody() != null && response.getBody().getPagination().getTotal() > 0) {
+            ResponseEntity<Void> responseDelete = configurationApiClient.deleteCurrencyExchangeRates(response.getBody().getItems().get(0).getId());
+        }
+    }
+
+    /**
+     * DELETE /configuration/exchange-rates/{exchangeIds} : Deletes specified currency exchange rates
+     * @param exchangeRateIds exchangeIds – comma separated IDs of currency exchange rates to be deleted (required)
+     */
+    public void deleteExchangeRateByIds(Integer... exchangeRateIds) {
+        ResponseEntity<Void> response = configurationApiClient.deleteCurrencyExchangeRates(exchangeRateIds);
+    }
+
+    /**
+     * POST /configuration/exchange-rates : Creates new exchange rates
+     *
+     * @param exchangeRate ConfigurationExchangeRatePOST – exchange rates
+     * @return ConfigurationExchangeRateGET - Data of the created exchange rates
+     */
+    public ConfigurationExchangeRateGET createExchangeRate(ConfigurationExchangeRatePOST exchangeRate) {
+        ResponseEntity<ItemConfigurationExchangeRateGET> response = configurationApiClient.createCurrencyExchangeRate(exchangeRate);
+        return Objects.requireNonNull(response.getBody()).getItem();
+    }
+
+    /**
+     * PUT /configuration/exchange-rates/{accountId} : Updates specified exchange rates
+     *
+     * @param exchangeRate ConfigurationExchangeRateGET - exchange rates (required)
+     * @return ConfigurationExchangeRateGET - Data of the updated bank account
+     * @throws IOException if mapping from ConfigurationExchangeRateGET to ConfigurationExchangeRatePUT fails
+     */
+    public ConfigurationExchangeRateGET updateExchangeRate(ConfigurationExchangeRateGET exchangeRate) throws IOException {
+        ConfigurationExchangeRatePUT changedExchangeRate = mapFromJson(mapToJson(exchangeRate), ConfigurationExchangeRatePUT.class);
+        ResponseEntity<ItemConfigurationExchangeRateGET> response = configurationApiClient.updateCurrencyExchangeRate(exchangeRate.getId(), changedExchangeRate);
+        return Objects.requireNonNull(response.getBody()).getItem();
+    }
+
+
+
     // ==================================
     //             Catalog
     // ==================================
 
+    // ======= CatalogProductCategory ==========
+
     /**
      * Creates a catalog product category if it does not exist
      * @param categoryName the name of the category to get created
-     * @return the created category id, 0 in case of an error
+     * @return the created categoryId, 0 in case of an error
      */
     public int createProductCategoryIfNotExists(String categoryName) {
 
@@ -444,6 +573,165 @@ public class SmallInvoiceApiService extends AbstractApiService {
         }
         return categoryId;
     }
+
+    /**
+     * GET /catalog/products/categories : Returns list of product categories
+     *
+     * @param with   Comma separated, optional keys that should be included in the response. (optional)
+     *               <br/> "permission,custom_fields"
+     * @param filter filter Filter expression (JSON) (optional)
+     * @return {@code List<CatalogCategoryGET>} Data of the requested product categories
+     */
+    public List<CatalogCategoryGET> getCatalogProductCategories(String with, String filter) {
+        try {
+            ResponseEntity<ListProductsCategories> response = catalogApiClient.getCatalogProductCategories(with, null, filter, 100, 0, null);
+            if (response.getBody() != null) {
+                response.getBody().getItems().forEach(item -> getLogger().debug(item.toString()));
+                return response.getBody().getItems();
+            }
+        } catch (RetryableException | SmallInvoiceNotFoundException ignored) {
+        }
+        return null;
+    }
+
+    /**
+     * GET /catalog/products/categories/{categoryId} : Returns data of specified product category
+     *
+     * @param productCategoryId product category ID (required)
+     * @param with    with Comma separated, optional keys that should be included in the response. (optional)
+     *                <br/> "permission,custom_fields"
+     * @return CatalogCategoryGET - Data of the requested product
+     */
+    public CatalogCategoryGET getCatalogProductCategoryById(int productCategoryId, String with) {
+        ResponseEntity<ItemCatalogCategoryGET> response = catalogApiClient.getCatalogProductCategory(productCategoryId, with);
+        if (response.getBody() != null) return response.getBody().getItem();
+        else return null;
+    }
+
+    /**
+     * DELETE /catalog/products/categories/{categoryIds} : Deletes specified product categories
+     * @param productCategoryName the name of the product
+     */
+    public void deleteProductCategoryByNameIfExists(String productCategoryName) {
+        ResponseEntity<ListProductsCategories> response = catalogApiClient.getCatalogProductCategories(null, null, "{\"name\":\"" + productCategoryName + "\"}", 100, 0, null);
+        if (response.getBody() != null && response.getBody().getPagination().getTotal() > 0) {
+            ResponseEntity<Void> responseDelete = catalogApiClient.deleteCatalogProductCategories(response.getBody().getItems().get(0).getId());
+        }
+    }
+
+    /**
+     * DELETE /catalog/products/{productIds} : Deletes specified product categories
+     * @param productCategoryIds comma separated product category IDs (required)
+     */
+    public void deleteCatalogProductCategoryByIds(Integer... productCategoryIds) {
+        ResponseEntity<Void> response = catalogApiClient.deleteCatalogProductCategories(productCategoryIds);
+    }
+
+    /**
+     * POST /catalog/products/categories : Creates new product category
+     *
+     * @param productCategory CatalogCategoryPOST – product category
+     * @return CatalogCategoryGET - Data of the created product
+     */
+    public CatalogCategoryGET createCatalogProductCategory(CatalogCategoryPOST productCategory) {
+        ResponseEntity<ItemCatalogCategoryGET> response = catalogApiClient.createCatalogProductCategory(productCategory);
+        return Objects.requireNonNull(response.getBody()).getItem();
+    }
+
+    /**
+     * PUT /catalog/products/categories/{categoryId} : Updates specified product category
+     *
+     * @param productCategory CatalogCategoryGET - product category (required)
+     * @return CatalogCategoryGET - Data of the updated product category
+     * @throws IOException if mapping from ItemCatalogProductGET to CatalogProductPUT fails
+     */
+    public CatalogCategoryGET updateCatalogProductCategory(CatalogCategoryGET productCategory) throws IOException {
+        CatalogCategoryPUT changedCatalogProduct = mapFromJson(mapToJson(productCategory), CatalogCategoryPUT.class);
+        ResponseEntity<ItemCatalogCategoryGET> response = catalogApiClient.updateCatalogProductCategory(productCategory.getId(), changedCatalogProduct);
+        return Objects.requireNonNull(response.getBody()).getItem();
+    }
+
+
+    // ======= CatalogProduct ==========
+
+    /**
+     * GET /catalog/products : Returns list of products
+     *
+     * @param with   Comma separated, optional keys that should be included in the response. (optional)
+     *               <br/> "permission,custom_fields"
+     * @param filter filter Filter expression (JSON) (optional)
+     * @return {@code List<CatalogProductGET>} Data of the requested products
+     */
+    public List<CatalogProductGET> getCatalogProducts(String with, String filter) {
+        try {
+            ResponseEntity<ListProducts> response = catalogApiClient.getCatalogProducts(with, null, filter, 100, 0, null);
+            if (response.getBody() != null) {
+                response.getBody().getItems().forEach(item -> getLogger().debug(item.toString()));
+                return response.getBody().getItems();
+            }
+        } catch (RetryableException | SmallInvoiceNotFoundException ignored) {
+        }
+        return null;
+    }
+
+    /**
+     * GET /catalog/products/{productId} : Returns data of specified product
+     *
+     * @param productId product ID (required)
+     * @param with    with Comma separated, optional keys that should be included in the response. (optional)
+     *                <br/> "permission,custom_fields"
+     * @return CatalogProductGET - Data of the requested product
+     */
+    public CatalogProductGET getCatalogProductById(int productId, String with) {
+        ResponseEntity<ItemCatalogProductGET> response = catalogApiClient.getCatalogProduct(productId, with);
+        if (response.getBody() != null) return response.getBody().getItem();
+        else return null;
+    }
+
+    /**
+     * DELETE /catalog/products/{productIds} : Deletes specified products
+     * @param productName the name of the product
+     */
+    public void deleteCatalogProductByNameIfExists(String productName) {
+        ResponseEntity<ListProducts> response = catalogApiClient.getCatalogProducts(null, null, "{\"name\":\"" + productName + "\"}", 100, 0, null);
+        if (response.getBody() != null && response.getBody().getPagination().getTotal() > 0) {
+            ResponseEntity<Void> responseDelete = catalogApiClient.deleteCatalogProducts(response.getBody().getItems().get(0).getId());
+        }
+    }
+
+    /**
+     * DELETE /catalog/products/{productIds} : Deletes specified products
+     * @param productIds comma separated product IDs (required)
+     */
+    public void deleteCatalogProductByIds(Integer... productIds) {
+        ResponseEntity<Void> response = catalogApiClient.deleteCatalogProducts(productIds);
+    }
+
+    /**
+     * POST /catalog/products : Creates new product
+     *
+     * @param product CatalogProductPOST – product
+     * @return CatalogProductGET - Data of the created product
+     */
+    public CatalogProductGET createCatalogProduct(CatalogProductPOST product) {
+        ResponseEntity<ItemCatalogProductGET> response = catalogApiClient.createCatalogProduct(product);
+        return Objects.requireNonNull(response.getBody()).getItem();
+    }
+
+    /**
+     * PUT /catalog/products/{productId} : Updates specified product
+     *
+     * @param product CatalogProductGET - product (required)
+     * @return CatalogProductGET - Data of the updated product
+     * @throws IOException if mapping from ItemCatalogProductGET to CatalogProductPUT fails
+     */
+    public CatalogProductGET updateCatalogProduct(CatalogProductGET product) throws IOException {
+        CatalogProductPUT changedCatalogProduct = mapFromJson(mapToJson(product), CatalogProductPUT.class);
+        ResponseEntity<ItemCatalogProductGET> response = catalogApiClient.updateCatalogProduct(product.getId(), changedCatalogProduct);
+        return Objects.requireNonNull(response.getBody()).getItem();
+    }
+
+    // ======= CatalogServiceCategory ==========
 
     /**
      * Creates a catalog service category if it does not exist
@@ -467,6 +755,86 @@ public class SmallInvoiceApiService extends AbstractApiService {
         }
         return categoryId;
     }
+
+    /**
+     * GET /catalog/services/categories : Returns list of service categories
+     *
+     * @param with   Comma separated, optional keys that should be included in the response. (optional)
+     *               <br/> "permission,custom_fields"
+     * @param filter filter Filter expression (JSON) (optional)
+     * @return {@code List<CatalogCategoryGET>} Data of the requested service categories
+     */
+    public List<CatalogCategoryGET> getCatalogServiceCategories(String with, String filter) {
+        try {
+            ResponseEntity<ListServicesCategories> response = catalogApiClient.getCatalogServiceCategories(with, null, filter, 100, 0, null);
+            if (response.getBody() != null) {
+                response.getBody().getItems().forEach(item -> getLogger().debug(item.toString()));
+                return response.getBody().getItems();
+            }
+        } catch (RetryableException | SmallInvoiceNotFoundException ignored) {
+        }
+        return null;
+    }
+
+    /**
+     * GET /catalog/services/categories/{categoryId} : Returns data of specified service category
+     *
+     * @param serviceCategoryId service category ID (required)
+     * @param with    with Comma separated, optional keys that should be included in the response. (optional)
+     *                <br/> "permission,custom_fields"
+     * @return CatalogCategoryGET - Data of the requested service
+     */
+    public CatalogCategoryGET getCatalogServiceCategoryById(int serviceCategoryId, String with) {
+        ResponseEntity<ItemCatalogCategoryGET> response = catalogApiClient.getCatalogServiceCategory(serviceCategoryId, with);
+        if (response.getBody() != null) return response.getBody().getItem();
+        else return null;
+    }
+
+    /**
+     * DELETE /catalog/services/categories/{categoryIds} : Deletes specified service categories
+     * @param serviceCategoryName the name of the service
+     */
+    public void deleteServiceCategoryByNameIfExists(String serviceCategoryName) {
+        ResponseEntity<ListServicesCategories> response = catalogApiClient.getCatalogServiceCategories(null, null, "{\"name\":\"" + serviceCategoryName + "\"}", 100, 0, null);
+        if (response.getBody() != null && response.getBody().getPagination().getTotal() > 0) {
+            ResponseEntity<Void> responseDelete = catalogApiClient.deleteCatalogServiceCategories(response.getBody().getItems().get(0).getId());
+        }
+    }
+
+    /**
+     * DELETE /catalog/services/{serviceIds} : Deletes specified service categories
+     * @param serviceCategoryIds comma separated service category IDs (required)
+     */
+    public void deleteCatalogServiceCategoryByIds(Integer... serviceCategoryIds) {
+        ResponseEntity<Void> response = catalogApiClient.deleteCatalogServiceCategories(serviceCategoryIds);
+    }
+
+    /**
+     * POST /catalog/services/categories : Creates new service category
+     *
+     * @param serviceCategory CatalogCategoryPOST – service category
+     * @return CatalogCategoryGET - Data of the created service
+     */
+    public CatalogCategoryGET createCatalogServiceCategory(CatalogCategoryPOST serviceCategory) {
+        ResponseEntity<ItemCatalogCategoryGET> response = catalogApiClient.createCatalogServiceCategory(serviceCategory);
+        return Objects.requireNonNull(response.getBody()).getItem();
+    }
+
+    /**
+     * PUT /catalog/services/categories/{categoryId} : Updates specified service category
+     *
+     * @param serviceCategory CatalogCategoryGET - service category (required)
+     * @return CatalogCategoryGET - Data of the updated service category
+     * @throws IOException if mapping from ItemCatalogServiceGET to CatalogServicePUT fails
+     */
+    public CatalogCategoryGET updateCatalogServiceCategory(CatalogCategoryGET serviceCategory) throws IOException {
+        CatalogCategoryPUT changedCatalogService = mapFromJson(mapToJson(serviceCategory), CatalogCategoryPUT.class);
+        ResponseEntity<ItemCatalogCategoryGET> response = catalogApiClient.updateCatalogServiceCategory(serviceCategory.getId(), changedCatalogService);
+        return Objects.requireNonNull(response.getBody()).getItem();
+    }
+
+
+    // ======= Catalog Unit ==========
 
     /**
      * GET /catalog/configuration/units : Returns list of units
@@ -496,26 +864,84 @@ public class SmallInvoiceApiService extends AbstractApiService {
         else return null;
     }
 
+
+    // ======= CatalogService ==========
+
     /**
-     * DELETE /catalog/products/{productIds} : Deletes specified products
-     * @param productName the name of the product
+     * GET /catalog/services : Returns list of services
+     *
+     * @param with   Comma separated, optional keys that should be included in the response. (optional)
+     *               <br/> "permission,custom_fields"
+     * @param filter filter Filter expression (JSON) (optional)
+     * @return {@code List<CatalogServiceGET>} Data of the requested services
      */
-    public void deleteProductByNameIfExists(String productName) {
-        ResponseEntity<ListProducts> response = catalogApiClient.getCatalogProducts(null, null, "{\"name\":\"" + productName + "\"}", 100, 0, null);
-        if (response.getBody() != null && response.getBody().getPagination().getTotal() > 0) {
-            ResponseEntity<Void> responseDelete = catalogApiClient.deleteCatalogProducts(response.getBody().getItems().get(0).getId());
+    public List<CatalogServiceGET> getCatalogServices(String with, String filter) {
+        try {
+            ResponseEntity<ListServices> response = catalogApiClient.getCatalogServices(with, null, filter, 100, 0, null);
+            if (response.getBody() != null) {
+                response.getBody().getItems().forEach(item -> getLogger().debug(item.toString()));
+                return response.getBody().getItems();
+            }
+        } catch (RetryableException | SmallInvoiceNotFoundException ignored) {
         }
+        return null;
+    }
+
+    /**
+     * GET /catalog/services/{serviceId} : Returns data of specified service
+     *
+     * @param serviceId service ID (required)
+     * @param with    with Comma separated, optional keys that should be included in the response. (optional)
+     *                <br/> "permission,custom_fields"
+     * @return CatalogServiceGET Data of the requested service
+     */
+    public CatalogServiceGET getCatalogServiceById(int serviceId, String with) {
+        ResponseEntity<ItemCatalogServiceGET> response = catalogApiClient.getCatalogService(serviceId, with);
+        if (response.getBody() != null) return response.getBody().getItem();
+        else return null;
     }
 
     /**
      * DELETE /catalog/services/{serviceIds} : Deletes specified services
      * @param serviceName the name of the service
      */
-    public void deleteServiceByNameIfExists(String serviceName) {
+    public void deleteCatalogServiceByNameIfExists(String serviceName) {
         ResponseEntity<ListServices> response = catalogApiClient.getCatalogServices(null, null, "{\"name\":\"" + serviceName + "\"}", 100, 0, null);
         if (response.getBody() != null && response.getBody().getPagination().getTotal() > 0) {
             ResponseEntity<Void> responseDelete = catalogApiClient.deleteCatalogServices(response.getBody().getItems().get(0).getId());
         }
+    }
+
+    /**
+     * DELETE /catalog/services/{serviceIds} : Deletes specified services
+     * @param serviceIds comma separated service IDs (required)
+     */
+    public void deleteCatalogServiceByIds(Integer... serviceIds) {
+        ResponseEntity<Void> response = catalogApiClient.deleteCatalogServices(serviceIds);
+    }
+
+    /**
+     * POST /catalog/services : Creates new service
+     *
+     * @param service CatalogServicePOST – service
+     * @return CatalogServiceGET Data of the created service
+     */
+    public CatalogServiceGET createCatalogService(CatalogServicePOST service) {
+        ResponseEntity<ItemCatalogServiceGET> response = catalogApiClient.createCatalogService(service);
+        return Objects.requireNonNull(response.getBody()).getItem();
+    }
+
+    /**
+     * PUT /catalog/services/{serviceId} : Updates specified service
+     *
+     * @param service CatalogServiceGET - service (required)
+     * @return CatalogServiceGET -Data of the updated service
+     * @throws IOException if mapping from ItemCatalogServiceGET to CatalogServicePUT fails
+     */
+    public CatalogServiceGET updateCatalogService(CatalogServiceGET service) throws IOException {
+        CatalogServicePUT changedCatalogService = mapFromJson(mapToJson(service), CatalogServicePUT.class);
+        ResponseEntity<ItemCatalogServiceGET> response = catalogApiClient.updateCatalogService(service.getId(), changedCatalogService);
+        return Objects.requireNonNull(response.getBody()).getItem();
     }
 
 
@@ -588,6 +1014,14 @@ public class SmallInvoiceApiService extends AbstractApiService {
         ResponseEntity<ItemDocumentDeliveryNoteGET> response = receivablesApiClient.getDeliveryNote(deliveryNoteId, with);
         if (response.getBody() != null) return response.getBody().getItem();
         else return null;
+    }
+
+    /**
+     * DELETE /receivables/delivery-notes/{deliveryNoteIds} : Deletes specified delivery notes
+     * @param deliveryNoteIds comma separated delivery note IDs (required)
+     */
+    public void deleteDeliveryNoteByIds(Integer... deliveryNoteIds) {
+        ResponseEntity<Void> response = receivablesApiClient.deleteDeliveryNotes(deliveryNoteIds);
     }
 
     /**
@@ -675,6 +1109,39 @@ public class SmallInvoiceApiService extends AbstractApiService {
         ResponseEntity<Void> response = receivablesApiClient.sendDeliveryNoteByPost(deliveryNoteId, post);
     }
 
+    /**
+     * Creates a document position
+     * @param catalogProduct CatalogProductGET - catalog product data
+     * @param amount the amount of products
+     * @return DocumentDeliveryNotePositionPOST - the position
+     * @throws IOException in case of mapping error
+     */
+    public DocumentDeliveryNotePositionPOST createDeliveryNoteProductPosition(CatalogProductGET catalogProduct, float amount) throws IOException {
+        DocumentDeliveryNotePositionPOST productPosition = mapFromJson(mapToJson(catalogProduct), DocumentDeliveryNotePositionPOST.class);
+        productPosition.catalogType(DocumentDeliveryNotePositionPOST.CatalogTypeEnum.P)
+                .type(DocumentDeliveryNotePositionPOST.TypeEnum.N)
+                .amount(amount)
+                .showOnlyTotal(false);
+        return productPosition;
+    }
+
+    /**
+     * Creates a document position
+     * @param catalogService CatalogServiceGET - catalog service data
+     * @param amount the amount of services
+     * @return DocumentDeliveryNotePositionPOST - the postion
+     * @throws IOException in case of mapping error
+     */
+    public DocumentDeliveryNotePositionPOST createDeliveryNoteServicePosition(CatalogServiceGET catalogService, float amount) throws IOException {
+        DocumentDeliveryNotePositionPOST servicePosition = mapFromJson(mapToJson(catalogService), DocumentDeliveryNotePositionPOST.class);
+        servicePosition.catalogType(DocumentDeliveryNotePositionPOST.CatalogTypeEnum.S)
+                .type(DocumentDeliveryNotePositionPOST.TypeEnum.N)
+                .amount(amount)
+                .showOnlyTotal(false);
+        return servicePosition;
+    }
+
+
     // ======== Standard Invoices ==========
 
     /**
@@ -712,6 +1179,100 @@ public class SmallInvoiceApiService extends AbstractApiService {
     }
 
     /**
+     * DELETE /receivables/invoices/{invoiceIds} : Deletes specified invoices
+     * @param invoiceIds comma separated invoice IDs (required)
+     */
+    public void deleteInvoiceStandardByIds(Integer... invoiceIds) {
+        ResponseEntity<Void> response = receivablesApiClient.deleteInvoices(invoiceIds);
+    }
+
+    /**
+     * POST /receivables/invoices : Creates new invoice
+     *
+     * @param invoice documentInvoiceStandardPOST – invoice
+     * @return Data of the created invoice
+     */
+    public DocumentInvoiceStandardGET createInvoiceStandard(DocumentInvoiceStandardPOST invoice) {
+        ResponseEntity<ItemDocumentInvoiceStandardGET> response = receivablesApiClient.createInvoice(invoice);
+        return Objects.requireNonNull(response.getBody()).getItem();
+    }
+
+    /**
+     * PUT /receivables/invoices/{invoiceId} : Updates specified invoice
+     *
+     * @param invoice DocumentInvoiceStandardGET - invoice (required)
+     * @return Data of the updated invoice
+     * @throws IOException if mapping from DocumentInvoiceStandardGET to DocumentInvoiceStandardPUT fails
+     */
+    public DocumentInvoiceStandardGET updateInvoiceStandard(DocumentInvoiceStandardGET invoice) throws IOException {
+        DocumentInvoiceStandardPUT changedInvoiceStandard = mapFromJson(mapToJson(invoice), DocumentInvoiceStandardPUT.class);
+        ResponseEntity<ItemDocumentInvoiceStandardGET> response = receivablesApiClient.updateInvoice(invoice.getId(), changedInvoiceStandard);
+        return Objects.requireNonNull(response.getBody()).getItem();
+    }
+
+    /**
+     * PATCH /receivables/invoices/{invoiceId}/change-status : Changes status of specified invoice
+     *
+     * @param invoiceId invoiceId – invoice ID (required)
+     * @param status         documentInvoiceStandardChangeStatusPATCH.<br/> StatusEnum – change status, possible values: DR - draft, S - sent, B - billed, D - deleted (but still visible)
+     * @return Data of the changed invoice
+     */
+    public DocumentInvoiceStandardGET changeInvoiceStandardStatusById(
+            int invoiceId, DocumentInvoiceStandardChangeStatusPATCH.StatusEnum status) {
+        DocumentInvoiceStandardChangeStatusPATCH patch = new DocumentInvoiceStandardChangeStatusPATCH();
+        patch.status(status)
+                .dateTime(LocalDateTime.now());
+        ResponseEntity<ItemDocumentInvoiceStandardGET> response = receivablesApiClient.changeInvoiceStatus(invoiceId, patch);
+        return Objects.requireNonNull(response.getBody()).getItem();
+    }
+
+    /**
+     * GET /receivables/invoices/{invoiceId}/pdf : Gets pdf of specified invoice
+     *
+     * @param invoiceId invoiceId – invoice ID (required)
+     * @return The PDF as a Resource
+     */
+    public Resource getInvoiceStandardPdfResource(int invoiceId, DocumentInvoicePdfOptionsGET options) {
+        ResponseEntity<Resource> response = receivablesApiClient.getInvoicePdf(invoiceId, options);
+        return response.getBody();
+    }
+
+    /**
+     * GET /receivables/invoices/{invoiceId}/preview : Gets preview of specified invoice
+     *
+     * @param invoiceId invoiceId – invoice ID (required)
+     * @param page           page – page number [1 .. pages amount] (optional, default to 1)
+     * @param size           width in pixels (optional, <br/> allowableValues = 240, 595, 600, 972, 1240, defaultValue = 972)
+     * @return The png image as resource
+     */
+    public Resource getInvoiceStandardPreviewResource(int invoiceId, Integer page, Integer size) {
+        // size on of "240, 595, 600, 972, 1240"
+        ResponseEntity<Resource> response = receivablesApiClient.getInvoicePreview(invoiceId, page, size);
+        return response.getBody();
+    }
+
+    /**
+     * PATCH /receivables/invoices/{invoiceId}/send-by-email : Sends specified invoice by email Sends specified invoice by email
+     *
+     * @param invoiceId invoiceId – invoice ID (required)
+     * @param email          documentInvoiceStandardSendByEmailPATCH – sending mail data details
+     */
+    public void sendInvoiceStandardByEMail(int invoiceId, DocumentInvoiceSendByEmailPATCH email) {
+        ResponseEntity<Void> response = receivablesApiClient.sendInvoiceByEMail(invoiceId, email);
+    }
+
+    /**
+     * PATCH /receivables/invoices/{invoiceId}/send-by-post : Sends the specified invoice by post
+     *
+     * @param invoiceId invoiceId – invoice ID (required)
+     * @param post           documentSendByPostPATCH – sending post data details
+     */
+    public void sendInvoiceStandardByPost(int invoiceId, DocumentSendByPostPATCH post) {
+        ResponseEntity<Void> response = receivablesApiClient.sendInvoiceByPost(invoiceId, post);
+    }
+
+
+    /**
      * GET /receivables/invoices/{invoiceId}/payments : Returns list of payments for specified invoice
      *
      * @param invoiceId invoice ID (required)
@@ -732,6 +1293,43 @@ public class SmallInvoiceApiService extends AbstractApiService {
     }
 
     /**
+     * Creates a document position
+     * @param catalogProduct CatalogProductGET - catalog product data
+     * @param amount the amount of products
+     * @return DocumentDeliveryNotePositionPOST - the position
+     * @throws IOException in case of mapping error
+     */
+    public DocumentInvoicePositionPOST createInvoiceProductPosition(CatalogProductGET catalogProduct, float amount) throws IOException {
+        DocumentInvoicePositionPOST productPosition = mapFromJson(mapToJson(catalogProduct), DocumentInvoicePositionPOST.class);
+        productPosition.catalogType(DocumentInvoicePositionPOST.CatalogTypeEnum.P)
+                .type(DocumentInvoicePositionPOST.TypeEnum.N)
+                .amount(amount)
+                .showOnlyTotal(false);
+        return productPosition;
+    }
+
+    /**
+     * Creates a document position
+     * @param catalogService CatalogServiceGET - catalog service data
+     * @param amount the amount of services
+     * @return DocumentDeliveryNotePositionPOST - the postion
+     * @throws IOException in case of mapping error
+     */
+    public DocumentInvoicePositionPOST createInvoiceServicePosition(CatalogServiceGET catalogService, float amount) throws IOException {
+        DocumentInvoicePositionPOST servicePosition = mapFromJson(mapToJson(catalogService), DocumentInvoicePositionPOST.class);
+        servicePosition.catalogType(DocumentInvoicePositionPOST.CatalogTypeEnum.S)
+                .type(DocumentInvoicePositionPOST.TypeEnum.N)
+                .amount(amount)
+                .showOnlyTotal(false);
+        return servicePosition;
+    }
+
+
+    // ============= Payments ===================
+
+
+
+    /**
      * GET /receivables/invoices/{invoiceId}/payments/{paymentId} : Returns data of specified invoice's payment
      *
      * @param invoiceId invoice ID (required)
@@ -744,6 +1342,40 @@ public class SmallInvoiceApiService extends AbstractApiService {
         if (response.getBody() != null) return response.getBody().getItem();
         else return null;
     }
+
+    /**
+     * DELETE /receivables/invoices/{invoiceId}/payments/{paymentIds} : Deletes specified invoice's payments
+     * @param paymentIds comma separated payment IDs (required)
+     */
+    public void deleteInvoicePaymentByIds(int invoiceId, Integer... paymentIds) {
+        ResponseEntity<Void> response = receivablesApiClient.deleteInvoicePayment(invoiceId, paymentIds);
+    }
+
+    /**
+     * POST /receivables/invoices/{invoiceId}/payments
+     *
+     * @param invoiceId invoiceId (required)
+     * @param payment DocumentInvoicePaymentPOST – payment data
+     * @return DocumentInvoicePaymentGET Data of the created payment
+     */
+    public DocumentInvoicePaymentGET createInvoicePayment(int invoiceId, DocumentInvoicePaymentPOST payment) {
+        ResponseEntity<ItemDocumentInvoicePaymentGET> response = receivablesApiClient.createInvoicePayment(invoiceId, payment);
+        return Objects.requireNonNull(response.getBody()).getItem();
+    }
+
+    /**
+     * PUT /receivables/invoices/{invoiceId}/payments/{paymentId} : Updates specified invoice's payment
+     * @param invoiceId invoiceId (required)
+     * @param payment DocumentInvoicePaymentGET - payment (required)
+     * @return DocumentInvoicePaymentGET -Data of the updated payment
+     * @throws IOException if mapping from DocumentInvoicePaymentGET to DocumentInvoicePaymentPUT fails
+     */
+    public DocumentInvoicePaymentGET updateInvoicePayment(int invoiceId, DocumentInvoicePaymentGET payment) throws IOException {
+        DocumentInvoicePaymentPUT changedOffer = mapFromJson(mapToJson(payment), DocumentInvoicePaymentPUT.class);
+        ResponseEntity<ItemDocumentInvoicePaymentGET> response = receivablesApiClient.updateInvoicePayment(payment.getId(), invoiceId, changedOffer);
+        return Objects.requireNonNull(response.getBody()).getItem();
+    }
+
 
     // ======== Offers ==========
 
@@ -772,7 +1404,7 @@ public class SmallInvoiceApiService extends AbstractApiService {
      *
      * @param offerId offer ID (required)
      * @param with    with Comma separated, optional keys that should be included in the response. (optional)
-     *                *             <br/> "permissions,positions,texts,free_texts,contact_person,contact_prepage_address,contact_address,contact,custom_fields"
+     *                <br/> "permissions,positions,texts,free_texts,contact_person,contact_prepage_address,contact_address,contact,custom_fields"
      * @return DocumentOfferGET Data of the requested offer
      */
     public DocumentOfferGET getOfferById(int offerId, String with) {
@@ -780,6 +1412,101 @@ public class SmallInvoiceApiService extends AbstractApiService {
         if (response.getBody() != null) return response.getBody().getItem();
         else return null;
     }
+
+    /**
+     * DELETE /receivables/offers/{offerIds} : Deletes specified offers
+     * @param offerIds comma separated offer IDs (required)
+     */
+    public void deleteOfferByIds(Integer... offerIds) {
+        ResponseEntity<Void> response = receivablesApiClient.deleteOffers(offerIds);
+    }
+
+    /**
+     * POST /receivables/offers : Creates new offer
+     *
+     * @param offer DocumentOfferPOST – offer
+     * @return DocumentOfferGET Data of the created offer
+     */
+    public DocumentOfferGET createOffer(DocumentOfferPOST offer) {
+        ResponseEntity<ItemDocumentOfferGET> response = receivablesApiClient.createOffer(offer);
+        return Objects.requireNonNull(response.getBody()).getItem();
+    }
+
+    /**
+     * PUT /receivables/offers/{offerId} : Updates specified offer
+     *
+     * @param offer DocumentOfferGET - offer (required)
+     * @return DocumentOfferGET -Data of the updated offer
+     * @throws IOException if mapping from ItemDocumentOfferGET to DocumentOfferPUT fails
+     */
+    public DocumentOfferGET updateOffer(DocumentOfferGET offer) throws IOException {
+        DocumentOfferPUT changedOffer = mapFromJson(mapToJson(offer), DocumentOfferPUT.class);
+        ResponseEntity<ItemDocumentOfferGET> response = receivablesApiClient.updateOffer(offer.getId(), changedOffer);
+        return Objects.requireNonNull(response.getBody()).getItem();
+    }
+
+    /**
+     * PATCH /receivables/offers/{offerId}/change-status : Changes status of specified offer
+     *
+     * @param offerId  offer ID (required)
+     * @param status         DocumentOfferChangeStatusPATCH. status of offer,
+     *                       <br/> possible values: DR - draft, S - sent, DE - declined, A - accepted, B - billed, D - deleted (but still visible)
+     * @return DocumentOfferGET - Data of the changed offer
+     */
+    public DocumentOfferGET changeOfferStatusById(
+            int offerId, DocumentOfferChangeStatusPATCH.StatusEnum status) {
+        DocumentOfferChangeStatusPATCH patch = new DocumentOfferChangeStatusPATCH();
+        patch.status(status)
+                .dateTime(LocalDateTime.now());
+        ResponseEntity<ItemDocumentOfferGET> response = receivablesApiClient.changeOfferStatus(offerId, patch);
+        return Objects.requireNonNull(response.getBody()).getItem();
+    }
+
+    /**
+     * GET /receivables/offers/{offerId}/pdf : Gets pdf of specified offer
+     *
+     * @param offerId   offer ID (required)
+     * @return The PDF as a Resource
+     */
+    public Resource getOfferPdfResource(int offerId) {
+        ResponseEntity<Resource> response = receivablesApiClient.getOfferPdf(offerId);
+        return response.getBody();
+    }
+
+    /**
+     * GET /receivables/offers/{offerId}/preview : Gets preview of specified offer
+     *
+     * @param offerId  offer ID (required)
+     * @param page           page – page number [1 .. pages amount] (optional, default to 1)
+     * @param size           width in pixels (optional, <br/> allowableValues = 240, 595, 600, 972, 1240, defaultValue = 972)
+     * @return The png image as resource
+     */
+    public Resource getOfferPreviewResource(int offerId, Integer page, Integer size) {
+        // size on of "240, 595, 600, 972, 1240"
+        ResponseEntity<Resource> response = receivablesApiClient.getOfferPreview(offerId, page, size);
+        return response.getBody();
+    }
+
+    /**
+     * PATCH /receivables/offers/{offerId}/send-by-email : Sends specified offer by email
+     *
+     * @param offerId  offer ID (required)
+     * @param email          DocumentOfferSendByEmailPATCH – sending mail data details
+     */
+    public void sendOfferByEMail(int offerId, DocumentOfferSendByEmailPATCH email) {
+        ResponseEntity<Void> response = receivablesApiClient.sendOfferByEMail(offerId, email);
+    }
+
+    /**
+     * PATCH /receivables/offers/{offerId}/send-by-post : Sends specified offer by post
+     *
+     * @param offerId  offer ID (required)
+     * @param post           DocumentSendByPostPATCH – sending post data details
+     */
+    public void sendOfferByPost(int offerId, DocumentSendByPostPATCH post) {
+        ResponseEntity<Void> response = receivablesApiClient.sendOfferByPost(offerId, post);
+    }
+
 
     // ======== Order Confirmations ==========
 
@@ -806,17 +1533,112 @@ public class SmallInvoiceApiService extends AbstractApiService {
     /**
      * GET /receivables/order-confirmations/{orderConfirmationId} : Returns data of specified order confirmation
      *
-     * @param offerId order confirmation ID (required)
+     * @param orderConfirmationId order confirmation ID (required)
      * @param with    with with Comma separated, optional keys that should be included in the response. (optional)
      *                *             <br/>"permissions,positions,texts,free_texts,contact_person,contact_prepage_address,contact_address,contact,custom_fields"
      * @return DocumentOrderConfirmationGET Data of the requested order confirmation
      */
-    public DocumentOrderConfirmationGET getOrderConfirmationById(int offerId, String with) {
+    public DocumentOrderConfirmationGET getOrderConfirmationById(int orderConfirmationId, String with) {
 
-        ResponseEntity<ItemDocumentOrderConfirmationGET> response = receivablesApiClient.getOrderConfirmation(offerId, with);
+        ResponseEntity<ItemDocumentOrderConfirmationGET> response = receivablesApiClient.getOrderConfirmation(orderConfirmationId, with);
         if (response.getBody() != null) return response.getBody().getItem();
         else return null;
     }
+
+    /**
+     * DELETE /receivables/order-confirmations/{orderConfirmationIds} : Deletes specified order confirmation
+     * @param orderConfirmationIds comma separated orderConfirmation IDs (required)
+     */
+    public void deleteOrderConfirmationByIds(Integer... orderConfirmationIds) {
+        ResponseEntity<Void> response = receivablesApiClient.deleteOrderConfirmations(orderConfirmationIds);
+    }
+
+    /**
+     * POST /receivables/order-confirmations : Creates new order confirmation
+     *
+     * @param orderConfirmation DocumentOrderConfirmationPOST – orderConfirmation
+     * @return DocumentOrderConfirmationGET Data of the created orderConfirmation
+     */
+    public DocumentOrderConfirmationGET createOrderConfirmation(DocumentOrderConfirmationPOST orderConfirmation) {
+        ResponseEntity<ItemDocumentOrderConfirmationGET> response = receivablesApiClient.createOrderConfirmation(orderConfirmation);
+        return Objects.requireNonNull(response.getBody()).getItem();
+    }
+
+    /**
+     * PUT /receivables/order-confirmations/{orderConfirmationId} : Updates specified order confirmation
+     *
+     * @param orderConfirmation DocumentOrderConfirmationGET - orderConfirmation (required)
+     * @return DocumentOrderConfirmationGET -Data of the updated orderConfirmation
+     * @throws IOException if mapping from ItemDocumentOrderConfirmationGET to DocumentOrderConfirmationPUT fails
+     */
+    public DocumentOrderConfirmationGET updateOrderConfirmation(DocumentOrderConfirmationGET orderConfirmation) throws IOException {
+        DocumentOrderConfirmationPUT changedOrderConfirmation = mapFromJson(mapToJson(orderConfirmation), DocumentOrderConfirmationPUT.class);
+        ResponseEntity<ItemDocumentOrderConfirmationGET> response = receivablesApiClient.updateOrderConfirmation(orderConfirmation.getId(), changedOrderConfirmation);
+        return Objects.requireNonNull(response.getBody()).getItem();
+    }
+
+    /**
+     * PATCH /receivables/order-confirmations/{orderConfirmationId}/change-status : Changes status of specified order confirmation
+     *
+     * @param orderConfirmationId  orderConfirmation ID (required)
+     * @param status         DocumentOrderConfirmationChangeStatusPATCH. status of orderConfirmation,
+     *                       <br/> possible values: DR - draft, S - sent, DE - declined, A - accepted, B - billed, D - deleted (but still visible)
+     * @return DocumentOrderConfirmationGET - Data of the changed orderConfirmation
+     */
+    public DocumentOrderConfirmationGET changeOrderConfirmationStatusById(
+            int orderConfirmationId, DocumentOrderConfirmationChangeStatusPATCH.StatusEnum status) {
+        DocumentOrderConfirmationChangeStatusPATCH patch = new DocumentOrderConfirmationChangeStatusPATCH();
+        patch.status(status)
+                .dateTime(LocalDateTime.now());
+        ResponseEntity<ItemDocumentOrderConfirmationGET> response = receivablesApiClient.changeOrderConfirmationStatus(orderConfirmationId, patch);
+        return Objects.requireNonNull(response.getBody()).getItem();
+    }
+
+    /**
+     * GET /receivables/order-confirmations/{orderConfirmationId}/pdf : Gets pdf of specified order confirmation
+     *
+     * @param orderConfirmationId   orderConfirmation ID (required)
+     * @return The PDF as a Resource
+     */
+    public Resource getOrderConfirmationPdfResource(int orderConfirmationId) {
+        ResponseEntity<Resource> response = receivablesApiClient.getOrderConfirmationPdf(orderConfirmationId);
+        return response.getBody();
+    }
+
+    /**
+     * GET /receivables/order-confirmations/{orderConfirmationId}/preview : Gets preview of specified order confirmation
+     *
+     * @param orderConfirmationId  orderConfirmation ID (required)
+     * @param page           page – page number [1 .. pages amount] (optional, default to 1)
+     * @param size           width in pixels (optional, <br/> allowableValues = 240, 595, 600, 972, 1240, defaultValue = 972)
+     * @return The png image as resource
+     */
+    public Resource getOrderConfirmationPreviewResource(int orderConfirmationId, Integer page, Integer size) {
+        // size on of "240, 595, 600, 972, 1240"
+        ResponseEntity<Resource> response = receivablesApiClient.getOrderConfirmationPreview(orderConfirmationId, page, size);
+        return response.getBody();
+    }
+
+    /**
+     * PATCH /receivables/order-confirmations/{orderConfirmationId}/send-by-email : Sends specified order confirmation by email
+     *
+     * @param orderConfirmationId  orderConfirmation ID (required)
+     * @param email          DocumentOrderConfirmationSendByEmailPATCH – sending mail data details
+     */
+    public void sendOrderConfirmationByEMail(int orderConfirmationId, DocumentOrderConfirmationSendByEmailPATCH email) {
+        ResponseEntity<Void> response = receivablesApiClient.sendOrderConfirmationByEMail(orderConfirmationId, email);
+    }
+
+    /**
+     * PATCH /receivables/order-confirmations/{orderConfirmationId}/send-by-post : Sends specified order confirmation by post
+     *
+     * @param orderConfirmationId  orderConfirmation ID (required)
+     * @param post           DocumentSendByPostPATCH – sending post data details
+     */
+    public void sendOrderConfirmationByPost(int orderConfirmationId, DocumentSendByPostPATCH post) {
+        ResponseEntity<Void> response = receivablesApiClient.sendOrderConfirmationByPost(orderConfirmationId, post);
+    }
+
 
     // ==================================
     //          Reporting

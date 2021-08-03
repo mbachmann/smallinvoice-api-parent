@@ -1,0 +1,103 @@
+{
+  "id": 801634817,
+  "number": "10002",
+  "contact_id": 389142970,
+  "contact": {
+    "id": 389142970,
+    "number": "1000",
+    "relation": [
+      "CL"
+    ],
+    "type": "C",
+    "gender_salutation_active": false,
+    "name": "Garage Zylinder AG",
+    "communication_language": "de",
+    "communication_channel": "U",
+    "communication_newsletter": "A",
+    "discount_rate": 0.0,
+    "discount_type": "P",
+    "created": "2021-08-01 17:09:52",
+    "main_address_id": 846821823
+  },
+  "contact_address_id": 846821823,
+  "contact_address": {
+    "default": true,
+    "id": 846821823,
+    "country": "CH",
+    "street": "Thalwilstrasse",
+    "street_no": "4",
+    "postcode": "3013",
+    "city": "Bern",
+    "hide_on_documents": false,
+    "default_prepage": false
+  },
+  "date": "2021-08-01",
+  "valid_until": "2021-08-31",
+  "currency": "CHF",
+  "total": 1511.07,
+  "vat_included": false,
+  "discount_rate": 0.0,
+  "discount_type": "P",
+  "accept_online": false,
+  "accept_online_status": "U",
+  "language": "de",
+  "layout_id": 339201267,
+  "status": "A",
+  "created": "2021-08-01 17:09:55",
+  "custom_fields": [],
+  "positions": [
+    {
+      "type": "N",
+      "catalog_type": "P",
+      "number": "100",
+      "name": "Schrauben 8x30mm",
+      "description": "",
+      "price": 0.18,
+      "vat": 7.7,
+      "amount": 3.0,
+      "unit_id": 7,
+      "total": 0.58,
+      "show_only_total": false
+    },
+    {
+      "type": "N",
+      "catalog_type": "S",
+      "number": "101",
+      "name": "Lieferung",
+      "description": "",
+      "price": 200.0,
+      "vat": 7.7,
+      "amount": 7.0,
+      "unit_id": 13,
+      "total": 1507.8,
+      "show_only_total": false
+    },
+    {
+      "type": "N",
+      "catalog_type": "P",
+      "number": "102",
+      "name": "Schrauben 10x50mm",
+      "description": "",
+      "price": 0.25,
+      "vat": 7.7,
+      "amount": 10.0,
+      "unit_id": 7,
+      "total": 2.69,
+      "show_only_total": false
+    }
+  ],
+  "texts": [
+    {
+      "status": "D",
+      "title": "Offerte Nr. {OFFERNO} / Kunden Nr. {CUSTOMERNO}",
+      "introduction": "",
+      "conditions": ""
+    }
+  ],
+  "free_texts": [],
+  "permissions": [
+    "view",
+    "edit",
+    "manage"
+  ]
+}

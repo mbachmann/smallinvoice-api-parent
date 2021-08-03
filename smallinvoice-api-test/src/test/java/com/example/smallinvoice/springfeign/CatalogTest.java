@@ -1,12 +1,9 @@
 package com.example.smallinvoice.springfeign;
 
-import com.example.smallinvoicespringfeign.api.CatalogApiClient;
 import com.example.smallinvoicespringfeign.model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -15,9 +12,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CatalogTest extends SharedTest {
 
-    @Autowired
-    private CatalogApiClient catalogApiClient;
-
     @Override
     @BeforeEach
     public void setUp() {
@@ -25,17 +19,57 @@ public class CatalogTest extends SharedTest {
     }
 
     @Test
-    public void getCatalogList() {
-        ResponseEntity<ListProducts> listProductResponse = catalogApiClient.getCatalogProducts("permissions", null, null, 100, 0, null);
-        if (listProductResponse.getBody() != null) {
-            listProductResponse.getBody().getItems().forEach(item -> getLogger().debug(item.toString()));
-            assertEquals(listProductResponse.getBody().getItems().size(),listProductResponse.getBody().getPagination().getTotal());
-        }
+    public void getCatalogProducts() {
 
-        ResponseEntity<ListServices> listServiceResponse = catalogApiClient.getCatalogServices("permissions", null, null, 100, 0, null);
-        if (listServiceResponse.getBody() != null) {
-            listServiceResponse.getBody().getItems().forEach(item -> getLogger().debug(item.toString()));
-            assertEquals(listServiceResponse.getBody().getItems().size(),listServiceResponse.getBody().getPagination().getTotal());
+        List<CatalogProductGET> catalogProducts = apiService.getCatalogProducts("permissions", null);
+
+        if (catalogProducts != null) {
+            catalogProducts.forEach(item -> getLogger().debug(item.toString()));
+            if (catalogProducts.size() > 0) {
+                CatalogProductGET catalogProduct = apiService.getCatalogProductById(catalogProducts.get(0).getId(), "permissions");
+                assertEquals(catalogProduct, catalogProducts.get(0));
+            }
+        }
+    }
+
+    @Test
+    public void getCatalogProductCategories() {
+
+        List<CatalogCategoryGET> catalogProductCategories = apiService.getCatalogProductCategories("permissions", null);
+
+        if (catalogProductCategories != null) {
+            catalogProductCategories.forEach(item -> getLogger().debug(item.toString()));
+            if (catalogProductCategories.size() > 0) {
+                CatalogCategoryGET catalogProductCategory = apiService.getCatalogProductCategoryById(catalogProductCategories.get(0).getId(), "permissions");
+                assertEquals(catalogProductCategory, catalogProductCategories.get(0));
+            }
+        }
+    }
+
+    @Test
+    public void getCatalogService() {
+        List<CatalogServiceGET> catalogServices = apiService.getCatalogServices("permissions", null);
+
+        if (catalogServices != null) {
+            catalogServices.forEach(item -> getLogger().debug(item.toString()));
+            if (catalogServices.size() > 0) {
+                CatalogServiceGET catalogService = apiService.getCatalogServiceById(catalogServices.get(0).getId(), "permissions");
+                assertEquals(catalogService, catalogServices.get(0));
+            }
+        }
+    }
+
+    @Test
+    public void getCatalogServiceCategories() {
+
+        List<CatalogCategoryGET> catalogServiceCategories = apiService.getCatalogServiceCategories("permissions", null);
+
+        if (catalogServiceCategories != null) {
+            catalogServiceCategories.forEach(item -> getLogger().debug(item.toString()));
+            if (catalogServiceCategories.size() > 0) {
+                CatalogCategoryGET catalogServiceCategory = apiService.getCatalogServiceCategoryById(catalogServiceCategories.get(0).getId(), "permissions");
+                assertEquals(catalogServiceCategory, catalogServiceCategories.get(0));
+            }
         }
     }
 
@@ -44,46 +78,42 @@ public class CatalogTest extends SharedTest {
 
         String jsonProduct = readResource(new ClassPathResource("catalog/product1.json"));
         CatalogProductPOST product = mapFromJson(jsonProduct, CatalogProductPOST.class);
-        apiService.deleteProductByNameIfExists(product.getName());
+        apiService.deleteCatalogProductByNameIfExists(product.getName());
 
-        ResponseEntity<ItemCatalogProductGET> productResponse =  catalogApiClient.createCatalogProduct(product);
-        int productId = productResponse.getBody().getItem().getId();
-        assertEquals(product, mapFromJson(mapToJson(productResponse.getBody().getItem()), CatalogProductPOST.class));
+        CatalogProductGET catalogProductGet = apiService.createCatalogProduct(product);
+        assertEquals(product, mapFromJson(mapToJson(catalogProductGet), CatalogProductPOST.class));
 
         int productCategoryId = apiService.createProductCategoryIfNotExists("Product-Category-A");
 
         // Change the new created product and save it again with update
-        CatalogProductPUT newProduct = mapFromJson(mapToJson(productResponse.getBody().getItem()), CatalogProductPUT.class);
-        newProduct.setNotes("Some additional Notes");
-        newProduct.setCategoryId(productCategoryId);
-        ResponseEntity<ItemCatalogProductGET> productResponseChange =  catalogApiClient.updateCatalogProduct(productId,newProduct);
-        if (productResponseChange.getBody() != null) {
-            assertEquals(newProduct, mapFromJson(mapToJson(productResponseChange.getBody().getItem()), CatalogProductPUT.class));
-        }
+        catalogProductGet.setNotes("Some additional Notes");
+        catalogProductGet.setCategoryId(productCategoryId);
+
+        CatalogProductGET catalogProductUpdated = apiService.updateCatalogProduct(catalogProductGet);
+        if (catalogProductUpdated != null) assertEquals(catalogProductGet, catalogProductUpdated);
+
         TimeUnit.MILLISECONDS.sleep(500);
-   }
+    }
 
     @Test
     public void createAndChangeService() throws Exception {
 
         String jsonContact = readResource(new ClassPathResource("catalog/service1.json"));
         CatalogServicePOST service = mapFromJson(jsonContact, CatalogServicePOST.class);
-        apiService.deleteServiceByNameIfExists(service.getName());
-        ResponseEntity<ItemCatalogServiceGET> serviceResponse =  catalogApiClient.createCatalogService(service);
+        apiService.deleteCatalogServiceByNameIfExists(service.getName());
 
-        int serviceId = serviceResponse.getBody().getItem().getId();
-        assertEquals(service, mapFromJson(mapToJson(serviceResponse.getBody().getItem()), CatalogServicePOST.class));
+        CatalogServiceGET catalogServiceGet = apiService.createCatalogService(service);
+        assertEquals(service, mapFromJson(mapToJson(catalogServiceGet), CatalogServicePOST.class));
 
-        int serviceCategoryId = apiService.createServiceCategoryIfNotExists("Service-Category-A");
+        int productCategoryId = apiService.createServiceCategoryIfNotExists("Service-Category-A");
 
-        // Change the new created service and save it again with update
-        CatalogServicePUT newService = mapFromJson(mapToJson(serviceResponse.getBody().getItem()), CatalogServicePUT.class);
-        newService.setNotes("Some additional Notes");
-        newService.setCategoryId(serviceCategoryId);
-        ResponseEntity<ItemCatalogServiceGET> serviceResponseChange =  catalogApiClient.updateCatalogService(serviceId, newService);
-        if (serviceResponseChange.getBody() != null) {
-            assertEquals(newService, mapFromJson(mapToJson(serviceResponseChange.getBody().getItem()), CatalogServicePUT.class));
-        }
+        // Change the new created product and save it again with update
+        catalogServiceGet.setNotes("Some additional Notes");
+        catalogServiceGet.setCategoryId(productCategoryId);
+
+        CatalogServiceGET catalogServiceUpdated = apiService.updateCatalogService(catalogServiceGet);
+        if (catalogServiceUpdated != null) assertEquals(catalogServiceGet, catalogServiceUpdated);
+
         TimeUnit.MILLISECONDS.sleep(500);
     }
 
@@ -92,8 +122,8 @@ public class CatalogTest extends SharedTest {
         List<CatalogConfigurationUnitGET> units = apiService.getCatalogUnits("permissions", null);
         if (units != null) {
             units.forEach(unit -> getLogger().debug(unit.toString()));
-            CatalogConfigurationUnitGET unit = apiService.getCatalogUnitById(units.get(0).getId(),"permissions");
-            assertEquals (units.get(0), unit);
+            CatalogConfigurationUnitGET unit = apiService.getCatalogUnitById(units.get(0).getId(), "permissions");
+            assertEquals(units.get(0), unit);
         }
     }
 }
