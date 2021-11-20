@@ -254,16 +254,19 @@ public class ReceivablesTest extends SharedTest {
         ContactGET contact = apiService.getFirstContactByName("Coiffure Kathrin", "main_address,groups,permissions,custom_fields");
         if (contact != null) {
             DocumentInvoiceStandardGET invoice = getFirstInvoice(contact.getId());
-            List<DocumentInvoicePaymentGET> payments = apiService.getInvoicePayments(invoice.getId(), null, null);
+            if (invoice != null) {
+                List<DocumentInvoicePaymentGET> payments = apiService.getInvoicePayments(invoice.getId(), null, null);
 
-            if (payments != null && payments.size() > 0) {
-                payments.forEach(item -> getLogger().debug(item.toString()));
-                String json = mapToJson(payments);
-                int paymentId = payments.get(0).getId();
-                DocumentInvoicePaymentGET payment = apiService.getInvoicePaymentById(invoice.getId(), paymentId, null);
-                if (payment != null)
-                    assertEquals(mapToJson(payments.get(0)), mapToJson(payment));
+                if (payments != null && payments.size() > 0) {
+                    payments.forEach(item -> getLogger().debug(item.toString()));
+                    String json = mapToJson(payments);
+                    int paymentId = payments.get(0).getId();
+                    DocumentInvoicePaymentGET payment = apiService.getInvoicePaymentById(invoice.getId(), paymentId, null);
+                    if (payment != null)
+                        assertEquals(mapToJson(payments.get(0)), mapToJson(payment));
+                }
             }
+
         }
     }
 
