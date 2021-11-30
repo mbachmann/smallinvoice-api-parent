@@ -159,6 +159,20 @@ public class SmallInvoiceApiService extends AbstractApiService {
     }
 
     /**
+
+     * Update specified contact
+     *
+     * @param contact ContactGet contact (required)
+     * @return ContactGet - Data of the updated Contact
+     * @throws IOException if mapping from ContactGET to ContactPUT fails
+     */
+    public ContactGET updateContact(ContactGET contact) throws IOException {
+        ContactPUT changedContact = mapFromJson(mapToJson(contact), ContactPUT.class);
+        ResponseEntity<ItemContactGET> response = contactsApiClient.updateContact(contact.getId(), changedContact);
+        return Objects.requireNonNull(response.getBody()).getItem();
+    }
+
+    /**
      * Deletes contacts if exists by name
      *
      * @param contactName the name of the contact

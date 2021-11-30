@@ -1,0 +1,30 @@
+{
+  "number": "1009",
+  "relation": [
+    "CL",
+    "CR"
+  ],
+  "type": "P",
+  "gender": "F",
+  "gender_salutation_active": false,
+  "name": "Ursula Buchmüller",
+  "name_addition": "",
+  "salutation": "Sehr geehrte Frau Buchmüller",
+  "phone": "079 123 45 569",
+  "fax": null,
+  "email": null,
+  "website": null,
+  "communication_language": "de",
+  "discount_rate": 0.0,
+  "main_address": {
+    "default": true,
+    "country": "CH",
+    "street": "Teststrasse",
+    "street_no": "123E",
+    "street2": "",
+    "postcode": "4460",
+    "city": "Gelterkinden",
+    "hide_on_documents": false,
+    "default_prepage": false
+  }
+}

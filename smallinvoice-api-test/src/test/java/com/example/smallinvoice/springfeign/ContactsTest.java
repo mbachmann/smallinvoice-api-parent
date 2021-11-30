@@ -213,6 +213,27 @@ public class ContactsTest extends SharedTest {
         return contactPeoplePOST;
     }
 
+    @Test
+    public void createAndChangeContact() throws Exception {
+        String jsonContact = readResource(new ClassPathResource("contact/contact5.json"));
+        ContactPOST newContact = mapFromJson(jsonContact, ContactPOST.class);
+
+        ContactGET contact;
+        if (!apiService.checkIfContactExistsByName(newContact.getName()))
+            contact = apiService.createContact(newContact);
+        else
+            contact = apiService.getFirstContactByName(newContact.getName(), "main_address");
+
+        assertEquals(newContact.getName(), contact.getName());
+
+        String updatedName = contact.getName().concat("-Test");
+        contact.setName(updatedName);
+        ContactGET updatedContact = apiService.updateContact(contact);
+        assertEquals(updatedContact.getName(), updatedName);
+
+        apiService.deleteContactById(contact.getId());
+    }
+
 
 
 }

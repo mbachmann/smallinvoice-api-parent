@@ -16,7 +16,7 @@ import org.hibernate.validator.constraints.*;
 /**
  * Response401
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-08-03T21:09:37.732+02:00[Europe/Zurich]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-11-30T10:06:31.741+01:00[Europe/Zurich]")
 public class Response401  implements Serializable {
   private static final long serialVersionUID = 1L;
 
