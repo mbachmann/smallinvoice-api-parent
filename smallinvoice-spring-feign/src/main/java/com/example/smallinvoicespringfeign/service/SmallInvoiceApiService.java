@@ -185,6 +185,21 @@ public class SmallInvoiceApiService extends AbstractApiService {
     }
 
     /**
+
+     * Update specified contact address
+     *
+     * @param contactId Integer contactId (required)
+     * @param contactAddress ContactAddressGet contactAddress (required)
+     * @return ContactAddressGet - Data of the updated Contact address
+     * @throws IOException if mapping from ContactAddressGET to ContactAddressPUT fails
+     */
+    public ContactAddressGET updateContactAddress(Integer contactId, ContactAddressGET contactAddress) throws IOException {
+        ContactAddressPUT changedContactAddress = mapFromJson(mapToJson(contactAddress), ContactAddressPUT.class);
+        ResponseEntity<ItemContactAddressGET> response = contactsApiClient.updateContactAddress(contactId, contactAddress.getId(), changedContactAddress);
+        return Objects.requireNonNull(response.getBody().getItem());
+    }
+
+    /**
      * Returns list of people for specified contact Returns list of people for specified contact
      *
      * @param contactId the contactId (required)
@@ -219,6 +234,20 @@ public class SmallInvoiceApiService extends AbstractApiService {
         return null;
     }
 
+    /**
+
+     * Get specified contact address
+     *
+     * @param contactId int contactId
+     * @param contactAddressId int contactAddressId (required)
+     * @return ContactAddressGet - Data of the specified Contact address
+     * @throws IOException if mapping from ContactAddressGET to ContactAddressPUT fails
+     */
+    public ContactAddressGET getContactAddressById(int contactId, int contactAddressId) throws IOException {
+        ResponseEntity<ItemContactAddressGET> response = contactsApiClient.getContactAddress(contactId, contactAddressId, null);
+        if (response.getBody() != null) return response.getBody().getItem();
+        return null;
+    }
     /**
      * GET /contacts/configuration/groups : Returns list of contact groups
      *

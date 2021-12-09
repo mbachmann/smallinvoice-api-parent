@@ -16,7 +16,7 @@ import org.hibernate.validator.constraints.*;
 /**
  * ListProductsCategoriesAllOf
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-11-30T10:06:31.741+01:00[Europe/Zurich]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-12-09T09:40:26.748128+01:00[Europe/Zurich]")
 public class ListProductsCategoriesAllOf  implements Serializable {
   private static final long serialVersionUID = 1L;
 

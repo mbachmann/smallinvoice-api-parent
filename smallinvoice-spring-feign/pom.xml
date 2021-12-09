@@ -6,7 +6,7 @@
 
   <groupId>com.example</groupId>
   <artifactId>smallinvoice-spring-feign</artifactId>
-  <version>1.0.1</version>
+  <version>1.0.2</version>
 
   <name>smallinvoice-spring-feign</name>
   <!-- FIXME change it to the project's website -->
@@ -26,7 +26,7 @@
     <jackson-databind-nullable-version>0.2.1</jackson-databind-nullable-version>
     <jackson-threetenbp-version>2.9.10</jackson-threetenbp-version>
     <springfox-version>2.8.0</springfox-version>
-    <spring-boot-starter-web-version>2.5.0</spring-boot-starter-web-version>
+    <spring-boot-starter-web-version>2.5.3</spring-boot-starter-web-version>
     <annotation-char>@</annotation-char>
   </properties>
 

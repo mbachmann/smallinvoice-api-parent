@@ -1,0 +1,30 @@
+{
+  "number": "1012",
+  "relation": [
+    "CL",
+    "CR"
+  ],
+  "type": "P",
+  "gender": "F",
+  "gender_salutation_active": false,
+  "name": "Ingrid Waldvogel",
+  "name_addition": "",
+  "salutation": "Sehr geehrte Frau Waldvogel",
+  "phone": "079 123 45 123",
+  "fax": null,
+  "email": null,
+  "website": null,
+  "communication_language": "de",
+  "discount_rate": 0.0,
+  "main_address": {
+    "default": true,
+    "country": "CH",
+    "street": "Bahnhofstrasse",
+    "street_no": "100",
+    "street2": "",
+    "postcode": "4450",
+    "city": "Sissach",
+    "hide_on_documents": false,
+    "default_prepage": false
+  }
+}
